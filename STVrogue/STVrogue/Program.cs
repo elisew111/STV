@@ -7,6 +7,9 @@ namespace STVrogue
         static void Main(string[] args)
         {
             Console.WriteLine("This main still does not do anything....");
+
+
+            //Plz add mij op whatsapp
         }
     }
 }
