@@ -118,31 +118,31 @@ namespace STVrogue.GameLogic
 
             int x = 1;
 
-            Node previousnode;
+            Node previousNode = new Node(NodeType.COMMONnode, "X");
 
             if(ty == zoneType.STARTzone) //eerste node van startzone is startnode
             {
                 level = 1;
-                Node startnode = new Node(STARTnode, SN);
+                Node startnode = new Node(NodeType.STARTnode, "SN");
                 nodes.Add(startnode);
                 x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
                 previousNode = startnode;       //elke node moet verbinden met de vorige node
             }
             for (int i = x; i < numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
             {
-                if (x = numberOfnodes && ty = zoneType.EXITzone)    //laatste van de exitzone is exitnode
+                if (x == numberOfnodes && ty == zoneType.EXITzone)    //laatste van de exitzone is exitnode
                 {
-                    Node exitnode = new Node(EXITnode, EN);
-                    exitnode.connect(previousnode); 
+                    Node exitnode = new Node(NodeType.EXITnode, "EN");
+                    exitnode.connect(previousNode); 
                     nodes.Add(exitnode);
 
                 }
                 else                                                //rest van de nodes zijn common nodes
                 {
-                    Node commonnode = new Node(COMMONnode, N);
+                    Node commonnode = new Node(NodeType.COMMONnode, "N");
                     if (x > 1)
                     {
-                        commonnode.connect(previousnode);           //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
+                        commonnode.connect(previousNode);           //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
                     }
                     nodes.Add(commonnode);
                     previousNode = commonnode;
@@ -151,8 +151,8 @@ namespace STVrogue.GameLogic
             }
             if (ty != zoneType.EXITzone)                            //elke zone behalve de exitzone krijgt een bridge na zn gewone nodes
             {
-                Node bridge = new Node(BRIDGE, B);
-                bridge.connect(previousnode);
+                Node bridge = new Node(NodeType.BRIDGE, "B");
+                bridge.connect(previousNode);
                 nodes.Add(bridge);
                 
             }
