@@ -25,7 +25,7 @@ namespace STVrogue.GameLogic
             if (numberOfZones < 3) throw new ArgumentException();
             this.capacityMultiplier = capacityMultiplier;
             // creating the start zone:
-            int numOfNodesInstartZone = -1; // FIX THIS! Decide how many nodes
+            int numOfNodesInstartZone = 2; // FIX THIS! Decide how many nodes //random?
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
             foreach (Node nd in startZone.getNodes())
@@ -39,14 +39,14 @@ namespace STVrogue.GameLogic
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++)
             {
-                int numOfNodes = -1; // FIX THIS! Decide how many nodes
+                int numOfNodes = 2; // FIX THIS! Decide how many nodes //random?
                 Zone zone = new Zone("Z" + z, zoneType.InBETWEENzone, 1, numOfNodes);
                 zones.Add(zone);
                 connectWithBridge(previousZone, zone);
                 previousZone = zone;
             }
             // creating the exit zone:
-            int numOfNodesInExitZone = -1; // FIX THIS! decide how many nodes
+            int numOfNodesInExitZone = 2; // FIX THIS! decide how many nodes
             Zone exitZone = new Zone("Z" + numberOfZones, zoneType.EXITzone, 1, numOfNodesInExitZone);
             zones.Add(exitZone);
             connectWithBridge(previousZone, exitZone);
@@ -73,6 +73,11 @@ namespace STVrogue.GameLogic
          */
         static private void connectWithBridge(Zone zone1, Zone zone2)
         {
+            //hoe weet ik welke node met welke andere node geconnect moet worden? en hoe roep ik een node aan? hoe voeg ik een node toe aan zone1?
+            List<Node> nodes1 = zone1.getNodes();
+            
+
+
             throw new NotImplementedException();
 
         }
@@ -108,10 +113,52 @@ namespace STVrogue.GameLogic
             if (zoneLevel < 1 || numberOfnodes < 2) throw new ArgumentException();
             type = ty;
             level = zoneLevel;
-            if (ty == zoneType.STARTzone) level = 1;
-            else level = zoneLevel;
 
             // TODO .. the implementation here
+
+            int x = 1;
+
+            Node previousnode;
+
+            if(ty == zoneType.STARTzone) //eerste node van startzone is startnode
+            {
+                level = 1;
+                Node startnode = new Node(STARTnode, SN);
+                nodes.Add(startnode);
+                x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
+                previousNode = startnode;       //elke node moet verbinden met de vorige node
+            }
+            for (int i = x; i < numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
+            {
+                if (x = numberOfnodes && ty = zoneType.EXITzone)    //laatste van de exitzone is exitnode
+                {
+                    Node exitnode = new Node(EXITnode, EN);
+                    exitnode.connect(previousnode); 
+                    nodes.Add(exitnode);
+
+                }
+                else                                                //rest van de nodes zijn common nodes
+                {
+                    Node commonnode = new Node(COMMONnode, N);
+                    if (x > 1)
+                    {
+                        commonnode.connect(previousnode);           //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
+                    }
+                    nodes.Add(commonnode);
+                    previousNode = commonnode;
+                }
+                
+            }
+            if (ty != zoneType.EXITzone)                            //elke zone behalve de exitzone krijgt een bridge na zn gewone nodes
+            {
+                Node bridge = new Node(BRIDGE, B);
+                bridge.connect(previousnode);
+                nodes.Add(bridge);
+                
+            }
+
+
+
             if (true) throw new NotImplementedException();
 
             // When compiled in the Debug-build, check the following conditions:
