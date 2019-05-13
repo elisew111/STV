@@ -10,7 +10,8 @@ namespace STVrogue.GameLogic
         List<Zone> zones = new List<Zone>();
         Node startnode;
         Node exitnode = null;
-        int capacityMultiplier;
+        public static int capacityMultiplier;
+        int maxnodes = 10;
 
         public List<Zone> getZones() { return zones; }
         public Node getStartnode() { return startnode; }
@@ -20,12 +21,12 @@ namespace STVrogue.GameLogic
          * Create a dungeon with the indicated number of zones (should be at least 3). This creates
          * the start and exit zones. The zones should be linked linearly to each other with bridges.
          */
-        public Dungeon(int numberOfZones, int capacityMultiplier)
+        public Dungeon(int numberOfZones, int capacity)
         {
             if (numberOfZones < 3) throw new ArgumentException();
-            this.capacityMultiplier = capacityMultiplier;
+            capacityMultiplier = capacity;
             // creating the start zone:
-            int numOfNodesInstartZone = 2; // FIX THIS! Decide how many nodes //random?
+            int numOfNodesInstartZone = randomnr(2,maxnodes); // random 2-5 nodes
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
             foreach (Node nd in startZone.getNodes())
@@ -39,14 +40,14 @@ namespace STVrogue.GameLogic
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++)
             {
-                int numOfNodes = 2; // FIX THIS! Decide how many nodes //random?
+                int numOfNodes = randomnr(2,maxnodes); //2-5 nodes
                 Zone zone = new Zone("Z" + z, zoneType.InBETWEENzone, 1, numOfNodes);
                 zones.Add(zone);
                 connectWithBridge(previousZone, zone);
                 previousZone = zone;
             }
             // creating the exit zone:
-            int numOfNodesInExitZone = 2; // FIX THIS! decide how many nodes
+            int numOfNodesInExitZone = randomnr(2,maxnodes); //2-5 nodes
             Zone exitZone = new Zone("Z" + numberOfZones, zoneType.EXITzone, 1, numOfNodesInExitZone);
             zones.Add(exitZone);
             connectWithBridge(previousZone, exitZone);
@@ -58,6 +59,12 @@ namespace STVrogue.GameLogic
                     exitnode = nd; break;
                 }
             }
+        }
+
+        public static int randomnr(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
         }
 
         /* Drop monsters and items into the dungeon. */
@@ -73,9 +80,21 @@ namespace STVrogue.GameLogic
          */
         static private void connectWithBridge(Zone zone1, Zone zone2)
         {
-            //hoe weet ik welke node met welke andere node geconnect moet worden? en hoe roep ik een node aan? hoe voeg ik een node toe aan zone1?
-            List<Node> nodes1 = zone1.getNodes();
-            
+            List<Node> nodes1 = zone1.getNodes(); //connect de bridge van zone 1 met de startnode van zone 2
+            List<Node> nodes2 = zone2.getNodes();
+            foreach(Node node1 in nodes1)
+            {
+                if (node1.type == NodeType.BRIDGE)
+                {
+                    foreach(Node node2 in nodes2)
+                    {
+                        if(node2.type == NodeType.STARTnode)
+                        {
+                            node2.connect(node1);
+                        }
+                    }
+                }
+            }
 
 
             throw new NotImplementedException();
@@ -118,23 +137,27 @@ namespace STVrogue.GameLogic
 
             int x = 1;
 
-            Node previousNode = new Node(NodeType.COMMONnode, "X");
+
+            //!!hoe kan ik de netwerken random maken? -> misschien niet connecten met de vorige maar met een (of twee) random node in het netwerk, dan is het sowieso altijd allemaal verbonden
 
             if(ty == zoneType.STARTzone) //eerste node van startzone is startnode
             {
                 level = 1;
                 Node startnode = new Node(NodeType.STARTnode, "SN");
+                startnode.capacity = 0;
                 nodes.Add(startnode);
                 x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
-                previousNode = startnode;       //elke node moet verbinden met de vorige node
+                
             }
             for (int i = x; i < numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
             {
                 if (x == numberOfnodes && ty == zoneType.EXITzone)    //laatste van de exitzone is exitnode
                 {
                     Node exitnode = new Node(NodeType.EXITnode, "EN");
-                    exitnode.connect(previousNode); 
+                    exitnode.capacity = 0;
+                    connectRandom(exitnode);
                     nodes.Add(exitnode);
+                    
 
                 }
                 else                                                //rest van de nodes zijn common nodes
@@ -142,17 +165,18 @@ namespace STVrogue.GameLogic
                     Node commonnode = new Node(NodeType.COMMONnode, "N");
                     if (x > 1)
                     {
-                        commonnode.connect(previousNode);           //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
+                        connectRandom(commonnode); //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
+                        commonnode.capacity = Dungeon.capacityMultiplier;
                     }
                     nodes.Add(commonnode);
-                    previousNode = commonnode;
                 }
                 
             }
             if (ty != zoneType.EXITzone)                            //elke zone behalve de exitzone krijgt een bridge na zn gewone nodes
             {
                 Node bridge = new Node(NodeType.BRIDGE, "B");
-                bridge.connect(previousNode);
+                connectRandom(bridge);
+                bridge.capacity = Dungeon.capacityMultiplier * zoneLevel; //niet super sure of dit keer het level moet
                 nodes.Add(bridge);
                 
             }
@@ -168,6 +192,11 @@ namespace STVrogue.GameLogic
             //Debug.Assert(HelperPredicates.isConnected(this)) ;
         }
 
+        public void connectRandom(Node node) //connect met een random node die al in de nodes lijst staat
+        {
+            int index = Dungeon.randomnr(0, nodes.Count);
+            node.connect(nodes[index]);
+        }
 
     }
 
@@ -198,10 +227,12 @@ namespace STVrogue.GameLogic
 
         public NodeType type;
 
+        public int capacity;
+
         /* the capacity of this node */
         public int getCapacity()
         {
-            throw new NotImplementedException();
+            return capacity;
         }
 
         public Node(NodeType ty, String ID) : base(ID)
@@ -223,7 +254,7 @@ namespace STVrogue.GameLogic
         }
 
         /* return the set of nodes reachable from this node. */
-        public List<Node> reachableNodes()
+        public List<Node> reachableNodes() //werkt dit zo? niet super sure wat hier gebeurd
         {
             Node x = this;
             List<Node> seen = new List<Node>();
