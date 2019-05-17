@@ -86,13 +86,7 @@ namespace STVrogue.GameLogic
             {
                 if (node1.type == NodeType.BRIDGE)
                 {
-                    foreach(Node node2 in nodes2)
-                    {
-                        if(node2.type == NodeType.STARTnode)
-                        {
-                            node2.connect(node1);
-                        }
-                    }
+                    nodes2[0].connect(node1);
                 }
             }
 
@@ -138,8 +132,7 @@ namespace STVrogue.GameLogic
             int x = 1;
 
 
-            //!!hoe kan ik de netwerken random maken? -> misschien niet connecten met de vorige maar met een (of twee) random node in het netwerk, dan is het sowieso altijd allemaal verbonden
-
+            
             if(ty == zoneType.STARTzone) //eerste node van startzone is startnode
             {
                 level = 1;
