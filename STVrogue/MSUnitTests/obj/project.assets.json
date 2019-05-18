@@ -1621,9 +1621,6 @@
       "STVrogue/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.1",
-        "dependencies": {
-          "Microsoft.NETCore.App": "2.1.0"
-        },
         "compile": {
           "bin/placeholder/STVrogue.dll": {}
         },
@@ -5840,23 +5837,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\elise\\.nuget\\packages\\": {},
+    "C:\\Users\\oscar\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\elise\\OneDrive\\Documenten\\Gametech\\Software Testing\\STV\\STVrogue\\MSUnitTests\\MSUnitTests.csproj",
+      "projectUniqueName": "E:\\Studiedocumenten\\STV\\STV\\STVrogue\\MSUnitTests\\MSUnitTests.csproj",
       "projectName": "MSUnitTests",
-      "projectPath": "C:\\Users\\elise\\OneDrive\\Documenten\\Gametech\\Software Testing\\STV\\STVrogue\\MSUnitTests\\MSUnitTests.csproj",
-      "packagesPath": "C:\\Users\\elise\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\elise\\OneDrive\\Documenten\\Gametech\\Software Testing\\STV\\STVrogue\\MSUnitTests\\obj\\",
+      "projectPath": "E:\\Studiedocumenten\\STV\\STV\\STVrogue\\MSUnitTests\\MSUnitTests.csproj",
+      "packagesPath": "C:\\Users\\oscar\\.nuget\\packages\\",
+      "outputPath": "E:\\Studiedocumenten\\STV\\STV\\STVrogue\\MSUnitTests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\elise\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\oscar\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5869,8 +5866,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Users\\elise\\OneDrive\\Documenten\\Gametech\\Software Testing\\STV\\STVrogue\\STVrogue\\STVrogue.csproj": {
-              "projectPath": "C:\\Users\\elise\\OneDrive\\Documenten\\Gametech\\Software Testing\\STV\\STVrogue\\STVrogue\\STVrogue.csproj"
+            "E:\\Studiedocumenten\\STV\\STV\\STVrogue\\STVrogue\\STVrogue.csproj": {
+              "projectPath": "E:\\Studiedocumenten\\STV\\STV\\STVrogue\\STVrogue\\STVrogue.csproj"
             }
           }
         }
@@ -5897,6 +5894,7 @@
             "version": "[15.9.0, )"
           },
           "Microsoft.NETCore.App": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true
