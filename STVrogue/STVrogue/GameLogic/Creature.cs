@@ -6,7 +6,7 @@ namespace STVrogue.GameLogic {
     public class Creature : GameEntity {
 
         public String name = "goblin";
-        public int HP = 1;
+        public int HP = 3;
         public Node location;
         public int attackRating = 1;
 
