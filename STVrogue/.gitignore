@@ -1,10 +1,13 @@
 # Don't track content of these folders
 .vs/
+STVrogue/.vs/
 MSUnitTests/bin/
 MSUnitTests/obj/
 packages/
 STVrogue/bin/
 STVrogue/obj/
+STVrogue/STVrogue/bin/
+STVrogue/STVrogue/obj/
 
 # Compiled source #
 ###################
