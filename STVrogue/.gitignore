@@ -1,6 +1,7 @@
 # Don't track content of these folders
 .vs/
 STVrogue/.vs/
+STVrogue/.vs/STVrogue/v16
 MSUnitTests/bin/
 MSUnitTests/obj/
 packages/
@@ -17,7 +18,8 @@ STVrogue/STVrogue/obj/
 *.exe
 *.o
 *.so
-
+*.suo
+*.storage.ide
 
 # Packages #
 ############
