@@ -1,0 +1,11 @@
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\bin\Debug\netcoreapp2.1\STVrogue.deps.json
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\bin\Debug\netcoreapp2.1\STVrogue.runtimeconfig.json
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\bin\Debug\netcoreapp2.1\STVrogue.runtimeconfig.dev.json
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\bin\Debug\netcoreapp2.1\STVrogue.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\bin\Debug\netcoreapp2.1\STVrogue.pdb
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\obj\Debug\netcoreapp2.1\STVrogue.csprojAssemblyReference.cache
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\obj\Debug\netcoreapp2.1\STVrogue.csproj.CoreCompileInputs.cache
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\obj\Debug\netcoreapp2.1\STVrogue.AssemblyInfoInputs.cache
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\obj\Debug\netcoreapp2.1\STVrogue.AssemblyInfo.cs
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\obj\Debug\netcoreapp2.1\STVrogue.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\STVrogue\obj\Debug\netcoreapp2.1\STVrogue.pdb

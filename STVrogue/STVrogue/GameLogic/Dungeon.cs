@@ -17,13 +17,15 @@ namespace STVrogue.GameLogic
         public Node getStartnode() { return startnode; }
         public Node getExitnode() { return exitnode; }
 
+        public const string NotEnoughZones = "numberOfZones should be 3 or more";
+
         /*
          * Create a dungeon with the indicated number of zones (should be at least 3). This creates
          * the start and exit zones. The zones should be linked linearly to each other with bridges.
          */
         public Dungeon(int numberOfZones, int capacity)
         {
-            if (numberOfZones < 3) throw new ArgumentException();
+            if (numberOfZones < 3) throw new ArgumentException(NotEnoughZones);
             capacityMultiplier = capacity;
             // creating the start zone:
             int numOfNodesInstartZone = randomnr(2,maxnodes); // random 2-5 nodes
@@ -91,7 +93,7 @@ namespace STVrogue.GameLogic
             }
 
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
 
         }
     }
@@ -176,12 +178,12 @@ namespace STVrogue.GameLogic
 
 
 
-            if (true) throw new NotImplementedException();
+            //if (true) throw new NotImplementedException();
 
             // When compiled in the Debug-build, check the following conditions:
             Debug.Assert(nodes.Count >= 2) ;
-            Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true) ;
-            Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true) ;
+            //Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true) ;
+            //Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true) ;
             //Debug.Assert(HelperPredicates.isConnected(this)) ;
         }
 

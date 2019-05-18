@@ -1,0 +1,17 @@
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\MSUnitTests.deps.json
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\MSUnitTests.runtimeconfig.json
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\MSUnitTests.runtimeconfig.dev.json
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\MSUnitTests.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\MSUnitTests.pdb
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\STVrogue.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\bin\Debug\netcoreapp2.1\STVrogue.pdb
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.csprojAssemblyReference.cache
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.csproj.CoreCompileInputs.cache
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.AssemblyInfoInputs.cache
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.AssemblyInfo.cs
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.csproj.CopyComplete
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.dll
+C:\Users\elise\OneDrive\Documenten\Gametech\Software Testing\STV\STVrogue\MSUnitTests\obj\Debug\netcoreapp2.1\MSUnitTests.pdb
