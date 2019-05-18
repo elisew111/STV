@@ -6,7 +6,7 @@ namespace STVrogue.GameLogic {
     public class Creature : GameEntity {
 
         public String name = "goblin";
-        public int HP = 1;     // current HP, should never exceed HPmax
+        public int HP = 1;
         public Node location;
         public int attackRating = 1;
 
@@ -43,12 +43,13 @@ namespace STVrogue.GameLogic {
 
     public class Monster : Creature {
 
-        /* Monster has a maximum of 5 HP */
-        int HPmax = 5;
+        // Monster has a maximum of 5 HP
+        public int HPmax = 5;
         public Monster(String ID) : base(ID) {
-            // Add position initialization (accounting for capacity of node).
+            /*
+             * Add position initialization (accounting for capacity of node).
+             */
             HP = HPmax;
-            attackRating = 1;
             name = "orc";
         }
 
@@ -68,16 +69,18 @@ namespace STVrogue.GameLogic {
          * successful, else false.
          */
         public override Boolean Move(Game G, Node n) {
+            // Get location of concerning Monster.
+            Node currentLocation = this.location;
             // Node monster wants to move to is not a neighbouring node.
             List<Node> possibleMoves = n.neighbors;
-            if (!possibleMoves.Contains(this.location))
+            if (!possibleMoves.Contains(currentLocation))
                 return false;
             // Node monster wants to move to is not in the same zone.
-            Zone currentZone = this.location.zone;
+            Zone currentZone = currentLocation.zone;
             if (currentZone != n.zone)
                 return false;
             // Update monster's location and return true.
-            this.location = n;
+            currentLocation = n;
             return true;
         }
 
@@ -86,12 +89,14 @@ namespace STVrogue.GameLogic {
          * else false.
          */
         public override Boolean Flee(Game G, Node n) {
+            // Get location of concerning Monster.
+            Node currentLocation = this.location;
             // Node monster wants to move to is not a neighbouring node.
             List<Node> possibleMoves = n.neighbors;
-            if (!possibleMoves.Contains(this.location))
+            if (!possibleMoves.Contains(currentLocation))
                 return false;
             // Node monster wants to move to is not in the same zone.
-            Zone currentZone = this.location.zone;
+            Zone currentZone = currentLocation.zone;
             if (currentZone != n.zone)
                 return false;
             // Node monster wants to move to already contains the player.
@@ -99,15 +104,14 @@ namespace STVrogue.GameLogic {
             if (n != playerLocation)
                 return false;
             // Update monster's location and return true.
-            this.location = n;
+            currentLocation = n;
             return true;
         }
     }
 
     public class Player : Creature {
-
         // Player starts with having made 0 kills
-        int KP = 0;
+        public int KP = 0;
         // Player has a maximum of 10 HP
         public int HPmax = 10;
         public Boolean boosted = false;
@@ -116,7 +120,6 @@ namespace STVrogue.GameLogic {
         public List<Item> bag = new List<Item>();
 
         public Player(String ID) : base(ID) {
-            // Add position initialization (start node)
             HP = HPmax;
             name = "player";
             attackRating = 2;
