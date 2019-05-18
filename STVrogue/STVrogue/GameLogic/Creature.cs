@@ -26,7 +26,7 @@ namespace STVrogue.GameLogic {
          * This one just throws an exception; you need to
          * override it in the corresponding subclasses (Monster and Player).
          */
-        public virtual Boolean Move(Game G, Node nd) {
+        public virtual Boolean Move(Game G, Node n) {
             throw new NotImplementedException();
         }
 
@@ -36,7 +36,7 @@ namespace STVrogue.GameLogic {
          * This one just throws an exception; you need to
          * override it in the corresponding subclasses (Monster and Player).
          */
-        public virtual Boolean Flee(Game G, Node nd) {
+        public virtual Boolean Flee(Game G, Node n) {
             throw new NotImplementedException();
         }
     }
@@ -56,8 +56,10 @@ namespace STVrogue.GameLogic {
          * Attack the foe. 
          */
         public override void Attack(Game G, Creature foe) {
-            foe.HP -= attackRating;
-            // Check if player's HP is below 0 and kill the player if this is the case.
+            foe.HP -= this.attackRating;
+            /*
+             * Check if player's HP is below 0 and kill the player if this is the case.
+             */
         }
 
 
@@ -65,17 +67,17 @@ namespace STVrogue.GameLogic {
          * Move this monster to the given node. Return true if the move is
          * successful, else false.
          */
-        public override Boolean Move(Game G, Node nd) {
+        public override Boolean Move(Game G, Node n) {
             // Node monster wants to move to is not a neighbouring node.
-            List<Node> possibleMoves = nd.neighbors;
+            List<Node> possibleMoves = n.neighbors;
             if (!possibleMoves.Contains(this.location))
                 return false;
             // Node monster wants to move to is not in the same zone.
             Zone currentZone = this.location.zone;
-            if (currentZone != nd.zone)
+            if (currentZone != n.zone)
                 return false;
             // Update monster's location and return true.
-            this.location = nd;
+            this.location = n;
             return true;
         }
 
@@ -83,21 +85,21 @@ namespace STVrogue.GameLogic {
          * This monster flees to the given node. Return true is this is successful,
          * else false.
          */
-        public override Boolean Flee(Game G, Node nd) {
+        public override Boolean Flee(Game G, Node n) {
             // Node monster wants to move to is not a neighbouring node.
-            List<Node> possibleMoves = nd.neighbors;
+            List<Node> possibleMoves = n.neighbors;
             if (!possibleMoves.Contains(this.location))
                 return false;
             // Node monster wants to move to is not in the same zone.
             Zone currentZone = this.location.zone;
-            if (currentZone != nd.zone)
+            if (currentZone != n.zone)
                 return false;
             // Node monster wants to move to already contains the player.
             Node playerLocation = G.player.location;
-            if (nd != playerLocation)
+            if (n != playerLocation)
                 return false;
             // Update monster's location and return true.
-            this.location = nd;
+            this.location = n;
             return true;
         }
     }
@@ -124,34 +126,45 @@ namespace STVrogue.GameLogic {
          * Attack the foe. 
          */
         public override void Attack(Game G, Creature foe) {
-            // Decrease foe's HP by player's attackrating
-            foe.HP -= G.player.attackRating;
-            // Add to kill count if player defeats foe.
-            if (foe.HP <= 0)
-                G.player.KP++;
+            Monster enemy = foe as Monster;
+            Player P = G.player;
+            // Decrease foe's HP by player's attackrating, accounting for
+            // whether the player is boosted.
+            if (P.boosted)
+                foe.HP -= 2 * P.attackRating;
+            else 
+                foe.HP -= P.attackRating;        
+            // Add to kill count if player defeats foe and delete foe
+            // from Game's monster list.
+            if (foe.HP <= 0) { 
+                P.KP++;
+                G.monsters.Remove(enemy);
+            }
         }
 
         /*
          * Move the player to the given node. Return true if the move is
          * successful, else false.
          */
-        public override Boolean Move(Game G, Node nd) {
+        public override Boolean Move(Game G, Node n) {
+            Player P = G.player;
             // Node player wants to move to is not a neighbouring node.
-            List<Node> possibleMoves = nd.neighbors;
-            if (!possibleMoves.Contains(G.player.location))
+            List<Node> possibleMoves = n.neighbors;
+            if (!possibleMoves.Contains(P.location))
                 return false;
             // Update player's location.
-            G.player.location = nd;
-            // Add any items in new node to player's bag.
-            List<Item> nodeItems = nd.items;
+            P.location = n;
+            // Add any items in new node to player's bag and clear nodeItems.
+            List<Item> nodeItems = n.items;
             if (!nodeItems.Any()) {
                 foreach(Item item in nodeItems)
-                    G.player.bag.Add(item);
-            }
+                    P.bag.Add(item);
+                nodeItems.Clear();
+            } 
             // Set 'inCombat' to true if new node contains a monster.
-            List<Creature> nodeCreatures = nd.monsters;
-            if (!nodeCreatures.Any())
-                G.player.inCombat = true;
+            List<Creature> nodeMonsters = n.monsters;
+            if (!nodeMonsters.Any())
+                P.inCombat = true;
             return true;
         }
 
@@ -159,22 +172,24 @@ namespace STVrogue.GameLogic {
          * The player flees to the given node. Return true is this is successful,
          * else false.
          */
-        public override Boolean Flee(Game G, Node nd) {
+        public override Boolean Flee(Game G, Node n) {
+            Player P = G.player;
             // Node player wants to move to is not a neighbouring node.
-            List<Node> possibleMoves = nd.neighbors;
-            if (!possibleMoves.Contains(G.player.location))
+            List<Node> possibleMoves = n.neighbors;
+            if (!possibleMoves.Contains(P.location))
                 return false;
             // Node player wants to flee to already contains a monster.
-            List<Creature> nodeCreatures = nd.monsters;
-            if (!nodeCreatures.Any())
+            List<Creature> nodeMonsters = n.monsters;
+            if (!nodeMonsters.Any())
                 return false;
             // Update player's location.
-            G.player.location = nd;
-            // Add any items in new node to player's bag.
-            List<Item> nodeItems = nd.items;
+            P.location = n;
+            // Add any items in new node to player's bag and clear nodeItems.
+            List<Item> nodeItems = n.items;
             if (!nodeItems.Any()) {
                 foreach (Item item in nodeItems)
-                    G.player.bag.Add(item);
+                    P.bag.Add(item);
+                nodeItems.Clear();
             }
             return true;
         }
