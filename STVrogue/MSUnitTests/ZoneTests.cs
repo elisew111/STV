@@ -7,7 +7,7 @@ namespace MSUnitTests
 {
     [TestClass]
     /* Just an example of an MSUnit test class to show how to write one. */
-    public class DungeonTests
+    public class ZoneTests
     {
 
         [TestMethod]
@@ -101,7 +101,6 @@ namespace MSUnitTests
             }
             Assert.IsTrue(counter == 1);
         }
-
 
 
         [TestMethod]
