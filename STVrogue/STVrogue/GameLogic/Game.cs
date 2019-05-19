@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using STVrogue.GameControl;
 
@@ -16,19 +16,22 @@ namespace STVrogue.GameLogic
     /* This class represents the whole game state of STV-Rogue */
     public class Game
     {
-
         public Player player;
         /* all monsters currently live in the game. */
         public List<Monster> monsters = new List<Monster>();
         /* all items in the game */
         public List<Item> items = new List<Item>();
+        public Crystal crystal;
+        public HealingPotion healingPotion;
         /* The dungeon */
         public Dungeon dungeon;
-
+        public Node n;
         /* To count the number of passed turns. */
         public int turnNumber = 0;
         /* The creature that currently has the turn. */
         public Creature whoHasTheTurn;
+
+
 
         public PlayerState playerstate;
 
@@ -42,7 +45,8 @@ namespace STVrogue.GameLogic
          */
         public Game(int level, int capacityMultiplier)
         {
-            throw new NotImplementedException();
+            dungeon = new Dungeon(level, capacityMultiplier);
+            Player player = new Player("player1");
         }
 
         /* return all nodes in the game. */
@@ -75,7 +79,45 @@ namespace STVrogue.GameLogic
          */
         public Boolean doNCTurn(Creature C, Command cmd)
         {
-            throw new NotImplementedException();
+			String s = cmd.returnArgs();
+            switch(cmd.name) 
+            {
+                case CommandType.MOVE:
+                    if(C is Player || C is Monster)
+                    {
+                        if (s != "none")
+                        {
+                            int move = Int32.Parse(s);
+                            return C.Move(this, player.location.neighbors[move]); //The player 'knows' the list of nodes 
+                        }
+                        else
+                            throw new Exception("incorrect move args");
+                    }
+                    else return false;
+                case CommandType.DoNOTHING:
+                    if(C is Player || C is Monster)
+                        return true;
+                    else return false;
+                case CommandType.USE:
+                    if(C is Player)
+                    {
+                        if (s == "potion")
+                        {
+                            healingPotion.Use(this, player);
+                            return true;
+                        }
+                        else if (s == "crystal")
+                        {
+                            crystal.Use(this, player);
+                            return true;
+                        }
+                        else
+                            throw new Exception("incorrect item args");
+                    }                   
+                    else return false;
+                default:
+                    throw new Exception("Ongeldig command");
+            }
         }
 
         /*
@@ -92,7 +134,101 @@ namespace STVrogue.GameLogic
          */
         public Boolean doOneCombatRound(Command cmd)
         {
-            throw new NotImplementedException();
+            if (player.inCombat == true)
+            {
+                if (player.boosted == true)
+                {
+                    playerstate = PlayerState.CombatStartAndBoosted;
+                    return doAction(cmd);
+                }
+                else
+                {
+                    playerstate = PlayerState.CombatStart;
+                    return doAction(cmd);
+                }
+            }
+            else
+                return false;
+        }
+
+        public Boolean doAction(Command cmd)
+        {
+            String s = cmd.returnArgs();
+            switch(cmd.name)
+            {
+                case CommandType.ATTACK: //Attack will specify which monster in the list to attack for now
+                    int attack = Int32.Parse(s);
+                    player.Attack(this, player.location.monsters[attack]); 
+                    return routineAfterAttack();
+                case CommandType.FLEE:
+                    int flee = Int32.Parse(s);
+                    if(player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
+                    {
+                        playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
+                        return true;
+                    }                        
+                    else
+                    {
+                        //What to do if a flee is unsuccesful? for now just attacking like after using an item will do?
+                        if (player.boosted == true)
+                        {
+                            playerstate = PlayerState.CombatComittedAndBoosted;
+                            player.boosted = true;
+                            player.Attack(this, player.location.monsters[0]);
+                            return routineAfterAttack();
+                        }
+                        else
+                        {
+                            playerstate = PlayerState.CombatCommitted;
+                            player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
+                            return routineAfterAttack();
+                        }
+                    }
+                case CommandType.USE:
+                    if(s == "potion")
+                    {
+                        healingPotion.Use(this, player);
+                        playerstate = PlayerState.CombatCommitted;
+                        player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
+                        return routineAfterAttack();
+                    }
+                    else if (s == "crystal")
+                    {
+                        crystal.Use(this, player);
+                        playerstate = PlayerState.CombatComittedAndBoosted;
+                        player.boosted = true;
+                        player.Attack(this, player.location.monsters[0]);
+                        return routineAfterAttack();
+                    }
+                    else
+                        throw new Exception("incorrect item args");
+                default:
+                    throw new Exception("incorrect command");
+            }
+        }
+        
+        public Boolean routineAfterAttack()
+        {
+            if(player.location.monsters.Count <= 0)
+            {
+                playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
+                return true;
+            }
+
+            //player dead??? nothing specifies what happens if the player is dead.
+
+            if(player.boosted == true)
+            {
+                //TODO: monster turns
+                playerstate = PlayerState.CombatStartAndBoosted;
+                return false;
+            }
+            else
+            {
+                //TODO: monster turns
+                playerstate = PlayerState.CombatStart;
+                return false;
+            }
         }
     }
 }

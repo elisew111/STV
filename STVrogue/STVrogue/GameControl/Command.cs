@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Text.RegularExpressions;
 namespace STVrogue.GameControl
 {
     [Serializable()]
@@ -8,7 +9,7 @@ namespace STVrogue.GameControl
     [Serializable()]
     public class Command
     {
-        CommandType name;
+        public CommandType name;
 
         /*
          * Some commands have arguments. For example, "USE" should specify
@@ -25,18 +26,25 @@ namespace STVrogue.GameControl
 
         public override String ToString()
         {
-            String o = "" + name;
+            String o = "" + name + " ";
             if (args != null && args.Length > 0)
             {
-                o += "(";
                 for (int i = 0; i < args.Length; i++)
                 {
-                    if (i > 0) o += ",";
                     o += args[i];
                 }
-                o += ")";
             }
             return o;
         }
+
+		public String returnArgs()
+		{
+			String s = ToString();
+            string[] returnString = Regex.Split(s, @"\s+");
+			if (returnString.Length > 1)
+				return returnString[1];
+			else
+				return "none";
+		}
     }
 }
