@@ -47,7 +47,7 @@ namespace STVrogue.GameLogic {
         public int HPmax = 5;
         public Monster(String ID) : base(ID) {
             /*
-             * Add position initialization (accounting for capacity of node).
+             * Add location initialization (accounting for capacity of node).
              */
             HP = HPmax;
             name = "orc";
@@ -57,6 +57,9 @@ namespace STVrogue.GameLogic {
          * Attack the foe. 
          */
         public override void Attack(Game G, Creature foe) {
+            /*
+             * Add check to see if foe is in same node as monster?
+             */
             foe.HP -= this.attackRating;
             /*
              * Check if player's HP is below 0 and kill the player if this is the case.
@@ -120,6 +123,9 @@ namespace STVrogue.GameLogic {
         public List<Item> bag = new List<Item>();
 
         public Player(String ID) : base(ID) {
+            /*
+             * Add location initialization (startNode of dungeon)
+             */
             HP = HPmax;
             name = "player";
             attackRating = 2;
@@ -131,6 +137,9 @@ namespace STVrogue.GameLogic {
         public override void Attack(Game G, Creature foe) {
             Monster enemy = foe as Monster;
             Player P = G.player;
+            /*
+             * Add check to see if foe is in same node as player?
+             */
             // Decrease foe's HP by player's attackrating, accounting for
             // whether the player is boosted.
             if (P.boosted)
