@@ -128,6 +128,7 @@ namespace STVrogue.GameLogic
             if (zoneLevel < 1 || numberOfnodes < 2) throw new ArgumentException();
             type = ty;
             level = zoneLevel;
+            
 
             // TODO .. the implementation here
 
@@ -144,7 +145,7 @@ namespace STVrogue.GameLogic
                 x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
                 
             }
-            for (int i = x; i < numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
+            for (int i = x; i <= numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
             {
                 if (x == numberOfnodes && ty == zoneType.EXITzone)    //laatste van de exitzone is exitnode
                 {
@@ -152,7 +153,7 @@ namespace STVrogue.GameLogic
                     exitnode.capacity = 0;
                     connectRandom(exitnode);
                     nodes.Add(exitnode);
-                    
+                    return;
 
                 }
                 else                                                //rest van de nodes zijn common nodes
@@ -217,10 +218,13 @@ namespace STVrogue.GameLogic
         public List<Creature> monsters = new List<Creature>();
         public List<Item> items = new List<Item>();
 
+        
+
         /** the zone to which this node belongs to: */
         public Zone zone;
 
         public NodeType type;
+        public NodeType getType() { return type; }
 
         public int capacity;
 
