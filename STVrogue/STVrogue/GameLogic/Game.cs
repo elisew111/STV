@@ -25,7 +25,7 @@ namespace STVrogue.GameLogic
         public HealingPotion healingPotion;
         /* The dungeon */
         public Dungeon dungeon;
-
+        public Node n;
         /* To count the number of passed turns. */
         public int turnNumber = 0;
         /* The creature that currently has the turn. */
@@ -45,9 +45,8 @@ namespace STVrogue.GameLogic
          */
         public Game(int level, int capacityMultiplier)
         {
-            Dungeon dungeon = new Dungeon(6, 3);
+            dungeon = new Dungeon(level, capacityMultiplier);
             Player player = new Player("player1");
-            //throw new NotImplementedException();
         }
 
         /* return all nodes in the game. */
@@ -81,13 +80,16 @@ namespace STVrogue.GameLogic
         public Boolean doNCTurn(Creature C, Command cmd)
         {
 			String s = cmd.returnArgs();
-            switch(cmd) 
+            switch(cmd.name) 
             {
                 case CommandType.MOVE:
                     if(C is Player || C is Monster)
                     {
-                        if(s != "none")
-                            return C.Move(this, ); //TODO: wat in te vullen om te bewegen naar een volgende node????
+                        if (s != "none")
+                        {
+                            int move = Int32.Parse(s);
+                            return C.Move(this, player.location.neighbors[move]); //The player 'knows' the list of nodes 
+                        }
                         else
                             throw Exception();
                     }
@@ -99,11 +101,18 @@ namespace STVrogue.GameLogic
                 case CommandType.USE:
                     if(C is Player)
                     {
-                        if(s == "potion")
+                        if (s == "potion")
+                        {
                             healingPotion.Use(this, C);
+                            return true;
+                        }
                         else if (s == "crystal")
+                        {
                             crystal.Use(this, C);
-                        return true;
+                            return true;
+                        }
+                        else
+                            throw Exception();
                     }                   
                     else return false;
                 default:
@@ -145,11 +154,13 @@ namespace STVrogue.GameLogic
             String s = cmd.returnArgs();
             switch(cmd.name)
                 {
-                    case CommandType.ATTACK:
-                        player.Attack(this, ); //How to find where a monster is?
+                    case CommandType.ATTACK: //Attack will specify which monster in the list to attack for now
+                        int attack = Int32.parse(s);
+                        player.Attack(this, player.location.monsters[attack]); 
                         return routineAfterAttack();
                     case CommandType.FLEE:
-                        if(player.Flee(this, ) == true)//How to determine which node?
+                        int flee = Int32.parse(s);
+                        if(player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
                         {
                             playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
                         }                        
@@ -163,7 +174,7 @@ namespace STVrogue.GameLogic
                         {
                             healingPotion.Use(this, C);
                             playerstate = PlayerState.CombatCommitted;
-                            player.Attack(this, );//how to determine which monster?
+                            player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
                             return routineAfterAttack();
                         }
                         else if (s == "crystal")
@@ -171,18 +182,18 @@ namespace STVrogue.GameLogic
                             crystal.Use(this, C);
                             playerstate = PlayerState.CombatComittedAndBoosted;
                             boosted = true;
-                            player.Attack(this, );//how to determine which monster?
+                            player.Attack(this, player.location.monsters[0]);
                             return routineAfterAttack();
                         }
                         else
                             throw Exception();
-                        break;
+                        
                 }
         }
         
         public Boolean routineAfterAttack()
         {
-            if(/*amount of monsters in current node is zero*/)
+            if(player.location.monsters.Count <= 0)
             {
                 playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
                 return true;
