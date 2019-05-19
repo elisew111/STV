@@ -126,6 +126,7 @@ namespace STVrogue.GameLogic {
             /*
              * Add location initialization (startNode of dungeon)
              */
+            location = Dungeon.startnode;
             HP = HPmax;
             name = "player";
             attackRating = 2;

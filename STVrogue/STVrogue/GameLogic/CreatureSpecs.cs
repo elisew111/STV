@@ -6,11 +6,11 @@ namespace STVrogue.GameLogic {
 
     public class CreatureSpecs {
 
-        static public Boolean Monster() {
+        public Boolean Monster() {
             return false;
         }
 
-        static public Boolean MonsterAttackSpec(Game G, Creature foe) {
+        public Boolean MonsterAttackSpec(Game G, Creature foe) {
             // Initialize variables to work with.
             Creature creature = G.whoHasTheTurn;
             Monster monster = creature as Monster;
@@ -28,7 +28,7 @@ namespace STVrogue.GameLogic {
 
         }
 
-        static public Boolean MonsterMoveSpec(Game G, Node n) {
+        public Boolean MonsterMoveSpec(Game G, Node n) {
             // Initialize variables to work with.
             Creature creature = G.whoHasTheTurn;
             Monster monster = creature as Monster;
@@ -48,7 +48,7 @@ namespace STVrogue.GameLogic {
             return success && monster.location == n;
         }
 
-        static public Boolean MonsterFleeSpec(Game G, Node n) {
+        public Boolean MonsterFleeSpec(Game G, Node n) {
             // Initialize variables to work with.
             Creature creature = G.whoHasTheTurn;
             Monster monster = creature as Monster;
@@ -73,11 +73,11 @@ namespace STVrogue.GameLogic {
             return success && monster.location == n;
         }
 
-        static public Boolean Player() {
+        public Boolean Player() {
             return false;
         }
         
-        static public Boolean PlayerAttackSpec(Game G, Creature foe) {
+        public Boolean PlayerAttackSpec(Game G, Creature foe) {
             // Initialize variables to work with.
             Monster enemy = foe as Monster;
             Player player = G.player;
@@ -110,7 +110,7 @@ namespace STVrogue.GameLogic {
             return monsterDeleted && HPCorrectlyUpdated;
         }
 
-        static public Boolean PlayerMoveSpec(Game G, Node n) {
+        public Boolean PlayerMoveSpec(Game G, Node n) {
             // Initialize variables to work with.
             Player player = G.player;
             Node currentNode = player.location;
@@ -128,6 +128,9 @@ namespace STVrogue.GameLogic {
                     itemsInBag = false;
                     break;
                 }
+            }
+            if (itemsInN.Length == 0) {
+                itemsInBag = true;
             }
             // Check if 'inCombat' was set to true if node 'n' contained a monster.
             bool inCombatSet = false;
@@ -150,7 +153,7 @@ namespace STVrogue.GameLogic {
             return success && player.location == n && n.items.Count == 0 && itemsInBag && inCombatCorrectlySet;
         }
 
-        static public Boolean PlayerFleeSpec(Game G, Node n) {
+        public Boolean PlayerFleeSpec(Game G, Node n) {
             Player player = G.player;
             Node currentNode = player.location;
             Item[] itemsInN = new Item[n.items.Count];
@@ -167,6 +170,9 @@ namespace STVrogue.GameLogic {
                     itemsInBag = false;
                     break;
                 }
+            }
+            if (itemsInN.Length == 0) {
+                itemsInBag = true;
             }
             // Check if Player.Flee() returned false when the node the player wanted to move to 
             // was not a neigbouring node of the player's original location.

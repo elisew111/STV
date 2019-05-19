@@ -8,7 +8,7 @@ namespace STVrogue.GameLogic
     public class Dungeon
     {
         List<Zone> zones = new List<Zone>();
-        Node startnode;
+        public static Node startnode;
         Node exitnode = null;
         public static int capacityMultiplier;
         int maxnodes = 10;

@@ -11,10 +11,11 @@ namespace MSUnitTests {
         [TestMethod]
         public void TestPlayerMoveChangeNode() {
             Game game = new Game(3, 1);
+            CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             Node playerLocation = player.location;
             Node targetNode = playerLocation.neighbors.First();
-            // Assert.IsTrue(PlayerMoveSpec(game, targetNode));
+            Assert.IsTrue(cs.PlayerMoveSpec(game, targetNode));
         }
     }
 }
