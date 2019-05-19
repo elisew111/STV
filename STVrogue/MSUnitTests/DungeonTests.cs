@@ -29,6 +29,18 @@ namespace MSUnitTests
         }
 
         [TestMethod]
+        public void IfLevelLessThan1ThrowArgumentException()
+        {
+            try { Zone zone = new Zone("test", zoneType.InBETWEENzone, 0, 5); }
+            catch(ArgumentException e)
+            {
+                StringAssert.Contains(e.Message, Zone.LevelTooLow);
+                return;
+            }
+            Assert.Fail("Expected exception wasn't thrown");
+        }
+
+        [TestMethod]
         public void AtLeastTwoNodes()
         {
             Dungeon dungeon = new Dungeon(3, 5);
@@ -105,5 +117,13 @@ namespace MSUnitTests
             Assert.IsTrue(counter == 1);
         }
 
+        [TestMethod]
+        public void CheckLevel()
+        {
+            Zone zone = new Zone("test", zoneType.InBETWEENzone, 3, 5);
+            Assert.IsTrue(zone.getLevel() == 3);
+        }
+
+        
     }
 }

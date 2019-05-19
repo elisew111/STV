@@ -122,10 +122,13 @@ namespace STVrogue.GameLogic
         public zoneType getType(){ return type; }
         public int getLevel(){ return level; }
 
+
+        public const string LevelTooLow = "Zone level should be at least 1";
+
         /* Create a zone of the specified type and number of nodes. */
         public Zone(String ID, zoneType ty, int zoneLevel, int numberOfnodes) : base(ID)
         {
-            if (zoneLevel < 1 || numberOfnodes < 2) throw new ArgumentException();
+            if (zoneLevel < 1 || numberOfnodes < 2) throw new ArgumentException(LevelTooLow);
             type = ty;
             level = zoneLevel;
             
