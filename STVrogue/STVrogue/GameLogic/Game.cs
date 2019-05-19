@@ -91,7 +91,7 @@ namespace STVrogue.GameLogic
                             return C.Move(this, player.location.neighbors[move]); //The player 'knows' the list of nodes 
                         }
                         else
-                            throw Exception();
+                            throw new Exception("incorrect move args");
                     }
                     else return false;
                 case CommandType.DoNOTHING:
@@ -103,16 +103,16 @@ namespace STVrogue.GameLogic
                     {
                         if (s == "potion")
                         {
-                            healingPotion.Use(this, C);
+                            healingPotion.Use(this, player);
                             return true;
                         }
                         else if (s == "crystal")
                         {
-                            crystal.Use(this, C);
+                            crystal.Use(this, player);
                             return true;
                         }
                         else
-                            throw Exception();
+                            throw new Exception("incorrect item args");
                     }                   
                     else return false;
                 default:
@@ -133,10 +133,10 @@ namespace STVrogue.GameLogic
          * false.
          */
         public Boolean doOneCombatRound(Command cmd)
-        {   
-            if(player.inCombat == true)
+        {
+            if (player.inCombat == true)
             {
-                if(player.boosted == true)
+                if (player.boosted == true)
                 {
                     playerstate = PlayerState.CombatStartAndBoosted;
                     return doAction(cmd);
@@ -147,48 +147,64 @@ namespace STVrogue.GameLogic
                     return doAction(cmd);
                 }
             }
+            else
+                return false;
         }
 
         public Boolean doAction(Command cmd)
         {
             String s = cmd.returnArgs();
             switch(cmd.name)
-                {
-                    case CommandType.ATTACK: //Attack will specify which monster in the list to attack for now
-                        int attack = Int32.parse(s);
-                        player.Attack(this, player.location.monsters[attack]); 
-                        return routineAfterAttack();
-                    case CommandType.FLEE:
-                        int flee = Int32.parse(s);
-                        if(player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
+            {
+                case CommandType.ATTACK: //Attack will specify which monster in the list to attack for now
+                    int attack = Int32.Parse(s);
+                    player.Attack(this, player.location.monsters[attack]); 
+                    return routineAfterAttack();
+                case CommandType.FLEE:
+                    int flee = Int32.Parse(s);
+                    if(player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
+                    {
+                        playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
+                        return true;
+                    }                        
+                    else
+                    {
+                        //What to do if a flee is unsuccesful? for now just attacking like after using an item will do?
+                        if (player.boosted == true)
                         {
-                            playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
-                        }                        
-                        else
-                        {
-                            //What to do if a flee is unsuccesful?
-                        }
-                        break;
-                    case CommandType.USE:
-                        if(s == "potion")
-                        {
-                            healingPotion.Use(this, C);
-                            playerstate = PlayerState.CombatCommitted;
-                            player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
-                            return routineAfterAttack();
-                        }
-                        else if (s == "crystal")
-                        {
-                            crystal.Use(this, C);
                             playerstate = PlayerState.CombatComittedAndBoosted;
-                            boosted = true;
+                            player.boosted = true;
                             player.Attack(this, player.location.monsters[0]);
                             return routineAfterAttack();
                         }
                         else
-                            throw Exception();
-                        
-                }
+                        {
+                            playerstate = PlayerState.CombatCommitted;
+                            player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
+                            return routineAfterAttack();
+                        }
+                    }
+                case CommandType.USE:
+                    if(s == "potion")
+                    {
+                        healingPotion.Use(this, player);
+                        playerstate = PlayerState.CombatCommitted;
+                        player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
+                        return routineAfterAttack();
+                    }
+                    else if (s == "crystal")
+                    {
+                        crystal.Use(this, player);
+                        playerstate = PlayerState.CombatComittedAndBoosted;
+                        player.boosted = true;
+                        player.Attack(this, player.location.monsters[0]);
+                        return routineAfterAttack();
+                    }
+                    else
+                        throw new Exception("incorrect item args");
+                default:
+                    throw new Exception("incorrect command");
+            }
         }
         
         public Boolean routineAfterAttack()
