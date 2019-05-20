@@ -26,7 +26,7 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void TestUse()
+        public void TestUseInCombat()
         {
             Game game = new Game();
             Player player = new Player("player");
@@ -35,6 +35,18 @@ namespace MSUnitTests
             player.bag.Add(crystal);
             crystal.Use(game, player);
             Assert.IsTrue(!crystal.hasCrystal(player) && player.boosted);
+        }
+
+        [TestMethod]
+        public void TestUseOutsideCombat()
+        {
+            Game game = new Game();
+            Player player = new Player("player");
+            player.inCombat = false;
+            Crystal crystal = new Crystal("crystal");
+            player.bag.Add(crystal);
+            crystal.Use(game, player);
+            Assert.IsTrue(!crystal.hasCrystal(player) && !player.boosted);
         }
 
         [TestMethod]
