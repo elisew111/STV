@@ -82,11 +82,13 @@ namespace STVrogue.GameLogic {
             Monster enemy = foe as Monster;
             Player player = G.player;
             int foePreHP = foe.HP;
+            int playerPreKP = player.KP;
             int damage = player.attackRating;
             bool isBoosted = player.boosted;
             bool HPCorrectlyUpdated = false;
             bool monsterDefeated = false;
             bool monsterDeleted = true;
+            bool playerKPCorrectlyUpdated = true;
             // Invoke Player.Attack().
             player.Attack(G, foe);
             // Check if HP of foe was correctly updated.
@@ -105,9 +107,16 @@ namespace STVrogue.GameLogic {
             }
             if (monsterDefeated && !G.monsters.Contains(enemy))
                 monsterDeleted = true;
+            // Check if KP of player was correctly updated when monster was defeated.
+            if (monsterDefeated) {
+                if ((playerPreKP + 1) == player.KP)
+                    playerKPCorrectlyUpdated = true;
+                else
+                    playerKPCorrectlyUpdated = false;
+            }
             // Check if defeated monster was correctly deleted and HP of foe was
             // correctly updated.
-            return monsterDeleted && HPCorrectlyUpdated;
+            return monsterDeleted && HPCorrectlyUpdated && playerKPCorrectlyUpdated;
         }
 
         public Boolean PlayerMoveSpec(Game G, Node n) {
@@ -137,7 +146,7 @@ namespace STVrogue.GameLogic {
             bool containsMonster = false;
             bool inCombatCorrectlySet = false;
             List<Creature> nodeCreatures = n.monsters;
-            if (!nodeCreatures.Any())
+            if (nodeCreatures.Count != 0)
                 containsMonster = true;
             if (player.inCombat == true)
                 inCombatSet = true;
@@ -174,7 +183,7 @@ namespace STVrogue.GameLogic {
             if (itemsInN.Length == 0) {
                 itemsInBag = true;
             }
-            // Check if Player.Flee() returned false when the node the player wanted to move to 
+            // Check if Player.Move() returned false when the node the player wanted to move to 
             // was not a neigbouring node of the player's original location.
             if (!currentNode.neighbors.Contains(n))
                 return success == false;
@@ -182,7 +191,7 @@ namespace STVrogue.GameLogic {
             // contained a monster.
             bool containsMonster = false;
             List<Creature> nodeCreatures = n.monsters;
-            if (!nodeCreatures.Any())
+            if (nodeCreatures.Count != 0)
                 containsMonster = true;
             if (containsMonster)
                 return success == false;

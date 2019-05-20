@@ -46,7 +46,7 @@ namespace STVrogue.GameLogic
         public Game(int level, int capacityMultiplier)
         {
             dungeon = new Dungeon(level, capacityMultiplier);
-            player = new Player("1");
+            player = new Player("546553453467");
         }
 
         /* return all nodes in the game. */
