@@ -83,7 +83,10 @@ namespace STVrogue.GameLogic {
             if (currentZone != n.zone)
                 return false;
             // Update monster's location and return true.
-            currentLocation = n;
+            /*
+             * Add capacity check
+             */ 
+            this.location = n;
             return true;
         }
 
@@ -106,8 +109,11 @@ namespace STVrogue.GameLogic {
             Node playerLocation = G.player.location;
             if (n != playerLocation)
                 return false;
+            /*
+             * Add capacity check
+             */
             // Update monster's location and return true.
-            currentLocation = n;
+            this.location = n;
             return true;
         }
     }
@@ -123,9 +129,6 @@ namespace STVrogue.GameLogic {
         public List<Item> bag = new List<Item>();
 
         public Player(String ID) : base(ID) {
-            /*
-             * Add location initialization (startNode of dungeon)
-             */
             location = Dungeon.startnode;
             HP = HPmax;
             name = "player";

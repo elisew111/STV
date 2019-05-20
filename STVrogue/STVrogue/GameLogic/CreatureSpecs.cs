@@ -6,10 +6,6 @@ namespace STVrogue.GameLogic {
 
     public class CreatureSpecs {
 
-        public Boolean Monster() {
-            return false;
-        }
-
         public Boolean MonsterAttackSpec(Game G, Creature foe) {
             // Initialize variables to work with.
             Creature creature = G.whoHasTheTurn;
@@ -44,6 +40,9 @@ namespace STVrogue.GameLogic {
             // was not the same zone as the monster's original zone.
             if (!(currentZone == monster.location.zone))
                 return success == false;
+            /*
+             * Add capacity check
+             */
             // Check if Monster.Move() returned true and the monster's location was correctly updated.
             return success && monster.location == n;
         }
@@ -69,12 +68,11 @@ namespace STVrogue.GameLogic {
             // was already occupied by the player.
             if (n == playerLocation)
                 return success == false;
+            /*
+             * Add capacity check
+             */
             // Check if Monster.Flee() returned true and the monster's location was correctly updated.
             return success && monster.location == n;
-        }
-
-        public Boolean Player() {
-            return false;
         }
         
         public Boolean PlayerAttackSpec(Game G, Creature foe) {
