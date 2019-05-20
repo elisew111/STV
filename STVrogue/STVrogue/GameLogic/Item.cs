@@ -76,8 +76,9 @@ namespace STVrogue.GameLogic {
         }
 
         public bool hasCrystal(Player player) {
-            foreach (Item item in player.bag) {
-                if (item is HealingPotion)
+            foreach (Item item in player.bag)
+            {
+                if (item is Crystal)
                     return true;
             }
             return false;
