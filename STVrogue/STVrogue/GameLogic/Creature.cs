@@ -137,22 +137,25 @@ namespace STVrogue.GameLogic {
          */
         public override void Attack(Game G, Creature foe) {
             Monster enemy = foe as Monster;
-            Player P = G.player;
+            Player player = G.player;
             /*
              * Add check to see if foe is in same node as player?
              */
             // Decrease foe's HP by player's attackrating, accounting for
             // whether the player is boosted.
-            if (P.boosted)
-                foe.HP -= 2 * P.attackRating;
+            if (player.boosted)
+                foe.HP -= (2 * player.attackRating);
             else 
-                foe.HP -= P.attackRating;        
+                foe.HP -= player.attackRating;        
             // Add to kill count if player defeats foe and delete foe
             // from Game's monster list.
             if (foe.HP <= 0) { 
-                P.KP++;
+                player.KP++;
                 G.monsters.Remove(enemy);
             }
+            /*
+             * Remove monster from node?
+             */
         }
 
         /*
@@ -160,24 +163,27 @@ namespace STVrogue.GameLogic {
          * successful, else false.
          */
         public override Boolean Move(Game G, Node n) {
-            Player P = G.player;
+            Player player = G.player;
             // Node player wants to move to is not a neighbouring node.
-            List<Node> possibleMoves = n.neighbors;
-            if (!possibleMoves.Contains(P.location))
+            List<Node> possibleMoves = player.location.neighbors;
+            if (!possibleMoves.Contains(n))
                 return false;
             // Update player's location.
-            P.location = n;
+            player.location = n;
             // Add any items in new node to player's bag and clear nodeItems.
             List<Item> nodeItems = n.items;
-            if (!nodeItems.Any()) {
+            if (nodeItems.Count != 0) {
                 foreach(Item item in nodeItems)
-                    P.bag.Add(item);
+                    player.bag.Add(item);
                 nodeItems.Clear();
             } 
+            /*
+             * Remove items from game's item list?
+             */
             // Set 'inCombat' to true if new node contains a monster.
             List<Creature> nodeMonsters = n.monsters;
-            if (!nodeMonsters.Any())
-                P.inCombat = true;
+            if (nodeMonsters.Count != 0)
+                player.inCombat = true;
             return true;
         }
 
@@ -186,24 +192,27 @@ namespace STVrogue.GameLogic {
          * else false.
          */
         public override Boolean Flee(Game G, Node n) {
-            Player P = G.player;
-            // Node player wants to move to is not a neighbouring node.
-            List<Node> possibleMoves = n.neighbors;
-            if (!possibleMoves.Contains(P.location))
+            Player player = G.player;
+            // Node player wants to flee to is not a neighbouring node.
+            List<Node> possibleMoves = player.location.neighbors;
+            if (!possibleMoves.Contains(n))
                 return false;
             // Node player wants to flee to already contains a monster.
             List<Creature> nodeMonsters = n.monsters;
-            if (!nodeMonsters.Any())
+            if (nodeMonsters.Count != 0)
                 return false;
             // Update player's location.
-            P.location = n;
+            player.location = n;
             // Add any items in new node to player's bag and clear nodeItems.
             List<Item> nodeItems = n.items;
-            if (!nodeItems.Any()) {
+            if (nodeItems.Count != 0) {
                 foreach (Item item in nodeItems)
-                    P.bag.Add(item);
+                    player.bag.Add(item);
                 nodeItems.Clear();
             }
+            /*
+             * Remove items from game's item list?
+             */
             return true;
         }
     }
