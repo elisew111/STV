@@ -10,7 +10,8 @@ namespace STVrogue.GameLogic
         NOTinCombat,
         CombatStart, CombatCommitted, CombatMTR,
         CombatStartAndBoosted, CombatComittedAndBoosted, CombatMTRAndBoosted,
-        CombatEnd
+        CombatEnd,
+        Dead
     }
 
     /* This class represents the whole game state of STV-Rogue */

@@ -29,6 +29,9 @@ namespace STVrogue.GameLogic {
             if(hasHealingPotion(player)) {
                 player.HP = Math.Min(player.HPmax, player.HP + this.HPvalue);
                 deleteHealingPotion(player);
+                /*
+                 * Remove potion from game's item list
+                 */
             } 
         }
 
@@ -72,7 +75,10 @@ namespace STVrogue.GameLogic {
                 deleteCrystal(player);
                 if(player.inCombat)
                     player.boosted = true;
-            }   
+                /*
+                 * Remove crystal from game's item list
+                 */
+            }
         }
 
         public bool hasCrystal(Player player) {

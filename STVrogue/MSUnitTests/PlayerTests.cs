@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using STVrogue.GameLogic;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace MSUnitTests {
@@ -11,7 +10,7 @@ namespace MSUnitTests {
         // attacking a monster correctly decreases its HP.
         [TestMethod]
         public void TestPlayerAttack1() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             player.attackRating = 3;
@@ -29,7 +28,7 @@ namespace MSUnitTests {
         // a kill.
         [TestMethod]
         public void TestPlayerAttack2() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             player.attackRating = 5;
@@ -47,7 +46,7 @@ namespace MSUnitTests {
         // boosted.
         [TestMethod]
         public void TestPlayerAttack3() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             player.attackRating = 3;
@@ -66,7 +65,7 @@ namespace MSUnitTests {
         // a kill when the player is boosted.
         [TestMethod]
         public void TestPlayerAttack4() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             player.attackRating = 1;
@@ -85,7 +84,7 @@ namespace MSUnitTests {
         // location actually moves him to said node.
         [TestMethod]
         public void TestPlayerMove1() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             Node playerLocation = player.location;
@@ -110,7 +109,7 @@ namespace MSUnitTests {
         // player's bag.
         [TestMethod]
         public void TestPlayerMove3() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Crystal crystal = new Crystal("1");
             HealingPotion healingPotion = new HealingPotion("2", 5);
@@ -128,7 +127,7 @@ namespace MSUnitTests {
         // 'inCombat' variable to true.
         [TestMethod]
         public void TestPlayerMove4() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             Monster monster = new Monster("1");
@@ -143,7 +142,7 @@ namespace MSUnitTests {
         // location actually moves him to said node.
         [TestMethod]
         public void TestPlayerFlee1() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             Node playerLocation = player.location;
@@ -156,7 +155,7 @@ namespace MSUnitTests {
         // original location returns false.
         [TestMethod]
         public void TestPlayerFlee2() {
-            Game game = new Game(5, 2);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Node targetNode = game.player.location;
             Assert.IsTrue(cs.PlayerFleeSpec(game, targetNode));
@@ -168,7 +167,7 @@ namespace MSUnitTests {
         // player's bag.
         [TestMethod]
         public void TestPlayerFlee3() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Crystal crystal = new Crystal("1");
             HealingPotion healingPotion = new HealingPotion("2", 5);
@@ -185,7 +184,7 @@ namespace MSUnitTests {
         // location that contains a monster returns false.
         [TestMethod]
         public void TestPlayerFlee4() {
-            Game game = new Game(3, 1);
+            Game game = new Game(5, 1);
             CreatureSpecs cs = new CreatureSpecs();
             Player player = game.player;
             Monster monster = new Monster("1");

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace STVrogue.GameLogic {
 
@@ -19,8 +18,18 @@ namespace STVrogue.GameLogic {
             // Check if HP of foe was correctly updated.
             if ((playerPreHP - damage) == player.HP)
                 HPCorrectlyUpdated = true;
+            // Check if player's state was set to "Dead" if his HP was lower
+            // or equal to 0 after the monster's attack.
+            bool playerDefeated = false;
+            bool playerStateCorrectlySet = true;
+            if (foe.HP <= 0) {
+                playerDefeated = true;
+                playerStateCorrectlySet = false;
+            }
+            if (playerDefeated && (G.playerstate == PlayerState.Dead))
+                playerStateCorrectlySet = true;
             // Check if player's HP was correctly updated.
-            return HPCorrectlyUpdated;
+            return HPCorrectlyUpdated && playerStateCorrectlySet;
 
         }
 
@@ -30,6 +39,8 @@ namespace STVrogue.GameLogic {
             Monster monster = creature as Monster;
             Node currentNode = monster.location;
             Zone currentZone = monster.location.zone;
+            int targetNodeCapacity = n.getCapacity();
+            int amountMonsterTargetNode = n.monsters.Count;
             // Invoke Monster.Move().
             bool success = monster.Move(G, n);
             // Check if Monster.Move() returned false when the node the monster wanted to move to 
@@ -40,9 +51,10 @@ namespace STVrogue.GameLogic {
             // was not the same zone as the monster's original zone.
             if (!(currentZone == monster.location.zone))
                 return success == false;
-            /*
-             * Add capacity check
-             */
+            // Check if Monster.Move() returned false when the node the monster wanted to move to
+            // was already at capacity.
+            if (amountMonsterTargetNode == targetNodeCapacity)
+                return success == false;
             // Check if Monster.Move() returned true and the monster's location was correctly updated.
             return success && monster.location == n;
         }
@@ -54,6 +66,8 @@ namespace STVrogue.GameLogic {
             Node currentNode = monster.location;
             Zone currentZone = monster.location.zone;
             Node playerLocation = G.player.location;
+            int targetNodeCapacity = n.getCapacity();
+            int amountMonsterTargetNode = n.monsters.Count;
             // Invoke Monster.Flee().
             bool success = monster.Flee(G, n);
             // Check if Monster.Flee() returned false when the node the monster wanted to move to 
@@ -68,9 +82,10 @@ namespace STVrogue.GameLogic {
             // was already occupied by the player.
             if (n == playerLocation)
                 return success == false;
-            /*
-             * Add capacity check
-             */
+            // Check if Monster.Move() returned false when the node the monster wanted to move to
+            // was already at capacity.
+            if (amountMonsterTargetNode == targetNodeCapacity)
+                return success == false;
             // Check if Monster.Flee() returned true and the monster's location was correctly updated.
             return success && monster.location == n;
         }
@@ -103,7 +118,7 @@ namespace STVrogue.GameLogic {
                 monsterDefeated = true;
                 monsterDeleted = false;
             }
-            if (monsterDefeated && !G.monsters.Contains(enemy))
+            if (monsterDefeated && !G.monsters.Contains(enemy) && !player.location.monsters.Contains(enemy))
                 monsterDeleted = true;
             // Check if KP of player was correctly updated when monster was defeated.
             if (monsterDefeated) {
@@ -138,7 +153,11 @@ namespace STVrogue.GameLogic {
             }
             if (itemsInN.Length == 0) {
                 itemsInBag = true;
-            }
+            }          
+            // Check if any items have been removed from the node
+            bool itemsRemoved = false;
+            if (n.items.Count == 0)
+                itemsRemoved = true;          
             // Check if 'inCombat' was set to true if node 'n' contained a monster.
             bool inCombatSet = false;
             bool containsMonster = false;
@@ -155,9 +174,10 @@ namespace STVrogue.GameLogic {
             if (!currentNode.neighbors.Contains(n))
                 return success == false;
             // Check if Player.Move() returned true, the player's location was updated, the node doesn't
-            // contain any more items, all the items from the node were successfully tranferred to the bag
-            // and we set the 'inCombat' variable to true when the node the player moved to contained a monster.
-            return success && player.location == n && n.items.Count == 0 && itemsInBag && inCombatCorrectlySet;
+            // contain any more items, all the items from the node were successfully tranferred to the bag,
+            // we set the 'inCombat' variable to true when the node the player moved to contained a monster
+            // and all possibly picked up items were picked up.
+            return success && player.location == n && n.items.Count == 0 && itemsInBag && inCombatCorrectlySet && itemsRemoved;
         }
 
         public Boolean PlayerFleeSpec(Game G, Node n) {
@@ -181,6 +201,10 @@ namespace STVrogue.GameLogic {
             if (itemsInN.Length == 0) {
                 itemsInBag = true;
             }
+            // Check if any items have been removed from the node
+            bool itemsRemoved = false;
+            if (n.items.Count == 0)
+                itemsRemoved = true;
             // Check if Player.Move() returned false when the node the player wanted to move to 
             // was not a neigbouring node of the player's original location.
             if (!currentNode.neighbors.Contains(n))
@@ -194,8 +218,9 @@ namespace STVrogue.GameLogic {
             if (containsMonster)
                 return success == false;
             // Check if Player.Flee() returned true, the player's location was updated, the node doesn't
-            // contain any more items and all the items from the node were successfully tranferred to the bag.
-            return success && player.location == n && n.items.Count == 0 && itemsInBag;
+            // contain any more items, all the items from the node were successfully tranferred to the bag
+            // and all possibly picked up items were picked up.
+            return success && player.location == n && n.items.Count == 0 && itemsInBag && itemsRemoved;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace STVrogue.GameLogic {
     public class Creature : GameEntity {
@@ -46,9 +45,6 @@ namespace STVrogue.GameLogic {
         // Monster has a maximum of 5 HP
         public int HPmax = 5;
         public Monster(String ID) : base(ID) {
-            /*
-             * Add location initialization (accounting for capacity of node).
-             */
             HP = HPmax;
             name = "orc";
         }
@@ -57,15 +53,10 @@ namespace STVrogue.GameLogic {
          * Attack the foe. 
          */
         public override void Attack(Game G, Creature foe) {
-            /*
-             * Add check to see if foe is in same node as monster?
-             */
             foe.HP -= this.attackRating;
-            /*
-             * Check if player's HP is below 0 and kill the player if this is the case.
-             */
+            if (foe.HP <= 0)
+                G.playerstate = PlayerState.Dead;
         }
-
 
         /*
          * Move this monster to the given node. Return true if the move is
@@ -79,13 +70,24 @@ namespace STVrogue.GameLogic {
             if (!possibleMoves.Contains(currentLocation))
                 return false;
             // Node monster wants to move to is not in the same zone.
-            Zone currentZone = currentLocation.zone;
-            if (currentZone != n.zone)
+            string currentZoneID = "";
+            string targetZoneID = "";
+            List<Zone> gameZones = G.dungeon.getZones();
+            foreach (Zone zone in gameZones) {
+                List<Node> zoneNodes = zone.getNodes();
+                if (zoneNodes.Contains(this.location))
+                    currentZoneID = zone.ID;
+                if (zoneNodes.Contains(n))
+                    targetZoneID = zone.ID;
+            }
+            if (currentZoneID != targetZoneID)
+                return false;
+            // Node monster wants to move to is already at capacity.
+            int targetNodeCapacity = n.getCapacity();
+            int amountMonstersTargetNode = n.monsters.Count;
+            if (amountMonstersTargetNode == targetNodeCapacity)
                 return false;
             // Update monster's location and return true.
-            /*
-             * Add capacity check
-             */ 
             this.location = n;
             return true;
         }
@@ -102,16 +104,27 @@ namespace STVrogue.GameLogic {
             if (!possibleMoves.Contains(currentLocation))
                 return false;
             // Node monster wants to move to is not in the same zone.
-            Zone currentZone = currentLocation.zone;
-            if (currentZone != n.zone)
+            string currentZoneID = "";
+            string targetZoneID = "";
+            List<Zone> gameZones = G.dungeon.getZones();
+            foreach (Zone zone in gameZones) {
+                List<Node> zoneNodes = zone.getNodes();
+                if (zoneNodes.Contains(this.location))
+                    currentZoneID = zone.ID;
+                if (zoneNodes.Contains(n))
+                    targetZoneID = zone.ID;
+            }
+            if (currentZoneID != targetZoneID)
                 return false;
             // Node monster wants to move to already contains the player.
             Node playerLocation = G.player.location;
-            if (n != playerLocation)
+            if (n == playerLocation)
                 return false;
-            /*
-             * Add capacity check
-             */
+            // Node monster wants to move to is already at capacity.
+            int targetNodeCapacity = n.getCapacity();
+            int amountMonstersTargetNode = n.monsters.Count;
+            if (amountMonstersTargetNode == targetNodeCapacity)
+                return false;
             // Update monster's location and return true.
             this.location = n;
             return true;
@@ -141,9 +154,6 @@ namespace STVrogue.GameLogic {
         public override void Attack(Game G, Creature foe) {
             Monster enemy = foe as Monster;
             Player player = G.player;
-            /*
-             * Add check to see if foe is in same node as player?
-             */
             // Decrease foe's HP by player's attackrating, accounting for
             // whether the player is boosted.
             if (player.boosted)
@@ -151,14 +161,12 @@ namespace STVrogue.GameLogic {
             else 
                 foe.HP -= player.attackRating;        
             // Add to kill count if player defeats foe and delete foe
-            // from Game's monster list.
+            // from game's and node's monster list.
             if (foe.HP <= 0) { 
                 player.KP++;
                 G.monsters.Remove(enemy);
+                player.location.monsters.Remove(enemy);
             }
-            /*
-             * Remove monster from node?
-             */
         }
 
         /*
@@ -173,16 +181,15 @@ namespace STVrogue.GameLogic {
                 return false;
             // Update player's location.
             player.location = n;
-            // Add any items in new node to player's bag and clear nodeItems.
+            // Add any items in new node to player's bag and remove items from
+            // the node from the game's list of items and the node's list of
+            // items.
             List<Item> nodeItems = n.items;
             if (nodeItems.Count != 0) {
                 foreach(Item item in nodeItems)
                     player.bag.Add(item);
                 nodeItems.Clear();
             } 
-            /*
-             * Remove items from game's item list?
-             */
             // Set 'inCombat' to true if new node contains a monster.
             List<Creature> nodeMonsters = n.monsters;
             if (nodeMonsters.Count != 0)
@@ -206,16 +213,15 @@ namespace STVrogue.GameLogic {
                 return false;
             // Update player's location.
             player.location = n;
-            // Add any items in new node to player's bag and clear nodeItems.
+            // Add any items in new node to player's bag and remove items from
+            // the node from the game's list of items and the node's list of
+            // items.
             List<Item> nodeItems = n.items;
             if (nodeItems.Count != 0) {
                 foreach (Item item in nodeItems)
                     player.bag.Add(item);
                 nodeItems.Clear();
             }
-            /*
-             * Remove items from game's item list?
-             */
             return true;
         }
     }
