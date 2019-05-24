@@ -92,14 +92,8 @@ namespace MSUnitTests
         [TestMethod]
         public void CheckExitnodeExists()
         {
-            Zone zone = new Zone("test", zoneType.EXITzone, 3, 5);
-            List<Node> nodes = zone.getNodes();
-            int counter = 0;
-            foreach(Node node in nodes)
-            {
-                if (node.type == NodeType.EXITnode) counter += 1;
-            }
-            Assert.IsTrue(counter == 1);
+            Dungeon dungeon = new Dungeon(3, 3);
+            Assert.IsTrue(dungeon.getExitnode() != null);
         }
 
 

@@ -146,11 +146,50 @@ namespace STVrogue.GameLogic
             if (zoneLevel < 1 || numberOfnodes < 2) throw new ArgumentException(LevelTooLow);
             type = ty;
             level = zoneLevel;
-            
+
+            int x = 1;
+
+            if (ty == zoneType.STARTzone) //eerste node van startzone is startnode
+            {
+                level = 1;
+                Node startnode = new Node(NodeType.STARTnode, "SN");
+                startnode.capacity = 0;
+                nodes.Add(startnode);
+                x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
+
+                for (int i = 2; i < numberOfnodes; i++)
+                {
+                    addCommonNode();
+                }
+
+                makeBridge();
+            }
+            if (ty == zoneType.InBETWEENzone)
+            {
+                for (int i = 1; i < numberOfnodes; i++)
+                {
+                    addCommonNode();
+                }
+                makeBridge();
+            }
+            if (ty == zoneType.EXITzone)
+            {
+                for (int i = 1; i < numberOfnodes - 1; i++)
+                {
+                    addCommonNode();
+                }
+                Dungeon.exitnode = new Node(NodeType.EXITnode, "EN");
+                Dungeon.exitnode.capacity = 0;
+                connectRandom(Dungeon.exitnode);
+                nodes.Add(Dungeon.exitnode);
+            }
+
+
+
 
             // TODO .. the implementation here
 
-            int x = 1;
+            /*
 
 
             
@@ -193,7 +232,7 @@ namespace STVrogue.GameLogic
                 bridge.capacity = Dungeon.capacityMultiplier * zoneLevel; //niet super sure of dit keer het level moet
                 nodes.Add(bridge);
                 
-            }
+            }*/
 
 
 
@@ -210,6 +249,25 @@ namespace STVrogue.GameLogic
         {
             int index = Dungeon.randomnr(0, nodes.Count);
             node.connect(nodes[index]);
+        }
+
+        public void addCommonNode()
+        {
+            Node commonnode = new Node(NodeType.COMMONnode, "N");
+            if (nodes.Count > 0)
+            {
+                connectRandom(commonnode); //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
+                commonnode.capacity = Dungeon.capacityMultiplier;
+            }
+            nodes.Add(commonnode);
+        }
+
+        public void makeBridge()
+        {
+            Node bridge = new Node(NodeType.BRIDGE, "B");
+            connectRandom(bridge);
+            bridge.capacity = Dungeon.capacityMultiplier * level; //niet super sure of dit keer het level moet
+            nodes.Add(bridge);
         }
 
     }
