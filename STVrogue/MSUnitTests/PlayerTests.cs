@@ -147,6 +147,7 @@ namespace MSUnitTests {
             Player player = game.player;
             Node playerLocation = player.location;
             Node targetNode = playerLocation.neighbors.First();
+            targetNode.monsters.Clear();
             Assert.IsTrue(cs.PlayerFleeSpec(game, targetNode));
         }
 
@@ -174,12 +175,13 @@ namespace MSUnitTests {
             Player player = game.player;
             Node playerLocation = player.location;
             Node targetNode = playerLocation.neighbors.First();
+            targetNode.monsters.Clear();
             targetNode.items.Add(crystal);
             targetNode.items.Add(healingPotion);
             Assert.IsTrue(cs.PlayerFleeSpec(game, targetNode));
         }
 
-        // This test method tests the Ptayer.Flee() function. It checks if
+        // This test method tests the Player.Flee() function. It checks if
         // fleeing to one of the neighbouring nodes of the player's original
         // location that contains a monster returns false.
         [TestMethod]
@@ -190,6 +192,7 @@ namespace MSUnitTests {
             Monster monster = new Monster("1");
             Node playerLocation = player.location;
             Node targetNode = playerLocation.neighbors.First();
+            targetNode.monsters.Clear();
             targetNode.monsters.Add(monster);
             Assert.IsTrue(cs.PlayerFleeSpec(game, targetNode));
         }
