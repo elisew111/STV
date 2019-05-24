@@ -123,6 +123,16 @@ namespace MSUnitTests
             Assert.IsTrue(zone.getLevel() == 3);
         }
 
+        [TestMethod]
+        public void testSeeding()
+        {
+            Zone zone = new Zone("zone", zoneType.InBETWEENzone, 4, 3);
+            Dungeon.seedMonstersAndItems(zone);
+            Node node1 = zone.getNodes()[0];
+            Node node2 = zone.getNodes()[1];
+            
+            Assert.IsTrue((node2.monsters.Count > 0 || node2.capacity == 0) && node1.items.Count == 2);
+        }
         
     }
 }

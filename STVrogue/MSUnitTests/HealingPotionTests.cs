@@ -66,10 +66,14 @@ namespace MSUnitTests {
         {
             Player player = new Player("player");
             HealingPotion healingPotion = new HealingPotion("potion", 5);
+            Crystal crystal = new Crystal("crystal");
+            player.bag.Add(crystal);
             player.bag.Add(healingPotion);
             healingPotion.deleteHealingPotion(player);
-            Assert.IsTrue(healingPotion.hasHealingPotion(player));
+            Assert.IsTrue(!healingPotion.hasHealingPotion(player));
         }
+
+       
 
     }
 }

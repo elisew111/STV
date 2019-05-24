@@ -9,7 +9,7 @@ namespace STVrogue.GameLogic
     {
         List<Zone> zones = new List<Zone>();
         public static Node startnode;
-        Node exitnode = null;
+        public static Node exitnode = null;
         public static int capacityMultiplier;
         int maxnodes = 10;
 
@@ -31,6 +31,7 @@ namespace STVrogue.GameLogic
             int numOfNodesInstartZone = randomnr(2,maxnodes); // random 2-5 nodes
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
+            seedMonstersAndItems(startZone);
             foreach (Node nd in startZone.getNodes())
             {
                 if (nd.type == NodeType.STARTnode)
@@ -45,6 +46,7 @@ namespace STVrogue.GameLogic
                 int numOfNodes = randomnr(2,maxnodes); //2-5 nodes
                 Zone zone = new Zone("Z" + z, zoneType.InBETWEENzone, 1, numOfNodes);
                 zones.Add(zone);
+                seedMonstersAndItems(zone);
                 connectWithBridge(previousZone, zone);
                 previousZone = zone;
             }
@@ -52,6 +54,7 @@ namespace STVrogue.GameLogic
             int numOfNodesInExitZone = randomnr(2,maxnodes); //2-5 nodes
             Zone exitZone = new Zone("Z" + numberOfZones, zoneType.EXITzone, 1, numOfNodesInExitZone);
             zones.Add(exitZone);
+            seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
 
             foreach(Node nd in exitZone.getNodes())
@@ -70,9 +73,21 @@ namespace STVrogue.GameLogic
         }
 
         /* Drop monsters and items into the dungeon. */
-        public void seedMonstersAndItems()
+        public static void seedMonstersAndItems(Zone zone)
         {
-            throw new NotImplementedException();
+            int alt = 0;
+            foreach(Node node in zone.getNodes())
+            {
+                int x = randomnr(Math.Min(1, node.capacity), node.capacity);
+                for(int i = 0; i < x; i++)
+                {
+                    node.monsters.Add(new Monster("M" + node.ID));
+                }
+                if(alt%2 == 0) { node.items.Add(new Crystal("C" + node.ID)); }
+                if(alt%3 == 0) { node.items.Add(new HealingPotion("H" + node.ID, HealingPotion.HPvalue)); }
+                alt += 1;
+            }
+
         }
 
 
@@ -152,10 +167,10 @@ namespace STVrogue.GameLogic
             {
                 if (x == numberOfnodes && ty == zoneType.EXITzone)    //laatste van de exitzone is exitnode
                 {
-                    Node exitnode = new Node(NodeType.EXITnode, "EN");
-                    exitnode.capacity = 0;
-                    connectRandom(exitnode);
-                    nodes.Add(exitnode);
+                    Dungeon.exitnode = new Node(NodeType.EXITnode, "EN");
+                    Dungeon.exitnode.capacity = 0;
+                    connectRandom(Dungeon.exitnode);
+                    nodes.Add(Dungeon.exitnode);
                     return;
 
                 }

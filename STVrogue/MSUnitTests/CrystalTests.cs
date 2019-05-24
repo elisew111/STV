@@ -53,12 +53,12 @@ namespace MSUnitTests
         public void TestDelete()
         {
             Player player = new Player("player");
-            Crystal crystal1 = new Crystal("crystal1");
-            Crystal crystal2 = new Crystal("crystal2");
-            player.bag.Add(crystal1);
-            player.bag.Add(crystal2);
-            crystal1.deleteCrystal(player);
-            Assert.IsTrue(!(crystal1.hasCrystal(player) && crystal2.hasCrystal(player)));
+            Crystal crystal = new Crystal("crystal1");
+            HealingPotion healing = new HealingPotion("healing",10);
+            player.bag.Add(healing);
+            player.bag.Add(crystal);
+            crystal.deleteCrystal(player);
+            Assert.IsTrue(!crystal.hasCrystal(player)); ;
         }
 
     }

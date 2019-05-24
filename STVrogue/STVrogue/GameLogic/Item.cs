@@ -16,10 +16,11 @@ namespace STVrogue.GameLogic {
     public class HealingPotion : Item {
 
         /* HealingPotion can heal 5 HP*/
-        int HPvalue = 5;
+        public static int HPvalue = 5; //static gemaakt voor seedmonsteranditems in dungeon
 
         public HealingPotion(String ID, int heal) : base(ID) {
-            this.HPvalue = heal;
+            //this.HPvalue = heal;
+            HPvalue = heal;
         }
 
         /*
@@ -27,7 +28,8 @@ namespace STVrogue.GameLogic {
          */
         public override void Use(Game G, Player player) {
             if(hasHealingPotion(player)) {
-                player.HP = Math.Min(player.HPmax, player.HP + this.HPvalue);
+                //player.HP = Math.Min(player.HPmax, player.HP + this.HPvalue);
+                player.HP = Math.Min(player.HPmax, player.HP + HPvalue);
                 deleteHealingPotion(player);
                 /*
                  * Remove potion from game's item list
