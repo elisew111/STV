@@ -31,7 +31,6 @@ namespace STVrogue.GameLogic
             int numOfNodesInstartZone = randomnr(2,maxnodes); // random 2-5 nodes
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
-            seedMonstersAndItems(startZone);
             foreach (Node nd in startZone.getNodes())
             {
                 if (nd.type == NodeType.STARTnode)
@@ -46,7 +45,6 @@ namespace STVrogue.GameLogic
                 int numOfNodes = randomnr(2,maxnodes); //2-5 nodes
                 Zone zone = new Zone("Z" + z, zoneType.InBETWEENzone, 1, numOfNodes);
                 zones.Add(zone);
-                seedMonstersAndItems(zone);
                 connectWithBridge(previousZone, zone);
                 previousZone = zone;
             }
@@ -54,7 +52,6 @@ namespace STVrogue.GameLogic
             int numOfNodesInExitZone = randomnr(2,maxnodes); //2-5 nodes
             Zone exitZone = new Zone("Z" + numberOfZones, zoneType.EXITzone, 1, numOfNodesInExitZone);
             zones.Add(exitZone);
-            seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
 
             foreach(Node nd in exitZone.getNodes())
