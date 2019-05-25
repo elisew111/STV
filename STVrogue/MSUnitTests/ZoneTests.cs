@@ -74,8 +74,17 @@ namespace MSUnitTests {
 
         [TestMethod]
         public void CheckExitnodeExists() {
+            Zone zone = new Zone("zone", zoneType.EXITzone, 3, 3);
+            Assert.IsTrue(zone.getNodes()[2].getType() == NodeType.EXITnode);
+        }
+
+        [TestMethod]
+        public void CheckExitZoneExists()
+        {
             Dungeon dungeon = new Dungeon(3, 3);
-            Assert.IsTrue(dungeon.getExitnode() != null);
+            Zone exitzone = dungeon.getZones()[2];
+            Assert.IsTrue(exitzone.getType() == zoneType.EXITzone);
+            Assert.IsTrue(exitzone.getNodes().Count > 0);
         }
 
 

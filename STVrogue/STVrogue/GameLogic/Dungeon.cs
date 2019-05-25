@@ -157,13 +157,14 @@ namespace STVrogue.GameLogic {
                 makeBridge();
             }
             if (ty == zoneType.EXITzone) {
-                for (int i = 1; i < numberOfnodes - 1; i++) {
+                for (int i = 1; i < numberOfnodes; i++) {
                     addCommonNode();
                 }
-                Dungeon.exitnode = new Node(NodeType.EXITnode, "EN");
-                Dungeon.exitnode.capacity = 0;
-                connectRandom(Dungeon.exitnode);
-                nodes.Add(Dungeon.exitnode);
+                Node exitnode = new Node(NodeType.EXITnode, "EN");
+                exitnode.capacity = 0;
+                connectRandom(exitnode);
+                nodes.Add(exitnode);
+                Dungeon.exitnode = exitnode;
             }
 
             /*for (int i = x; i < numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
