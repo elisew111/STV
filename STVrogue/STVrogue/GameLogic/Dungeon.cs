@@ -29,11 +29,11 @@ namespace STVrogue.GameLogic {
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
             seedMonstersAndItems(startZone);
-            foreach (Node nd in startZone.getNodes()) {
+            /*foreach (Node nd in startZone.getNodes()) {
                 if (nd.type == NodeType.STARTnode) {
                     startnode = nd; break;
                 }
-            }
+            }*/
             // adding in-between zones:
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++) {
@@ -51,11 +51,11 @@ namespace STVrogue.GameLogic {
             seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
 
-            foreach (Node nd in exitZone.getNodes()) {
+            /*foreach (Node nd in exitZone.getNodes()) {
                 if (nd.type == NodeType.EXITnode) {
                     exitnode = nd; break;
                 }
-            }
+            }*/
         }
 
         public static int randomnr(int min, int max) {
@@ -142,6 +142,7 @@ namespace STVrogue.GameLogic {
                 Node startnode = new Node(NodeType.STARTnode, "SN");
                 startnode.capacity = 0;
                 nodes.Add(startnode);
+                Dungeon.startnode = startnode;
                 x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
 
                 for (int i = 2; i < numberOfnodes; i++) {

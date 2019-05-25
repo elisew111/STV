@@ -74,8 +74,8 @@ namespace MSUnitTests {
 
         [TestMethod]
         public void CheckExitnodeExists() {
-            Zone zone = new Zone("zone", zoneType.EXITzone, 3, 3);
-            Assert.IsTrue(zone.getNodes()[2].getType() == NodeType.EXITnode);
+            Dungeon dungeon = new Dungeon(3, 3);
+            Assert.IsTrue(dungeon.getExitnode() != null);
         }
 
         [TestMethod]
@@ -87,6 +87,12 @@ namespace MSUnitTests {
             Assert.IsTrue(exitzone.getNodes().Count > 0);
         }
 
+        [TestMethod]
+        public void TestInbetweenZone()
+        {
+            Dungeon dungeon = new Dungeon(3, 3);
+            Assert.IsTrue(dungeon.getZones()[1].getNodes().Count > 0);
+        }
 
         [TestMethod]
         public void OneBridgePerZone() {
