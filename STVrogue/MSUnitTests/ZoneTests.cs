@@ -3,23 +3,17 @@ using STVrogue.GameLogic;
 using System;
 using System.Collections.Generic;
 
-namespace MSUnitTests
-{
+namespace MSUnitTests {
     [TestClass]
     /* Just an example of an MSUnit test class to show how to write one. */
-    public class ZoneTests
-    {
+    public class ZoneTests {
 
         [TestMethod]
-        public void WhenNrOfZonesLessThan3ThrowArgumentException()
-        {
-            
-            try
-            {
+        public void WhenNrOfZonesLessThan3ThrowArgumentException() {
+
+            try {
                 Dungeon dungeon = new Dungeon(2, 5);
-            }
-            catch(ArgumentException e)
-            {
+            } catch (ArgumentException e) {
                 StringAssert.Contains(e.Message, Dungeon.NotEnoughZones);
                 return;
             }
@@ -29,11 +23,8 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void IfLevelLessThan1ThrowArgumentException()
-        {
-            try { Zone zone = new Zone("test", zoneType.InBETWEENzone, 0, 5); }
-            catch(ArgumentException e)
-            {
+        public void IfLevelLessThan1ThrowArgumentException() {
+            try { Zone zone = new Zone("test", zoneType.InBETWEENzone, 0, 5); } catch (ArgumentException e) {
                 StringAssert.Contains(e.Message, Zone.LevelTooLow);
                 return;
             }
@@ -41,17 +32,14 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void AtLeastTwoNodes()
-        {
+        public void AtLeastTwoNodes() {
             Dungeon dungeon = new Dungeon(3, 5);
             Assert.IsTrue(checkTwoNodes(dungeon));
         }
-        
-        public bool checkTwoNodes(Dungeon dungeon)
-        {
+
+        public bool checkTwoNodes(Dungeon dungeon) {
             bool result = true;
-            foreach(Zone zone in dungeon.getZones())
-            {
+            foreach (Zone zone in dungeon.getZones()) {
                 if (zone.getNodes().Count < 2) result = false;
             }
             return result;
@@ -59,20 +47,16 @@ namespace MSUnitTests
 
 
         [TestMethod]
-        public void CheckFullyConnected()
-        {
+        public void CheckFullyConnected() {
             Dungeon dungeon = new Dungeon(5, 5);
             Assert.IsTrue(CheckConnections(dungeon));
 
         }
 
-        public bool CheckConnections(Dungeon dungeon)
-        {
+        public bool CheckConnections(Dungeon dungeon) {
             bool result = true;
-            foreach (Zone zone in dungeon.getZones())
-            {
-                foreach (Node node in zone.getNodes())
-                {
+            foreach (Zone zone in dungeon.getZones()) {
+                foreach (Node node in zone.getNodes()) {
                     if (node.neighbors.Count <= 0) result = false;
                 }
             }
@@ -80,8 +64,7 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void CheckStartnodeExists()
-        {
+        public void CheckStartnodeExists() {
             Dungeon dungeon = new Dungeon(5, 5);
             Zone startzone = dungeon.getZones()[0];
             Assert.IsTrue(startzone.getType() == zoneType.STARTzone);
@@ -90,49 +73,38 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void CheckExitnodeExists()
-        {
-            Zone zone = new Zone("test", zoneType.EXITzone, 3, 5);
-            List<Node> nodes = zone.getNodes();
-            int counter = 0;
-            foreach(Node node in nodes)
-            {
-                if (node.type == NodeType.EXITnode) counter += 1;
-            }
-            Assert.IsTrue(counter == 1);
+        public void CheckExitnodeExists() {
+            Dungeon dungeon = new Dungeon(3, 3);
+            Assert.IsTrue(dungeon.getExitnode() != null);
         }
 
 
         [TestMethod]
-        public void OneBridgePerZone()
-        {
+        public void OneBridgePerZone() {
             Zone zone = new Zone("test", zoneType.InBETWEENzone, 3, 5);
             List<Node> nodes = zone.getNodes();
             int counter = 0;
-            foreach(Node node in nodes)
-            {
+            foreach (Node node in nodes) {
                 if (node.type == NodeType.BRIDGE) counter += 1;
             }
             Assert.IsTrue(counter == 1);
         }
 
         [TestMethod]
-        public void CheckLevel()
-        {
+        public void CheckLevel() {
             Zone zone = new Zone("test", zoneType.InBETWEENzone, 3, 5);
             Assert.IsTrue(zone.getLevel() == 3);
         }
 
         [TestMethod]
-        public void testSeeding()
-        {
+        public void testSeeding() {
             Zone zone = new Zone("zone", zoneType.InBETWEENzone, 4, 3);
             Dungeon.seedMonstersAndItems(zone);
             Node node1 = zone.getNodes()[0];
             Node node2 = zone.getNodes()[1];
-            
+
             Assert.IsTrue((node2.monsters.Count > 0 || node2.capacity == 0) && node1.items.Count == 2);
         }
-        
+
     }
 }
