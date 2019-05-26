@@ -31,37 +31,9 @@ namespace MSUnitTests {
             Assert.Fail("Expected exception wasn't thrown");
         }
 
-        [TestMethod]
-        public void AtLeastTwoNodes() {
-            Dungeon dungeon = new Dungeon(3, 5);
-            Assert.IsTrue(checkTwoNodes(dungeon));
-        }
+        
 
-        public bool checkTwoNodes(Dungeon dungeon) {
-            bool result = true;
-            foreach (Zone zone in dungeon.getZones()) {
-                if (zone.getNodes().Count < 2) result = false;
-            }
-            return result;
-        }
-
-
-        [TestMethod]
-        public void CheckFullyConnected() {
-            Dungeon dungeon = new Dungeon(5, 5);
-            Assert.IsTrue(CheckConnections(dungeon));
-
-        }
-
-        public bool CheckConnections(Dungeon dungeon) {
-            bool result = true;
-            foreach (Zone zone in dungeon.getZones()) {
-                foreach (Node node in zone.getNodes()) {
-                    if (node.neighbors.Count <= 0) result = false;
-                }
-            }
-            return result;
-        }
+        
 
         [TestMethod]
         public void CheckStartnodeExists() {
