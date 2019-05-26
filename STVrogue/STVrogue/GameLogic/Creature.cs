@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace STVrogue.GameLogic {
@@ -44,9 +44,21 @@ namespace STVrogue.GameLogic {
 
         // Monster has a maximum of 5 HP
         public int HPmax = 5;
+
+        public bool rnd;
+        public int nr;
         public Monster(String ID) : base(ID) {
             HP = HPmax;
             name = "orc";
+            rnd = true;
+        }
+
+        public Monster(String ID, int nr) : base(ID)
+        {
+            this.nr = nr;
+            HP = HPmax;
+            name = "orc";
+            rnd = false;
         }
 
         /*
@@ -128,6 +140,19 @@ namespace STVrogue.GameLogic {
             // Update monster's location and return true.
             this.location = n;
             return true;
+        }
+
+        public int decideAttack(Game g)
+        { 
+            if(rnd == true)
+            {
+                int roll = g.r.Next(0, 1);
+                return roll;
+            }
+            else
+            {
+                return nr;
+            }
         }
     }
 
