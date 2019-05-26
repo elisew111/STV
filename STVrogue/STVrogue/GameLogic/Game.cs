@@ -17,13 +17,14 @@ namespace STVrogue.GameLogic
     /* This class represents the whole game state of STV-Rogue */
     public class Game
     {
+        public Random r = new Random();
         public Player player;
         /* all monsters currently live in the game. */
         public List<Monster> monsters = new List<Monster>();
         /* all items in the game */
         public List<Item> items = new List<Item>();
-        public Crystal crystal;
-        public HealingPotion healingPotion;
+        public Crystal crystal = new Crystal("testCrystal");
+        HealingPotion healingPotion = new HealingPotion("heal", 5);
         /* The dungeon */
         public Dungeon dungeon;
         public Node n;
@@ -218,17 +219,48 @@ namespace STVrogue.GameLogic
 
             //player dead??? nothing specifies what happens if the player is dead.
 
-            if(player.boosted == true)
+            else if(player.boosted == true)
             {
-                //TODO: monster turns
+                monsterTurns();
                 playerstate = PlayerState.CombatStartAndBoosted;
                 return false;
             }
             else
             {
-                //TODO: monster turns
+                monsterTurns();
                 playerstate = PlayerState.CombatStart;
                 return false;
+            }
+        }
+
+        public void monsterTurns()
+        {
+            foreach (Monster m in player.location.monsters)
+            {
+                if (m.rnd == true)//Dit eerste stuk hoeft niet gecovered, is random
+                {
+                    if (m.decideAttack(this) == 1)
+                    {
+                        m.Attack(this, player);
+                    }
+                    else if (m.decideAttack(this) == 0)
+                    {
+                        int fleeloc = r.Next(0, player.location.neighbors.Count - 1);
+                        m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
+                    }
+                }
+                else//Dit stuk wel
+                {
+                    if (m.decideAttack(this) == 1)
+                    {
+                        m.Attack(this, player);
+                    }
+                    else if (m.decideAttack(this) == 0)
+                    {
+                        int fleeloc = r.Next(0, player.location.neighbors.Count - 1);
+                        m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
+                    }
+                }
             }
         }
     }
