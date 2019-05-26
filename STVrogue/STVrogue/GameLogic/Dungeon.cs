@@ -29,11 +29,7 @@ namespace STVrogue.GameLogic {
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
             seedMonstersAndItems(startZone);
-            /*foreach (Node nd in startZone.getNodes()) {
-                if (nd.type == NodeType.STARTnode) {
-                    startnode = nd; break;
-                }
-            }*/
+            
             // adding in-between zones:
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++) {
@@ -51,11 +47,7 @@ namespace STVrogue.GameLogic {
             seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
 
-            /*foreach (Node nd in exitZone.getNodes()) {
-                if (nd.type == NodeType.EXITnode) {
-                    exitnode = nd; break;
-                }
-            }*/
+            
         }
 
         public static int randomnr(int min, int max) {
@@ -92,8 +84,6 @@ namespace STVrogue.GameLogic {
                 }
             }
 
-
-            //throw new NotImplementedException();
 
         }
     }
@@ -132,7 +122,6 @@ namespace STVrogue.GameLogic {
 
             // TODO .. the implementation here
 
-            int x = 1;
 
 
 
@@ -143,8 +132,7 @@ namespace STVrogue.GameLogic {
                 startnode.capacity = 0;
                 nodes.Add(startnode);
                 Dungeon.startnode = startnode;
-                x = 2;                          //als we een startnode hebben gemaakt moeten we niet ook nog een common node maken als eerste node, anders hebben we een node te veel
-
+                
                 for (int i = 2; i < numberOfnodes; i++) {
                     addCommonNode();
                 }
@@ -168,35 +156,7 @@ namespace STVrogue.GameLogic {
                 Dungeon.exitnode = exitnode;
             }
 
-            /*for (int i = x; i < numberOfnodes; i++) //voor alle nodes bij niet startzone of alle behalve de eerste bij de startzone
-            {
-                if (x == numberOfnodes - 1 && ty == zoneType.EXITzone)    //laatste van de exitzone is exitnode
-                {
-                    Dungeon.exitnode = new Node(NodeType.EXITnode, "EN");
-                    Dungeon.exitnode.capacity = 0;
-                    connectRandom(Dungeon.exitnode);
-                    nodes.Add(Dungeon.exitnode);
-                }
-                else                                                //rest van de nodes zijn common nodes
-                {
-                    Node commonnode = new Node(NodeType.COMMONnode, "N");
-                    if (x > 1)
-                    {
-                        connectRandom(commonnode); //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
-                        commonnode.capacity = Dungeon.capacityMultiplier;
-                    }
-                    nodes.Add(commonnode);
-                }
-                
-            }
-            if (ty != zoneType.EXITzone)                            //elke zone behalve de exitzone krijgt een bridge na zn gewone nodes
-            {
-                Node bridge = new Node(NodeType.BRIDGE, "B");
-                connectRandom(bridge);
-                bridge.capacity = Dungeon.capacityMultiplier * zoneLevel; //niet super sure of dit keer het level moet
-                nodes.Add(bridge);
-                
-            }*/
+            
 
 
 
@@ -204,9 +164,9 @@ namespace STVrogue.GameLogic {
 
             // When compiled in the Debug-build, check the following conditions:
             Debug.Assert(nodes.Count >= 2);
-            //Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true) ;
-            //Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true) ;
-            //Debug.Assert(HelperPredicates.isConnected(this)) ;
+            Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true) ;
+            Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true) ;
+            Debug.Assert(HelperPredicates.isConnected(this)) ;
         }
 
         public void connectRandom(Node node) //connect met een random node die al in de nodes lijst staat

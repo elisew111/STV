@@ -78,7 +78,15 @@ namespace STVrogue
         /** Check if the zone is indeed fully connected. */
         static public Boolean isConnected(Zone zone)
         {
-            throw new NotImplementedException();
+            bool result = true;
+            foreach(Node node1 in zone.getNodes())
+            {
+                foreach(Node node2 in zone.getNodes())
+                {
+                    if (!node1.isReachable(node2)) { result = false; }
+                }
+            }
+            return result;
         }
 
 
