@@ -40,8 +40,8 @@ namespace STVrogue.GameControl
 		public String returnArgs()
 		{
 			String s = ToString();
-            string[] returnString = Regex.Split(s, @"\s+");
-			if (returnString.Length > 1)
+            		string[] returnString = Regex.Split(s, @"\s+");
+			if (returnString.Length > 1 && returnString[1] != "")
 				return returnString[1];
 			else
 				return "none";
