@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using STVrogue.GameControl;
 
-namespace STVrogue.GameLogic
-{
+namespace STVrogue.GameLogic {
 
-    public enum PlayerState
-    {
+    public enum PlayerState {
         NOTinCombat,
         CombatStart, CombatCommitted, CombatMTR,
         CombatStartAndBoosted, CombatComittedAndBoosted, CombatMTRAndBoosted,
@@ -15,8 +13,7 @@ namespace STVrogue.GameLogic
     }
 
     /* This class represents the whole game state of STV-Rogue */
-    public class Game
-    {
+    public class Game {
         public Random r = new Random();
         public Player player;
         /* all monsters currently live in the game. */
@@ -39,14 +36,13 @@ namespace STVrogue.GameLogic
 
         public int z_; // no real use except for debug purposes
 
-        public Game(){ }
+        public Game() { }
 
         /*
          * Create a game with a dungeon of the specified level and capacityMultiplier.
          * This also creates a proper instance of Player.
          */
-        public Game(int level, int capacityMultiplier)
-        {
+        public Game(int level, int capacityMultiplier) {
             dungeon = new Dungeon(level, capacityMultiplier);
             player = new Player("546553453467");
         }
@@ -54,7 +50,7 @@ namespace STVrogue.GameLogic
         /* return all nodes in the game. */
         public List<Node> nodes() { throw new NotImplementedException(); }   // Iteration-2
         public List<Node> bridges() { throw new NotImplementedException(); } // Iteration-2
-        public List<Zone> zones() { return dungeon.getZones() ; }
+        public List<Zone> zones() { return dungeon.getZones(); }
 
 
         /* 
@@ -79,44 +75,32 @@ namespace STVrogue.GameLogic
          * It returns true if the command can be successfully carried out, and else
          * false.
          */
-        public Boolean doNCTurn(Creature C, Command cmd)
-        {
-			String s = cmd.returnArgs();
-            switch(cmd.name) 
-            {
+        public Boolean doNCTurn(Creature C, Command cmd) {
+            String s = cmd.returnArgs();
+            switch (cmd.name) {
                 case CommandType.MOVE:
-                    if(C is Player || C is Monster)
-                    {
-                        if (s != "none")
-                        {
+                    if (C is Player || C is Monster) {
+                        if (s != "none") {
                             int move = Int32.Parse(s);
                             return C.Move(this, player.location.neighbors[move]); //The player 'knows' the list of nodes 
-                        }
-                        else
+                        } else
                             throw new Exception("incorrect move args");
-                    }
-                    else return false;
+                    } else return false;
                 case CommandType.DoNOTHING:
-                    if(C is Player || C is Monster)
+                    if (C is Player || C is Monster)
                         return true;
                     else return false;
                 case CommandType.USE:
-                    if(C is Player)
-                    {
-                        if (s == "potion")
-                        {
+                    if (C is Player) {
+                        if (s == "potion") {
                             healingPotion.Use(this, player);
                             return true;
-                        }
-                        else if (s == "crystal")
-                        {
+                        } else if (s == "crystal") {
                             crystal.Use(this, player);
                             return true;
-                        }
-                        else
+                        } else
                             throw new Exception("incorrect item args");
-                    }                   
-                    else return false;
+                    } else return false;
                 default:
                     throw new Exception("Ongeldig command");
             }
@@ -134,129 +118,98 @@ namespace STVrogue.GameLogic
          * The method returns true if the combat round terminates the combat, and else
          * false.
          */
-        public Boolean doOneCombatRound(Command cmd)
-        {
-            if (player.inCombat == true)
-            {
-                if (player.boosted == true)
-                {
+        public Boolean doOneCombatRound(Command cmd) {
+            if (player.inCombat == true) {
+                if (player.boosted == true) {
                     playerstate = PlayerState.CombatStartAndBoosted;
                     return doAction(cmd);
-                }
-                else
-                {
+                } else {
                     playerstate = PlayerState.CombatStart;
                     return doAction(cmd);
                 }
-            }
-            else
+            } else
                 return false;
         }
 
-        public Boolean doAction(Command cmd)
-        {
+        public Boolean doAction(Command cmd) {
             String s = cmd.returnArgs();
-            switch(cmd.name)
-            {
+            switch (cmd.name) {
                 case CommandType.ATTACK: //Attack will specify which monster in the list to attack for now
                     int attack = Int32.Parse(s);
-                    player.Attack(this, player.location.monsters[attack]); 
+                    player.Attack(this, player.location.monsters[attack]);
                     return routineAfterAttack();
                 case CommandType.FLEE:
                     int flee = Int32.Parse(s);
-                    if(player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
+                    if (player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
                     {
                         playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
                         return true;
-                    }                        
-                    else
-                    {
+                    } else {
                         //What to do if a flee is unsuccesful? for now just attacking like after using an item will do?
-                        if (player.boosted == true)
-                        {
+                        if (player.boosted == true) {
                             playerstate = PlayerState.CombatComittedAndBoosted;
                             player.boosted = true;
                             player.Attack(this, player.location.monsters[0]);
                             return routineAfterAttack();
-                        }
-                        else
-                        {
+                        } else {
                             playerstate = PlayerState.CombatCommitted;
                             player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
                             return routineAfterAttack();
                         }
                     }
                 case CommandType.USE:
-                    if(s == "potion")
-                    {
+                    if (s == "potion") {
                         healingPotion.Use(this, player);
                         playerstate = PlayerState.CombatCommitted;
                         player.Attack(this, player.location.monsters[0]);//After using an item it will always try to attack the first monster in the list for now
                         return routineAfterAttack();
-                    }
-                    else if (s == "crystal")
-                    {
+                    } else if (s == "crystal") {
                         crystal.Use(this, player);
                         playerstate = PlayerState.CombatComittedAndBoosted;
                         player.boosted = true;
                         player.Attack(this, player.location.monsters[0]);
                         return routineAfterAttack();
-                    }
-                    else
+                    } else
                         throw new Exception("incorrect item args");
                 default:
                     throw new Exception("incorrect command");
             }
         }
-        
-        public Boolean routineAfterAttack()
-        {
-            if(player.location.monsters.Count <= 0)
-            {
+
+        public Boolean routineAfterAttack() {
+            if (player.location.monsters.Count <= 0) {
                 playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
                 return true;
             }
 
             //player dead??? nothing specifies what happens if the player is dead.
 
-            else if(player.boosted == true)
-            {
+            else if (player.boosted == true) {
                 monsterTurns();
                 playerstate = PlayerState.CombatStartAndBoosted;
                 return false;
-            }
-            else
-            {
+            } else {
                 monsterTurns();
                 playerstate = PlayerState.CombatStart;
                 return false;
             }
         }
 
-        public void monsterTurns()
-        {
-            foreach (Monster m in player.location.monsters)
-            {
+        public void monsterTurns() {
+            foreach (Monster m in player.location.monsters) {
                 if (m.rnd == true)//Dit eerste stuk hoeft niet gecovered, is random
                 {
-                    if (m.decideAttack(this) == 1)
-                    {
+                    if (m.decideAttack(this) == 1) {
                         m.Attack(this, player);
-                    }
-                    else if (m.decideAttack(this) == 0)
-                    {
+                    } else if (m.decideAttack(this) == 0) {
                         int fleeloc = r.Next(0, player.location.neighbors.Count - 1);
                         m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
                     }
-                }
-                else//Dit stuk wel
-                {
-                    if (m.decideAttack(this) == 1)
-                    {
+                } else//Dit stuk wel
+                  {
+                    if (m.decideAttack(this) == 1) {
                         m.Attack(this, player);
-                    }
-                    else if (m.decideAttack(this) == 0)
-                    {
+                    } else if (m.decideAttack(this) == 0) {
                         int fleeloc = r.Next(0, player.location.neighbors.Count - 1);
                         m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
                     }

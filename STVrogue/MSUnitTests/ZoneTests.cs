@@ -31,9 +31,9 @@ namespace MSUnitTests {
             Assert.Fail("Expected exception wasn't thrown");
         }
 
-        
 
-        
+
+
 
         [TestMethod]
         public void CheckStartnodeExists() {
@@ -51,8 +51,7 @@ namespace MSUnitTests {
         }
 
         [TestMethod]
-        public void CheckExitZoneExists()
-        {
+        public void CheckExitZoneExists() {
             Dungeon dungeon = new Dungeon(3, 3);
             Zone exitzone = dungeon.getZones()[2];
             Assert.IsTrue(exitzone.getType() == zoneType.EXITzone);
@@ -60,8 +59,7 @@ namespace MSUnitTests {
         }
 
         [TestMethod]
-        public void TestInbetweenZone()
-        {
+        public void TestInbetweenZone() {
             Dungeon dungeon = new Dungeon(3, 3);
             Assert.IsTrue(dungeon.getZones()[1].getNodes().Count > 0);
         }

@@ -15,7 +15,7 @@ namespace MSUnitTests {
             Player player = game.player;
             player.attackRating = 3;
             player.inCombat = true;
-            Node playerLocation = player.location;          
+            Node playerLocation = player.location;
             Monster monster = new Monster("1");
             monster.HPmax = 10;
             monster.HP = 10;

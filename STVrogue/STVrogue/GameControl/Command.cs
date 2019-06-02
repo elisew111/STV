@@ -1,14 +1,12 @@
 using System;
 using System.Text.RegularExpressions;
-namespace STVrogue.GameControl
-{
+namespace STVrogue.GameControl {
     [Serializable()]
     public enum CommandType { DoNOTHING, MOVE, ATTACK, USE, FLEE }
 
     /** Representing a command. */
     [Serializable()]
-    public class Command
-    {
+    public class Command {
         public CommandType name;
 
         /*
@@ -18,33 +16,28 @@ namespace STVrogue.GameControl
          */
         String[] args;
 
-        public Command(CommandType name, String[] args)
-        {
+        public Command(CommandType name, String[] args) {
             this.name = name;
             this.args = args;
         }
 
-        public override String ToString()
-        {
+        public override String ToString() {
             String o = "" + name + " ";
-            if (args != null && args.Length > 0)
-            {
-                for (int i = 0; i < args.Length; i++)
-                {
+            if (args != null && args.Length > 0) {
+                for (int i = 0; i < args.Length; i++) {
                     o += args[i];
                 }
             }
             return o;
         }
 
-		public String returnArgs()
-		{
-			String s = ToString();
-            		string[] returnString = Regex.Split(s, @"\s+");
-			if (returnString.Length > 1 && returnString[1] != "")
-				return returnString[1];
-			else
-				return "none";
-		}
+        public String returnArgs() {
+            String s = ToString();
+            string[] returnString = Regex.Split(s, @"\s+");
+            if (returnString.Length > 1 && returnString[1] != "")
+                return returnString[1];
+            else
+                return "none";
+        }
     }
 }

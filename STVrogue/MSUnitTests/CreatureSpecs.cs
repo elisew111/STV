@@ -89,7 +89,7 @@ namespace STVrogue.GameLogic {
             // Check if Monster.Flee() returned true and the monster's location was correctly updated.
             return success && monster.location == n;
         }
-        
+
         public Boolean PlayerAttackSpec(Game G, Creature foe) {
             // Initialize variables to work with.
             Monster enemy = foe as Monster;
@@ -146,18 +146,18 @@ namespace STVrogue.GameLogic {
             foreach (Item i in itemsInN) {
                 if (player.bag.Contains(i))
                     itemsInBag = true;
-                else { 
+                else {
                     itemsInBag = false;
                     break;
                 }
             }
             if (itemsInN.Length == 0) {
                 itemsInBag = true;
-            }          
+            }
             // Check if any items have been removed from the node
             bool itemsRemoved = false;
             if (n.items.Count == 0)
-                itemsRemoved = true;          
+                itemsRemoved = true;
             // Check if 'inCombat' was set to true if node 'n' contained a monster.
             bool inCombatSet = false;
             bool containsMonster = false;

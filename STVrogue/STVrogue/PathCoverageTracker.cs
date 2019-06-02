@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace STVrogue
-{
+namespace STVrogue {
     /*
      * A utility class to help you track path-coverage. Use addTargetPath to specify
      * the paths that we want to cover (target paths).
@@ -13,13 +12,12 @@ namespace STVrogue
      *    - Use endPath() to signal the end of the test execution.
      *    - Use printSummary() etc to get information of coverage.
      */
-    public class PathCoverageTracker
-    {
+    public class PathCoverageTracker {
         List<String> testRerquirements = new List<String>();
         List<String> executed = new List<String>();
         String currentPath = null;
 
-        public PathCoverageTracker(){ }
+        public PathCoverageTracker() { }
 
         /*
          * Add a path to cover. Specify it as a string in the format of node-ids separated by ":".
@@ -31,32 +29,25 @@ namespace STVrogue
         public void startPath() { currentPath = ""; }
 
         /* Register that we pass the given node */
-        public void tickNode(String node)
-        {
+        public void tickNode(String node) {
             if (currentPath == "") currentPath += node;
             else currentPath += ":" + node;
         }
 
         /* Signal the end of the current path. It will then be added to the set of executed path. */
-        public void endPath()
-        {
-            foreach (String p in executed)
-            {
+        public void endPath() {
+            foreach (String p in executed) {
                 if (p.Equals(currentPath)) break;
             }
             executed.Add(currentPath);
         }
 
         /* Return the list of covered targets. */
-        public List<String> getCoveredPaths()
-        {
+        public List<String> getCoveredPaths() {
             List<String> covered = new List<String>();
-            foreach (String target in testRerquirements)
-            {
-                foreach (String sigma in executed)
-                {
-                    if (tour(sigma, target))
-                    {
+            foreach (String target in testRerquirements) {
+                foreach (String sigma in executed) {
+                    if (tour(sigma, target)) {
                         covered.Add(target); break;
                     }
                 }
@@ -65,17 +56,13 @@ namespace STVrogue
         }
 
         /* Return the list of still uncovered targets. */
-        public List<String> getUncoveredPaths()
-        {
+        public List<String> getUncoveredPaths() {
             List<String> covered = getCoveredPaths();
             List<String> uncovered = new List<String>();
-            foreach (String p in testRerquirements)
-            {
+            foreach (String p in testRerquirements) {
                 Boolean cov = false;
-                foreach (String pcov in covered)
-                {
-                    if (p.Equals(pcov))
-                    {
+                foreach (String pcov in covered) {
+                    if (p.Equals(pcov)) {
                         cov = true; break;
                     }
                 }
@@ -85,42 +72,35 @@ namespace STVrogue
         }
 
         /* Return the list of paths to cover. */
-        public List<String> getTestRerquirements()
-        {
+        public List<String> getTestRerquirements() {
             return testRerquirements;
         }
 
         /* Return the current set of test paths. */
-        public List<String> getTestPaths()
-        {
+        public List<String> getTestPaths() {
             return executed;
         }
 
         /* Check if path1 tours path2 */
-        static public Boolean tour(String path1, String path2)
-        {
+        static public Boolean tour(String path1, String path2) {
             return path1.Contains(path2);
         }
 
-        public String printCovered()
-        {
+        public String printCovered() {
             StringBuilder sb = new StringBuilder();
             List<String> covered = getCoveredPaths();
-            for (int k = 0; k < covered.Count; k++)
-            {
-               sb.Append(covered[k]);
-               sb.Append("\n");
+            for (int k = 0; k < covered.Count; k++) {
+                sb.Append(covered[k]);
+                sb.Append("\n");
             }
             sb.Append("Covered: " + covered.Count + " paths.");
             return sb.ToString();
         }
 
-        public String printUncovered()
-        {
+        public String printUncovered() {
             StringBuilder sb = new StringBuilder();
             List<String> uncovered = getUncoveredPaths();
-            for (int k = 0; k < uncovered.Count; k++)
-            {
+            for (int k = 0; k < uncovered.Count; k++) {
                 sb.Append(uncovered[k]);
                 sb.Append("\n");
             }
@@ -129,26 +109,22 @@ namespace STVrogue
         }
 
         /* Printing a coverage report. */
-        public String printSummary()
-        {
-            int N = testRerquirements.Count ;
-            int n = getCoveredPaths().Count ;
+        public String printSummary() {
+            int N = testRerquirements.Count;
+            int n = getCoveredPaths().Count;
             String z = "** The tests cover " + n + " targets out of " + N;
             if (n >= N) z += ". Well done!";
-            else
-            {
+            else {
                 z += "\n** Covered:";
-                    foreach (String s in getCoveredPaths())
-                    {
+                foreach (String s in getCoveredPaths()) {
                     z += "\n     " + s;
-                    }
+                }
                 z += "\n** Uncovered:";
-                    foreach (String s in getUncoveredPaths())
-                    {
+                foreach (String s in getUncoveredPaths()) {
                     z += "\n     " + s;
-                    }
+                }
             }
-            return z ;
+            return z;
         }
 
 

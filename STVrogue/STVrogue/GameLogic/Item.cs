@@ -16,10 +16,9 @@ namespace STVrogue.GameLogic {
     public class HealingPotion : Item {
 
         /* HealingPotion can heal 5 HP*/
-        public static int HPvalue = 5; //static gemaakt voor seedmonsteranditems in dungeon
+        public static int HPvalue = 5;
 
         public HealingPotion(String ID, int heal) : base(ID) {
-            //this.HPvalue = heal;
             HPvalue = heal;
         }
 
@@ -27,14 +26,10 @@ namespace STVrogue.GameLogic {
          * Using a healing potion heals the player (but not beyond his HPmax).
          */
         public override void Use(Game G, Player player) {
-            if(hasHealingPotion(player)) {
-                //player.HP = Math.Min(player.HPmax, player.HP + this.HPvalue);
+            if (hasHealingPotion(player)) {
                 player.HP = Math.Min(player.HPmax, player.HP + HPvalue);
                 deleteHealingPotion(player);
-                /*
-                 * Remove potion from game's item list
-                 */
-            } 
+            }
         }
 
         public bool hasHealingPotion(Player player) {
@@ -73,19 +68,15 @@ namespace STVrogue.GameLogic {
          * Using a crystal while not in combat has no effect.
          */
         public override void Use(Game G, Player player) {
-            if(hasCrystal(player)) {
+            if (hasCrystal(player)) {
                 deleteCrystal(player);
-                if(player.inCombat)
+                if (player.inCombat)
                     player.boosted = true;
-                /*
-                 * Remove crystal from game's item list
-                 */
             }
         }
 
         public bool hasCrystal(Player player) {
-            foreach (Item item in player.bag)
-            {
+            foreach (Item item in player.bag) {
                 if (item is Crystal)
                     return true;
             }

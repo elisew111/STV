@@ -29,7 +29,7 @@ namespace STVrogue.GameLogic {
             Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
             seedMonstersAndItems(startZone);
-            
+
             // adding in-between zones:
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++) {
@@ -47,7 +47,7 @@ namespace STVrogue.GameLogic {
             seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
 
-            
+
         }
 
         public static int randomnr(int min, int max) {
@@ -132,7 +132,7 @@ namespace STVrogue.GameLogic {
                 startnode.capacity = 0;
                 nodes.Add(startnode);
                 Dungeon.startnode = startnode;
-                
+
                 for (int i = 2; i < numberOfnodes; i++) {
                     addCommonNode();
                 }
@@ -156,7 +156,7 @@ namespace STVrogue.GameLogic {
                 Dungeon.exitnode = exitnode;
             }
 
-            
+
 
 
 
@@ -164,9 +164,9 @@ namespace STVrogue.GameLogic {
 
             // When compiled in the Debug-build, check the following conditions:
             Debug.Assert(nodes.Count >= 2);
-            Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true) ;
-            Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true) ;
-            Debug.Assert(HelperPredicates.isConnected(this)) ;
+            Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true);
+            Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true);
+            Debug.Assert(HelperPredicates.isConnected(this));
         }
 
         public void connectRandom(Node node) //connect met een random node die al in de nodes lijst staat

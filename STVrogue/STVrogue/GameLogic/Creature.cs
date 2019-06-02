@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace STVrogue.GameLogic {
@@ -53,8 +53,7 @@ namespace STVrogue.GameLogic {
             rnd = true;
         }
 
-        public Monster(String ID, int nr) : base(ID)
-        {
+        public Monster(String ID, int nr) : base(ID) {
             this.nr = nr;
             HP = HPmax;
             name = "orc";
@@ -142,15 +141,11 @@ namespace STVrogue.GameLogic {
             return true;
         }
 
-        public int decideAttack(Game g)
-        { 
-            if(rnd == true)
-            {
+        public int decideAttack(Game g) {
+            if (rnd == true) {
                 int roll = g.r.Next(0, 1);
                 return roll;
-            }
-            else
-            {
+            } else {
                 return nr;
             }
         }
@@ -183,11 +178,11 @@ namespace STVrogue.GameLogic {
             // whether the player is boosted.
             if (player.boosted)
                 foe.HP -= (2 * player.attackRating);
-            else 
-                foe.HP -= player.attackRating;        
+            else
+                foe.HP -= player.attackRating;
             // Add to kill count if player defeats foe and delete foe
             // from game's and node's monster list.
-            if (foe.HP <= 0) { 
+            if (foe.HP <= 0) {
                 player.KP++;
                 G.monsters.Remove(enemy);
                 player.location.monsters.Remove(enemy);
@@ -211,10 +206,10 @@ namespace STVrogue.GameLogic {
             // items.
             List<Item> nodeItems = n.items;
             if (nodeItems.Count != 0) {
-                foreach(Item item in nodeItems)
+                foreach (Item item in nodeItems)
                     player.bag.Add(item);
                 nodeItems.Clear();
-            } 
+            }
             // Set 'inCombat' to true if new node contains a monster.
             List<Creature> nodeMonsters = n.monsters;
             if (nodeMonsters.Count != 0)

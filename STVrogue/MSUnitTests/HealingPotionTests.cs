@@ -1,15 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using STVrogue.GameLogic;
-using System;
-using System.Collections.Generic;
 
 namespace MSUnitTests {
     [TestClass]
     public class HealingPotionTests {
 
         [TestMethod]
-        public void TestHasHealingPotionTrue()
-        {
+        public void TestHasHealingPotionTrue() {
             Player player = new Player("player");
             HealingPotion healingPotion = new HealingPotion("potion", 5);
             player.bag.Add(healingPotion);
@@ -17,28 +14,25 @@ namespace MSUnitTests {
         }
 
         [TestMethod]
-        public void TestHasHealingPotionFalse()
-        {
+        public void TestHasHealingPotionFalse() {
             Player player = new Player("player");
             HealingPotion healingPotion = new HealingPotion("potion", 5);
             Assert.IsFalse(healingPotion.hasHealingPotion(player));
         }
 
         [TestMethod]
-        public void TestUseNotMaxHP()
-        {
+        public void TestUseNotMaxHP() {
             Game game = new Game();
             Player player = new Player("player");
             player.HP = 2;
             HealingPotion healingPotion = new HealingPotion("potion", 5);
             player.bag.Add(healingPotion);
             healingPotion.Use(game, player);
-            Assert.IsTrue(!healingPotion.hasHealingPotion(player) && player.HP == 7);            
+            Assert.IsTrue(!healingPotion.hasHealingPotion(player) && player.HP == 7);
         }
 
         [TestMethod]
-        public void TestUseNotMaxHP2()
-        {
+        public void TestUseNotMaxHP2() {
             Game game = new Game();
             Player player = new Player("player");
             player.HP = 7;
@@ -49,8 +43,7 @@ namespace MSUnitTests {
         }
 
         [TestMethod]
-        public void TestUseMaxHP()
-        {
+        public void TestUseMaxHP() {
             Game game = new Game();
             Player player = new Player("player");
             player.HP = player.HPmax;
@@ -62,8 +55,7 @@ namespace MSUnitTests {
         }
 
         [TestMethod]
-        public void TestDelete()
-        {
+        public void TestDelete() {
             Player player = new Player("player");
             HealingPotion healingPotion = new HealingPotion("potion", 5);
             Crystal crystal = new Crystal("crystal");
@@ -73,7 +65,7 @@ namespace MSUnitTests {
             Assert.IsTrue(!healingPotion.hasHealingPotion(player));
         }
 
-       
+
 
     }
 }

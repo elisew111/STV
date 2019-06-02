@@ -1,16 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using STVrogue.GameLogic;
-using System;
-using System.Collections.Generic;
 
-namespace MSUnitTests
-{
+namespace MSUnitTests {
     [TestClass]
-    public class CrystalTests
-    {
+    public class CrystalTests {
         [TestMethod]
-        public void TestHasCrystalTrue()
-        {
+        public void TestHasCrystalTrue() {
             Player player = new Player("player");
             Crystal crystal = new Crystal("crystal");
             player.bag.Add(crystal);
@@ -18,16 +13,14 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void TestHasCrystalFalse()
-        {
+        public void TestHasCrystalFalse() {
             Player player = new Player("player");
             Crystal crystal = new Crystal("crystal");
             Assert.IsFalse(crystal.hasCrystal(player));
         }
 
         [TestMethod]
-        public void TestUseInCombat()
-        {
+        public void TestUseInCombat() {
             Game game = new Game();
             Player player = new Player("player");
             player.inCombat = true;
@@ -38,8 +31,7 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void TestUseOutsideCombat()
-        {
+        public void TestUseOutsideCombat() {
             Game game = new Game();
             Player player = new Player("player");
             player.inCombat = false;
@@ -50,11 +42,10 @@ namespace MSUnitTests
         }
 
         [TestMethod]
-        public void TestDelete()
-        {
+        public void TestDelete() {
             Player player = new Player("player");
             Crystal crystal = new Crystal("crystal1");
-            HealingPotion healing = new HealingPotion("healing",10);
+            HealingPotion healing = new HealingPotion("healing", 10);
             player.bag.Add(healing);
             player.bag.Add(crystal);
             crystal.deleteCrystal(player);
