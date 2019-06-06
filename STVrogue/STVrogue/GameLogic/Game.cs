@@ -44,29 +44,111 @@ namespace STVrogue.GameLogic {
          */
         public Game(int level, int capacityMultiplier) {
             dungeon = new Dungeon(level, capacityMultiplier);
-            player = new Player("546553453467");
+            player = new Player(generateID());
+        }
+
+        public string generateID() {
+            return Guid.NewGuid().ToString("N");
         }
 
         /* return all nodes in the game. */
-        public List<Node> nodes() { throw new NotImplementedException(); }   // Iteration-2
-        public List<Node> bridges() { throw new NotImplementedException(); } // Iteration-2
-        public List<Zone> zones() { return dungeon.getZones(); }
+        public List<Node> nodes() {
+            List<Node> gameNodes = new List<Node>();
+            List<Zone> gameZones = this.zones();
+            foreach (Zone zone in gameZones) {
+                List<Node> zoneNodes = zone.getNodes();
+                foreach (Node node in zoneNodes) {
+                    NodeType nodeType = node.getType();
+                    if (nodeType is NodeType.STARTnode || nodeType is NodeType.EXITnode || nodeType is NodeType.COMMONnode)
+                        gameNodes.Add(node);
+                }
+            }
+            return gameNodes;
+        }
 
+        /* return all bridges in the game. */
+        public List<Node> bridges() {
+            List<Node> gameNodes = new List<Node>();
+            List<Zone> gameZones = this.zones();
+            foreach (Zone zone in gameZones) {
+                List<Node> zoneNodes = zone.getNodes();
+                foreach (Node node in zoneNodes) {
+                    NodeType nodeType = node.getType();
+                    if (nodeType is NodeType.BRIDGE)
+                        gameNodes.Add(node);
+                }
+            }
+            return gameNodes;
+        }
+
+        /* return all zones in the game. */
+        public List<Zone> zones() {
+            return dungeon.getZones();
+        }
 
         /* 
          * Return the monster with the given id, if it still lives in the game. 
          * If the monster does not exist anymore, null is returned.
          */
-        public Monster monster(String id) { throw new NotImplementedException(); } // Iteration-2
-        public Node node(String id) { throw new NotImplementedException(); }   // Iteration-2
-        public Node bridge(String id) { throw new NotImplementedException(); } // Iteration-2
-        public Zone zone(String id) { throw new NotImplementedException(); } // Iteration-2
+        public Monster monster(String id) {
+            foreach (Monster monster in this.monsters)
+                if (monster.ID == id)
+                    return monster;
+            return null;
+        }
+
+        /* 
+         * Return the node with the given id. If the node does not exist, null is returned.
+         */
+        public Node node(String id) {
+            List<Node> gameNodes = this.nodes();
+            foreach (Node node in gameNodes)
+                if (node.ID == id)
+                    return node;
+            return null;
+        }
+
+        /* 
+        * Return the bridge with the given id. If the bridge does not exist, null is returned.
+        */
+        public Node bridge(String id) {
+            List<Node> gameBridges = this.bridges();
+            foreach (Node bridge in gameBridges)
+                if (bridge.ID == id)
+                    return bridge;
+            return null;
+        }
+
+        /* 
+        * Return the zone with the given id. If the zone does not exist, null is returned.
+        */
+        public Zone zone(String id) {
+            List<Zone> gameZones = this.zones();
+            foreach (Zone zone in gameZones)
+                if (zone.ID == id)
+                    return zone;
+            return null;
+        }
 
         /* Check if a monster with the given id still lives in the game. */
-        public Boolean monsterExists(String id) { return monster(id) != null; }
-        public Boolean nodeExists(String id) { return node(id) != null; }
-        public Boolean bridgeExists(String id) { return bridge(id) != null; }
-        public Boolean zoneExists(String id) { return zone(id) != null; }
+        public Boolean monsterExists(String id) {
+            return monster(id) != null;
+        }
+
+        /* Check if a node with the given id exists in the game. */
+        public Boolean nodeExists(String id) {
+            return node(id) != null;
+        }
+
+        /* Check if a bridge with the given id exists in the game. */
+        public Boolean bridgeExists(String id) {
+            return bridge(id) != null;
+        }
+
+        /* Check if a zone with the given id exists in the game. */
+        public Boolean zoneExists(String id) {
+            return zone(id) != null;
+        }
 
         /*
          * Update the game by a single turn, carried out by the creature C (which can

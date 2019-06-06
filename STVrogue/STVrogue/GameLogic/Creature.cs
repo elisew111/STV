@@ -99,7 +99,9 @@ namespace STVrogue.GameLogic {
             if (amountMonstersTargetNode == targetNodeCapacity)
                 return false;
             // Update monster's location and return true.
+            this.location.monsters.Remove(this);
             this.location = n;
+            this.location.monsters.Add(this);
             return true;
         }
 
@@ -137,7 +139,9 @@ namespace STVrogue.GameLogic {
             if (amountMonstersTargetNode == targetNodeCapacity)
                 return false;
             // Update monster's location and return true.
+            this.location.monsters.Remove(this);
             this.location = n;
+            this.location.monsters.Add(this);
             return true;
         }
 

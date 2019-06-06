@@ -26,7 +26,7 @@ namespace STVrogue.GameLogic {
             capacityMultiplier = capacity;
             // creating the start zone:
             int numOfNodesInstartZone = randomnr(2, maxnodes); // random 2-5 nodes
-            Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
+            Zone startZone = new Zone(generateID(), zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
             seedMonstersAndItems(startZone);
 
@@ -34,7 +34,7 @@ namespace STVrogue.GameLogic {
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++) {
                 int numOfNodes = randomnr(2, maxnodes); //2-5 nodes
-                Zone zone = new Zone("Z" + z, zoneType.InBETWEENzone, 1, numOfNodes);
+                Zone zone = new Zone(generateID(), zoneType.InBETWEENzone, 1, numOfNodes);
                 zones.Add(zone);
                 seedMonstersAndItems(zone);
                 connectWithBridge(previousZone, zone);
@@ -42,12 +42,14 @@ namespace STVrogue.GameLogic {
             }
             // creating the exit zone:
             int numOfNodesInExitZone = randomnr(2, maxnodes); //2-5 nodes
-            Zone exitZone = new Zone("Z" + numberOfZones, zoneType.EXITzone, 1, numOfNodesInExitZone);
+            Zone exitZone = new Zone(generateID(), zoneType.EXITzone, 1, numOfNodesInExitZone);
             zones.Add(exitZone);
             seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
+        }
 
-
+        public static string generateID() {
+            return Guid.NewGuid().ToString("N");
         }
 
         public static int randomnr(int min, int max) {
@@ -61,15 +63,13 @@ namespace STVrogue.GameLogic {
             foreach (Node node in zone.getNodes()) {
                 int x = randomnr(Math.Min(1, node.capacity), node.capacity);
                 for (int i = 0; i < x; i++) {
-                    node.monsters.Add(new Monster("M" + node.ID));
+                    node.monsters.Add(new Monster(generateID()));
                 }
-                if (alt % 2 == 0) { node.items.Add(new Crystal("C" + node.ID)); }
-                if (alt % 3 == 0) { node.items.Add(new HealingPotion("H" + node.ID, HealingPotion.HPvalue)); }
-                alt += 1;
+                if (alt % 2 == 0) { node.items.Add(new Crystal(generateID())); }
+                if (alt % 3 == 0) { node.items.Add(new HealingPotion(generateID(), HealingPotion.HPvalue)); }
+                alt++;
             }
-
         }
-
 
         /* Link zone1 to zone2 through a bridge. The bridge should be part of zone1 (or, you can
          * alternatively convert a node in zone1 to become a bridge. Make sure that all paths from
@@ -83,8 +83,6 @@ namespace STVrogue.GameLogic {
                     nodes2[0].connect(node1);
                 }
             }
-
-
         }
     }
 
@@ -110,7 +108,6 @@ namespace STVrogue.GameLogic {
         public zoneType getType() { return type; }
         public int getLevel() { return level; }
 
-
         public const string LevelTooLow = "Zone level should be at least 1";
 
         /* Create a zone of the specified type and number of nodes. */
@@ -119,16 +116,10 @@ namespace STVrogue.GameLogic {
             type = ty;
             level = zoneLevel;
 
-
-            // TODO .. the implementation here
-
-
-
-
             if (ty == zoneType.STARTzone) //eerste node van startzone is startnode
             {
                 level = 1;
-                Node startnode = new Node(NodeType.STARTnode, "SN");
+                Node startnode = new Node(NodeType.STARTnode, generateID());
                 startnode.capacity = 0;
                 nodes.Add(startnode);
                 Dungeon.startnode = startnode;
@@ -149,24 +140,22 @@ namespace STVrogue.GameLogic {
                 for (int i = 1; i < numberOfnodes; i++) {
                     addCommonNode();
                 }
-                Node exitnode = new Node(NodeType.EXITnode, "EN");
+                Node exitnode = new Node(NodeType.EXITnode, generateID());
                 exitnode.capacity = 0;
                 connectRandom(exitnode);
                 nodes.Add(exitnode);
                 Dungeon.exitnode = exitnode;
             }
 
-
-
-
-
-            //if (true) throw new NotImplementedException();
-
             // When compiled in the Debug-build, check the following conditions:
             Debug.Assert(nodes.Count >= 2);
             Debug.Assert(ty == zoneType.STARTzone ? HelperPredicates.hasOneStartZone(this) : true);
             Debug.Assert(ty == zoneType.EXITzone ? HelperPredicates.hasOneExitZone(this) : true);
             Debug.Assert(HelperPredicates.isConnected(this));
+        }
+
+        public string generateID() {
+            return Guid.NewGuid().ToString("N");
         }
 
         public void connectRandom(Node node) //connect met een random node die al in de nodes lijst staat
@@ -176,7 +165,7 @@ namespace STVrogue.GameLogic {
         }
 
         public void addCommonNode() {
-            Node commonnode = new Node(NodeType.COMMONnode, "N");
+            Node commonnode = new Node(NodeType.COMMONnode, generateID());
             if (nodes.Count > 0) {
                 connectRandom(commonnode); //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
                 commonnode.capacity = Dungeon.capacityMultiplier;
@@ -185,7 +174,7 @@ namespace STVrogue.GameLogic {
         }
 
         public void makeBridge() {
-            Node bridge = new Node(NodeType.BRIDGE, "B");
+            Node bridge = new Node(NodeType.BRIDGE, generateID());
             connectRandom(bridge);
             bridge.capacity = Dungeon.capacityMultiplier * level; //niet super sure of dit keer het level moet
             nodes.Add(bridge);
@@ -211,8 +200,6 @@ namespace STVrogue.GameLogic {
         public List<Node> neighbors = new List<Node>();
         public List<Creature> monsters = new List<Creature>();
         public List<Item> items = new List<Item>();
-
-
 
         /** the zone to which this node belongs to: */
         public Zone zone;
