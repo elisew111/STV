@@ -47,7 +47,6 @@ namespace STVrogue.GameLogic {
             Zone exitZone = new Zone(generateID(), zoneType.EXITzone, numberOfZones, numOfNodesInExitZone);
             zones.Add(exitZone);
             connectWithBridge(previousZone, exitZone);
-            Console.WriteLine(amountNodes);
             seedMonstersAndItems();
         }
 
