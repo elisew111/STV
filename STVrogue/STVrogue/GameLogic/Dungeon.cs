@@ -9,7 +9,8 @@ namespace STVrogue.GameLogic {
         public static Node startnode;
         public static Node exitnode = null;
         public static int capacityMultiplier;
-        int maxnodes = 10;
+        public static Random pseudoRandom = new Random(65234875);
+        int amountNodes;
 
         public List<Zone> getZones() { return zones; }
         public Node getStartnode() { return startnode; }
@@ -25,49 +26,81 @@ namespace STVrogue.GameLogic {
             if (numberOfZones < 3) throw new ArgumentException(NotEnoughZones);
             capacityMultiplier = capacity;
             // creating the start zone:
-            int numOfNodesInstartZone = randomnr(2, maxnodes); // random 2-5 nodes
+            int numOfNodesInstartZone = pseudoRandom.Next(3, 5);
+            amountNodes += numOfNodesInstartZone;
             Zone startZone = new Zone(generateID(), zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
-            seedMonstersAndItems(startZone);
 
             // adding in-between zones:
             Zone previousZone = startZone;
             for (int z = 2; z < numberOfZones; z++) {
-                int numOfNodes = randomnr(2, maxnodes); //2-5 nodes
-                Zone zone = new Zone(generateID(), zoneType.InBETWEENzone, 1, numOfNodes);
+                int numOfNodes = pseudoRandom.Next(4, 6);
+                amountNodes += numOfNodes;
+                Zone zone = new Zone(generateID(), zoneType.InBETWEENzone, z, numOfNodes);
                 zones.Add(zone);
-                seedMonstersAndItems(zone);
                 connectWithBridge(previousZone, zone);
                 previousZone = zone;
             }
             // creating the exit zone:
-            int numOfNodesInExitZone = randomnr(2, maxnodes); //2-5 nodes
-            Zone exitZone = new Zone(generateID(), zoneType.EXITzone, 1, numOfNodesInExitZone);
+            int numOfNodesInExitZone = pseudoRandom.Next(3, 5);
+            amountNodes += numOfNodesInExitZone;
+            Zone exitZone = new Zone(generateID(), zoneType.EXITzone, numberOfZones, numOfNodesInExitZone);
             zones.Add(exitZone);
-            seedMonstersAndItems(exitZone);
             connectWithBridge(previousZone, exitZone);
+            Console.WriteLine(amountNodes);
+            seedMonstersAndItems();
         }
 
-        public static string generateID() {
+        public string generateID() {
             return Guid.NewGuid().ToString("N");
         }
 
-        public static int randomnr(int min, int max) {
-            Random random = new Random();
-            return random.Next(min, max);
+        /* return all nodes in the dungeon. */
+        public List<Node> nodes() {
+            List<Node> dungeonNodes = new List<Node>();
+            List<Zone> dungeonZones = this.getZones();
+            foreach (Zone zone in dungeonZones) {
+                List<Node> zoneNodes = zone.getNodes();
+                foreach (Node node in zoneNodes) {
+                    dungeonNodes.Add(node);
+                }
+            }
+            return dungeonNodes;
         }
 
         /* Drop monsters and items into the dungeon. */
-        public static void seedMonstersAndItems(Zone zone) {
-            int alt = 0;
-            foreach (Node node in zone.getNodes()) {
-                int x = randomnr(Math.Min(1, node.capacity), node.capacity);
-                for (int i = 0; i < x; i++) {
-                    node.monsters.Add(new Monster(generateID()));
+        public void seedMonstersAndItems() {
+            int amountMonsters = (int)Math.Round((double)amountNodes / 5);
+            int amountHealingPotions = (int)Math.Round((double)amountNodes / 8);
+            int amountCrystals = (int)Math.Round((double)amountNodes / 8);
+            Node startNode = this.getStartnode();
+            Node exitNode = this.getExitnode();
+            List<Node> dungeonNodes = this.nodes();
+            dungeonNodes.Remove(startNode);
+            amountNodes--;
+            dungeonNodes.Remove(exitNode);
+            amountNodes--;
+            for (int i = 0; i < amountMonsters; i++) {
+                Monster monster = new Monster(generateID());
+                int monsterLocation = pseudoRandom.Next(0, amountNodes - 1);
+                Node selectedNode = dungeonNodes[monsterLocation];
+                selectedNode.monsters.Add(monster);              
+                if (selectedNode.capacity == selectedNode.monsters.Count) {
+                    dungeonNodes.Remove(selectedNode);
+                    amountNodes--;
                 }
-                if (alt % 2 == 0) { node.items.Add(new Crystal(generateID())); }
-                if (alt % 3 == 0) { node.items.Add(new HealingPotion(generateID(), HealingPotion.HPvalue)); }
-                alt++;
+            }
+            for (int i = 0; i < amountHealingPotions; i++) {
+                HealingPotion healingPotion = new HealingPotion(generateID(), HealingPotion.HPvalue);
+                int healingPotionLocation = pseudoRandom.Next(0, amountNodes - 1);
+                Node selectedNode = dungeonNodes[healingPotionLocation];
+                selectedNode.items.Add(healingPotion);
+            }
+            for (int i = 0; i < amountCrystals; i++) {
+                Crystal crystal = new Crystal(generateID());
+                int crystalLocation = pseudoRandom.Next(0, amountNodes - 1);
+                Node selectedNode = dungeonNodes[crystalLocation];
+                selectedNode.items.Add(crystal);
             }
         }
 
@@ -108,6 +141,7 @@ namespace STVrogue.GameLogic {
         public zoneType getType() { return type; }
         public int getLevel() { return level; }
 
+
         public const string LevelTooLow = "Zone level should be at least 1";
 
         /* Create a zone of the specified type and number of nodes. */
@@ -127,15 +161,16 @@ namespace STVrogue.GameLogic {
                 for (int i = 2; i < numberOfnodes; i++) {
                     addCommonNode();
                 }
-
                 makeBridge();
             }
+
             if (ty == zoneType.InBETWEENzone) {
                 for (int i = 1; i < numberOfnodes; i++) {
                     addCommonNode();
                 }
                 makeBridge();
             }
+
             if (ty == zoneType.EXITzone) {
                 for (int i = 1; i < numberOfnodes; i++) {
                     addCommonNode();
@@ -160,23 +195,22 @@ namespace STVrogue.GameLogic {
 
         public void connectRandom(Node node) //connect met een random node die al in de nodes lijst staat
         {
-            int index = Dungeon.randomnr(0, nodes.Count);
+            int index = Dungeon.pseudoRandom.Next(0, nodes.Count);
             node.connect(nodes[index]);
         }
 
         public void addCommonNode() {
             Node commonnode = new Node(NodeType.COMMONnode, generateID());
-            if (nodes.Count > 0) {
+            commonnode.capacity = Dungeon.capacityMultiplier;
+            if (nodes.Count > 0)
                 connectRandom(commonnode); //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
-                commonnode.capacity = Dungeon.capacityMultiplier;
-            }
             nodes.Add(commonnode);
         }
 
         public void makeBridge() {
             Node bridge = new Node(NodeType.BRIDGE, generateID());
             connectRandom(bridge);
-            bridge.capacity = Dungeon.capacityMultiplier * level; //niet super sure of dit keer het level moet
+            bridge.capacity = Dungeon.capacityMultiplier * level;
             nodes.Add(bridge);
         }
     }

@@ -30,8 +30,6 @@ namespace STVrogue.GameLogic {
         /* The creature that currently has the turn. */
         public Creature whoHasTheTurn;
 
-
-
         public PlayerState playerstate;
 
         public int z_; // no real use except for debug purposes
