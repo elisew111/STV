@@ -154,6 +154,7 @@ namespace STVrogue.GameLogic {
                 level = 1;
                 Node startnode = new Node(NodeType.STARTnode, generateID());
                 startnode.capacity = 0;
+                startnode.zone = this;
                 nodes.Add(startnode);
                 Dungeon.startnode = startnode;
 
@@ -176,6 +177,7 @@ namespace STVrogue.GameLogic {
                 }
                 Node exitnode = new Node(NodeType.EXITnode, generateID());
                 exitnode.capacity = 0;
+                exitnode.zone = this;
                 connectRandom(exitnode);
                 nodes.Add(exitnode);
                 Dungeon.exitnode = exitnode;
@@ -201,6 +203,7 @@ namespace STVrogue.GameLogic {
         public void addCommonNode() {
             Node commonnode = new Node(NodeType.COMMONnode, generateID());
             commonnode.capacity = Dungeon.capacityMultiplier;
+            commonnode.zone = this;
             if (nodes.Count > 0)
                 connectRandom(commonnode); //eerste node kan niet verbinden aan previousnode als die nog niet bestaat
             nodes.Add(commonnode);
@@ -210,6 +213,7 @@ namespace STVrogue.GameLogic {
             Node bridge = new Node(NodeType.BRIDGE, generateID());
             connectRandom(bridge);
             bridge.capacity = Dungeon.capacityMultiplier * level;
+            bridge.zone = this;
             nodes.Add(bridge);
         }
     }
