@@ -81,17 +81,7 @@ namespace STVrogue.GameLogic {
             if (!possibleMoves.Contains(currentLocation))
                 return false;
             // Node monster wants to move to is not in the same zone.
-            string currentZoneID = "";
-            string targetZoneID = "";
-            List<Zone> gameZones = G.dungeon.getZones();
-            foreach (Zone zone in gameZones) {
-                List<Node> zoneNodes = zone.getNodes();
-                if (zoneNodes.Contains(this.location))
-                    currentZoneID = zone.ID;
-                if (zoneNodes.Contains(n))
-                    targetZoneID = zone.ID;
-            }
-            if (currentZoneID != targetZoneID)
+            if (currentLocation.zone != n.zone)
                 return false;
             // Node monster wants to move to is already at capacity.
             int targetNodeCapacity = n.getCapacity();
@@ -117,17 +107,7 @@ namespace STVrogue.GameLogic {
             if (!possibleMoves.Contains(currentLocation))
                 return false;
             // Node monster wants to move to is not in the same zone.
-            string currentZoneID = "";
-            string targetZoneID = "";
-            List<Zone> gameZones = G.dungeon.getZones();
-            foreach (Zone zone in gameZones) {
-                List<Node> zoneNodes = zone.getNodes();
-                if (zoneNodes.Contains(this.location))
-                    currentZoneID = zone.ID;
-                if (zoneNodes.Contains(n))
-                    targetZoneID = zone.ID;
-            }
-            if (currentZoneID != targetZoneID)
+            if (currentLocation.zone != n.zone)
                 return false;
             // Node monster wants to move to already contains the player.
             Node playerLocation = G.player.location;

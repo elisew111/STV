@@ -49,7 +49,7 @@ namespace STVrogue.GameLogic {
                 return success == false;
             // Check if Monster.Move() returned false when the zone the monster wanted to move to 
             // was not the same zone as the monster's original zone.
-            if (!(currentZone == monster.location.zone))
+            if (currentZone != n.zone)
                 return success == false;
             // Check if Monster.Move() returned false when the node the monster wanted to move to
             // was already at capacity.
@@ -76,7 +76,7 @@ namespace STVrogue.GameLogic {
                 return success == false;
             // Check if Monster.Flee() returned false when the zone the monster wanted to move to 
             // was not the same zone as the monster's original zone.
-            if (!(currentZone == monster.location.zone))
+            if (currentZone != n.zone)
                 return success == false;
             // Check if Monster.Flee() returned false when the node the monster wanted to move to 
             // was already occupied by the player.
