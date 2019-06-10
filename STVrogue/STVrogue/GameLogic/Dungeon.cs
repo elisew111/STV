@@ -9,7 +9,7 @@ namespace STVrogue.GameLogic {
         public static Node startnode;
         public static Node exitnode = null;
         public static int capacityMultiplier;
-        public static Random pseudoRandom = new Random(65234875);
+        readonly int seed = 100100;
         int amountNodes;
 
         public List<Zone> getZones() { return zones; }
@@ -23,6 +23,7 @@ namespace STVrogue.GameLogic {
          * the start and exit zones. The zones should be linked linearly to each other with bridges.
          */
         public Dungeon(int numberOfZones, int capacity) {
+            Random pseudoRandom = new Random(seed);
             if (numberOfZones < 3) throw new ArgumentException(NotEnoughZones);
             capacityMultiplier = capacity;
             // creating the start zone:
@@ -69,6 +70,7 @@ namespace STVrogue.GameLogic {
 
         /* Drop monsters and items into the dungeon. */
         public void seedMonstersAndItems() {
+            Random pseudoRandom = new Random(seed);
             int amountMonsters = (int)Math.Round((double)amountNodes / 5);
             int amountHealingPotions = (int)Math.Round((double)amountNodes / 8);
             int amountCrystals = (int)Math.Round((double)amountNodes / 8);
@@ -83,7 +85,9 @@ namespace STVrogue.GameLogic {
                 Monster monster = new Monster(generateID());
                 int monsterLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[monsterLocation];
-                selectedNode.monsters.Add(monster);              
+                monster.location = selectedNode;
+                selectedNode.monsters.Add(monster);
+                Game.monsters.Add(monster);
                 if (selectedNode.capacity == selectedNode.monsters.Count) {
                     dungeonNodes.Remove(selectedNode);
                     amountNodes--;
@@ -94,12 +98,14 @@ namespace STVrogue.GameLogic {
                 int healingPotionLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[healingPotionLocation];
                 selectedNode.items.Add(healingPotion);
+                Game.items.Add(healingPotion);
             }
             for (int i = 0; i < amountCrystals; i++) {
                 Crystal crystal = new Crystal(generateID());
                 int crystalLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[crystalLocation];
                 selectedNode.items.Add(crystal);
+                Game.items.Add(crystal);
             }
         }
 
@@ -135,6 +141,7 @@ namespace STVrogue.GameLogic {
         List<Node> nodes = new List<Node>();
         zoneType type;
         int level;
+        readonly int seed = 100100;
 
         public List<Node> getNodes() { return nodes; }
         public zoneType getType() { return type; }
@@ -194,9 +201,10 @@ namespace STVrogue.GameLogic {
             return Guid.NewGuid().ToString("N");
         }
 
-        public void connectRandom(Node node) //connect met een random node die al in de nodes lijst staat
-        {
-            int index = Dungeon.pseudoRandom.Next(0, nodes.Count);
+        //connect met een random node die al in de nodes lijst staat
+        public void connectRandom(Node node) {
+            Random pseudoRandom = new Random(seed);
+            int index = pseudoRandom.Next(0, nodes.Count);
             node.connect(nodes[index]);
         }
 

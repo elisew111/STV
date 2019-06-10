@@ -17,9 +17,9 @@ namespace STVrogue.GameLogic {
         public Random r = new Random();
         public Player player;
         /* all monsters currently live in the game. */
-        public List<Monster> monsters = new List<Monster>();
+        public static List<Monster> monsters = new List<Monster>();
         /* all items in the game */
-        public List<Item> items = new List<Item>();
+        public static List<Item> items = new List<Item>();
         public Crystal crystal = new Crystal("testCrystal");
         HealingPotion healingPotion = new HealingPotion("heal", 5);
         /* The dungeon */
@@ -29,6 +29,8 @@ namespace STVrogue.GameLogic {
         public int turnNumber = 0;
         /* The creature that currently has the turn. */
         public Creature whoHasTheTurn;
+
+
 
         public PlayerState playerstate;
 
@@ -89,7 +91,7 @@ namespace STVrogue.GameLogic {
          * If the monster does not exist anymore, null is returned.
          */
         public Monster monster(String id) {
-            foreach (Monster monster in this.monsters)
+            foreach (Monster monster in Game.monsters)
                 if (monster.ID == id)
                     return monster;
             return null;

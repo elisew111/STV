@@ -168,7 +168,7 @@ namespace STVrogue.GameLogic {
             // from game's and node's monster list.
             if (foe.HP <= 0) {
                 player.KP++;
-                G.monsters.Remove(enemy);
+                Game.monsters.Remove(enemy);
                 player.location.monsters.Remove(enemy);
             }
         }
