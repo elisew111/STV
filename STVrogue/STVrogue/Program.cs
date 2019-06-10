@@ -14,32 +14,95 @@ namespace STVrogue
         {
 
             game = new Game(5, 3);
-            DrawDungeon();
+            DrawDungeon(game.dungeon.getStartnode());
             GameLoop();
 
         }
 
         public static void GameLoop()
         {
-            while(true)
+            while (true)
             {
-                Console.WriteLine("nr of neighbors = " + game.player.location.neighbors.Count);
-                Console.WriteLine("type M + nr of target neighbor to move");
+                Console.WriteLine("neighbors:");
+                int counter = 1;
+                foreach(Node neighbor in game.player.location.neighbors)
+                {
+                    Console.WriteLine(counter+ ": " + neighbor.ID);
+                    counter++;
+                }
+                Console.WriteLine("Choose a destination by typing M + the corresponding number");
                 string commandstr = Console.ReadLine();
                 if (commandstr.StartsWith("M"))
                 {
-                    game.player.Move(game, game.player.location.neighbors[(int.Parse(commandstr.Split(" ")[1])) - 1]);
+                    int dest = int.Parse(commandstr.Split(" ")[1]);
+                    if (dest <= counter)
+                    {
+                        game.player.Move(game, game.player.location.neighbors[dest-1]);
+                    }
                 }
                 Update();
             }
         }
 
+        public static void DrawDungeon(Node node)
+        {
+
+            Console.WriteLine(node.zone.ID);
+            HealingPotion hp = new HealingPotion("id", 5);
+            Crystal cr = new Crystal("id");
+            if(hp.hasHealingPotion(game.player))
+            {
+                Console.WriteLine("H");
+            }
+            if(cr.hasCrystal(game.player))
+            {
+                Console.WriteLine("C");
+            }
+
+            Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+            Console.WriteLine("x                            x");
+            Console.WriteLine("x    P                       x");
+            Console.WriteLine("x                            x");
+            if (node.neighbors.Count > 2)
+            {
+                Console.WriteLine("                              ");
+                Console.WriteLine("                              ");
+            }
+            else
+            {
+                Console.WriteLine("                             x");
+                Console.WriteLine("                             x");
+            }
+
+            int monsters = node.monsters.Count;
+            for(int i = 1; i<=monsters; i++)
+            {
+                Console.WriteLine("x                   M        x");
+            }
+            for (int i = 1; i < (node.capacity - monsters); i++) 
+            {
+                Console.WriteLine("x                            x");
+            }
+            if(node.neighbors.Count > 3)
+            {
+                Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+            }
+            else
+            {
+                Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            }
+
+        }
+
+        
+
         public static void Update()
         {
             Console.Clear();
-            DrawDungeon();
+            DrawDungeon(game.player.location);
         }
 
+        /*
         static void DrawDungeon()
         {
             int zonenr = 1;
@@ -68,6 +131,6 @@ namespace STVrogue
                     Console.WriteLine("--- " + buur.ID);
                 }
             }
-        }
+        } */
     }
 }
