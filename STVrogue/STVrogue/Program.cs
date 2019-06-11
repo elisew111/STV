@@ -34,6 +34,8 @@ namespace STVrogue
                     counter++;
                 }
                 Console.WriteLine("Type M + the corresponding number to move");
+
+
                 string commandstr = Console.ReadLine();
                 if (commandstr.StartsWith("M"))
                 {

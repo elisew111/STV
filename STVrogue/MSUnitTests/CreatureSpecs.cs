@@ -118,7 +118,7 @@ namespace STVrogue.GameLogic {
                 monsterDefeated = true;
                 monsterDeleted = false;
             }
-            if (monsterDefeated && !G.monsters.Contains(enemy) && !player.location.monsters.Contains(enemy))
+            if (monsterDefeated && !Game.monsters.Contains(enemy) && !player.location.monsters.Contains(enemy))
                 monsterDeleted = true;
             // Check if KP of player was correctly updated when monster was defeated.
             if (monsterDefeated) {

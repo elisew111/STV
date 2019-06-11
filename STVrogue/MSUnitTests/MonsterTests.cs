@@ -188,7 +188,7 @@ namespace MSUnitTests {
             Zone currentZone = gameZones[2];
             Node monsterLocation = currentZone.getNodes()[2];
             monster.location = monsterLocation;
-            game.monsters.Clear();
+            Game.monsters.Clear();
             monsterLocation.monsters.Clear();
             monsterLocation.monsters.Add(monster);
             game.whoHasTheTurn = monster;
