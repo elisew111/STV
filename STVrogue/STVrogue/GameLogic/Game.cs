@@ -278,7 +278,7 @@ namespace STVrogue.GameLogic {
         }
 
         public void monsterTurns() {
-            foreach (Monster m in player.location.monsters) {
+            foreach (Monster m in player.location.monsters.ToArray()) {
                 if (m.rnd == true)//Dit eerste stuk hoeft niet gecovered, is random
                 {
                     if (m.decideAttack(this) == 1) {

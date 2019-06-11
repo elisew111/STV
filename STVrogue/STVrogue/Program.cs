@@ -13,7 +13,7 @@ namespace STVrogue
         static void Main(string[] args)
         {
 
-            game = new Game(5, 3);
+            game = new Game(5, 5);
             DrawDungeon(game.dungeon.getStartnode());
             GameLoop();
 
@@ -23,6 +23,9 @@ namespace STVrogue
         {
             while (true)
             {
+                Console.WriteLine("type A to attack");
+                Console.WriteLine("type H to use a healingpotion");
+                Console.WriteLine("type C to use a crystal");
                 Console.WriteLine("neighbors:");
                 int counter = 1;
                 foreach(Node neighbor in game.player.location.neighbors)
@@ -30,15 +33,37 @@ namespace STVrogue
                     Console.WriteLine(counter+ ": " + neighbor.ID);
                     counter++;
                 }
-                Console.WriteLine("Choose a destination by typing M + the corresponding number");
+                Console.WriteLine("Type M + the corresponding number to move");
                 string commandstr = Console.ReadLine();
                 if (commandstr.StartsWith("M"))
                 {
                     int dest = int.Parse(commandstr.Split(" ")[1]);
                     if (dest <= counter)
                     {
-                        game.player.Move(game, game.player.location.neighbors[dest-1]);
+                        if (!game.player.inCombat)
+                        {
+                            Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
+                            game.doNCTurn(game.player, move);
+                        }
                     }
+                }
+                if (commandstr.StartsWith("A"))
+                {
+                    Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
+                    game.doOneCombatRound(attack);
+                    //game.player.Attack(game, game.player.location.monsters[0]);
+                }
+                if(commandstr.StartsWith("H"))
+                {
+                    HealingPotion hp = new HealingPotion("id", 5);
+                    Command heal = new Command(CommandType.USE, new string[] { "potion" });
+                    game.doNCTurn(game.player, heal);
+                }
+                if(commandstr.StartsWith("C"))
+                {
+                    Crystal cr = new Crystal("id");
+                    Command boost = new Command(CommandType.USE, new string[] { "crystal" });
+                    game.doNCTurn(game.player, boost);
                 }
                 Update();
             }
@@ -58,8 +83,18 @@ namespace STVrogue
             {
                 Console.WriteLine("C");
             }
+            if(game.player.boosted)
+            {
+                Console.WriteLine("boosted");
+            }
+            Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
 
-            Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+            if (node.neighbors.Count > 1)
+            {
+                Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+            }
+            else { Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); }
+
             Console.WriteLine("x                            x");
             Console.WriteLine("x    P                       x");
             Console.WriteLine("x                            x");
@@ -99,6 +134,11 @@ namespace STVrogue
         public static void Update()
         {
             Console.Clear();
+            foreach (Monster monster in game.player.location.monsters)
+            {
+                
+
+            }
             DrawDungeon(game.player.location);
         }
 
