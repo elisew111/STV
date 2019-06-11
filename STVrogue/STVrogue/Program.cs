@@ -40,11 +40,9 @@ namespace STVrogue
                     int dest = int.Parse(commandstr.Split(" ")[1]);
                     if (dest <= counter)
                     {
-                        if (!game.player.inCombat)
-                        {
-                            Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
-                            game.doNCTurn(game.player, move);
-                        }
+                        Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
+                        game.doNCTurn(game.player, move);
+                        
                     }
                 }
                 if (commandstr.StartsWith("A"))
@@ -71,60 +69,66 @@ namespace STVrogue
 
         public static void DrawDungeon(Node node)
         {
-
-            Console.WriteLine(node.zone.ID);
-            HealingPotion hp = new HealingPotion("id", 5);
-            Crystal cr = new Crystal("id");
-            if(hp.hasHealingPotion(game.player))
+            if (game.player.location == game.dungeon.getExitnode())
             {
-                Console.WriteLine("H");
-            }
-            if(cr.hasCrystal(game.player))
-            {
-                Console.WriteLine("C");
-            }
-            if(game.player.boosted)
-            {
-                Console.WriteLine("boosted");
-            }
-            Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
-
-            if (node.neighbors.Count > 1)
-            {
-                Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-            }
-            else { Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); }
-
-            Console.WriteLine("x                            x");
-            Console.WriteLine("x    P                       x");
-            Console.WriteLine("x                            x");
-            if (node.neighbors.Count > 2)
-            {
-                Console.WriteLine("                              ");
-                Console.WriteLine("                              ");
+                Console.WriteLine("You win!");
             }
             else
             {
-                Console.WriteLine("                             x");
-                Console.WriteLine("                             x");
-            }
+                Console.WriteLine(node.zone.ID);
+                HealingPotion hp = new HealingPotion("id", 5);
+                Crystal cr = new Crystal("id");
+                if (hp.hasHealingPotion(game.player))
+                {
+                    Console.WriteLine("H");
+                }
+                if (cr.hasCrystal(game.player))
+                {
+                    Console.WriteLine("C");
+                }
+                if (game.player.boosted)
+                {
+                    Console.WriteLine("boosted");
+                }
+                Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
 
-            int monsters = node.monsters.Count;
-            for(int i = 1; i<=monsters; i++)
-            {
-                Console.WriteLine("x                   M        x");
-            }
-            for (int i = 1; i < (node.capacity - monsters); i++) 
-            {
+                if (node.neighbors.Count > 1)
+                {
+                    Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+                }
+                else { Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); }
+
                 Console.WriteLine("x                            x");
-            }
-            if(node.neighbors.Count > 3)
-            {
-                Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-            }
-            else
-            {
-                Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                Console.WriteLine("x    P                       x");
+                Console.WriteLine("x                            x");
+                if (node.neighbors.Count > 2)
+                {
+                    Console.WriteLine("                              ");
+                    Console.WriteLine("                              ");
+                }
+                else
+                {
+                    Console.WriteLine("                             x");
+                    Console.WriteLine("                             x");
+                }
+
+                int monsters = node.monsters.Count;
+                for (int i = 1; i <= monsters; i++)
+                {
+                    Console.WriteLine("x                   M        x");
+                }
+                for (int i = 1; i < (node.capacity - monsters); i++)
+                {
+                    Console.WriteLine("x                            x");
+                }
+                if (node.neighbors.Count > 3)
+                {
+                    Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+                }
+                else
+                {
+                    Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                }
             }
 
         }
