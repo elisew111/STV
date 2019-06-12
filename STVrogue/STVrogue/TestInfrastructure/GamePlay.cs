@@ -3,34 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using STVrogue.GameLogic;
+using STVrogue.GameControl;
 
 namespace STVrogue.TestInfrastructure {
     /* For ITERATION 2.
      * Representing a replayable game play. 
      */
     public class GamePlay {
-        protected int turn = 0;
-        protected int length;
-        protected List<string> commands = new List<string>();
-        protected Game game;
-        protected Game copyGame;
+        public int turn = 0;
+        public int length;
+        public List<string> commands = new List<string>();
+        public Game game;
+        public Game copyGame;
 
         public GamePlay() { }
 
         public GamePlay(String savefile) {
             /*
-             * Het nut van deze functie is dat we een GamePlay aanmaken die een spel opnieuw kan spelen.
-             * De savefile moet een 3-tal dingen bevatten om dit succesvol te kunnen doen:
-             * 1: parameters van de Game(pparam1, param2) constructor die werden gebruikt om de Game te 
-             *    instantiëren.
-             * 2: De seed die gebruikt is tijdens het instantiëren van de game.
-             * 3: Een array van commands die bepalen wie welke turns/moves deed in de verloop van het spel.
-             * Het mooie van het gebruik van een seed is nu dat alle PSEUDOrandom verloop. Dit betekent dat
-             * alle monster locaties, items locaties, dungeon size en monster moves identiek zijn voor elke
-             * seed. Dus als een game eenmaal met een seed aangemaakt is, zal de game zich vanzelf spelen en
-             * zal de GameState in de verloop van het spel voor een bepaalde seed op een bepaald moment na
-             * een x aantal commands altijd hetzelfde zijn. 
-             * 
              * Waar ik aan zat te denken (maar dat is niet echt te implementeren als we nog geen werkend spel
              * hebben) is dat je tijdens het spelen van een spel al je commands en de seed+parameters van een 
              * bepaalde Game naar een file schrijft (daar is denk ik de gameplay.save(file) functie die ze zeggen
@@ -51,7 +40,7 @@ namespace STVrogue.TestInfrastructure {
         }
 
         /* reset the gameplay to turn 0 */
-        public virtual void reset() {
+        public void reset() {
             /*
              * Bij het maken van een GamePlay object wordt de initiële GameState aangemaakt en daar moet een
              * kopie van worden gemaakt. Deze functie aanroepen zal dan dit kopie van de initïele GameState
@@ -63,7 +52,7 @@ namespace STVrogue.TestInfrastructure {
         }
 
         /* return the current game state */
-        public virtual Game getState() {
+        public Game getState() {
             /*
              * Deze functie moet een Game-object returnen, maar wat dit precies inhoudt weet ik ook niet echt.
              * Game heeft een aantal class variables, namelijk Player player, List<Monster> monsters, 
@@ -88,17 +77,102 @@ namespace STVrogue.TestInfrastructure {
          * Replay the current turn, thus updating the game state.
          * This also increases the turn nr, thus shifting the current turn to the next one. 
          */
-        public virtual void replayCurrentTurn() {
-            /*
-             * Huidige turn opnieuw spelen houdt pretty much in dat we in commands[] gaan 
-             * kijken en het commands dat op index "turn" staat uitvoeren en vervolgens de
-             * turn variable met 1 verhogen.
-             */
-            string action = commands[turn];
-            // execute action
-            turn++;
+        public void replayCurrentTurn() {
+            if (turn == commands.Count) {
+                Console.WriteLine("Game finished");
+                Console.ReadLine();
+                Environment.Exit(0);
+            } else {
+                string action = commands[turn];
+                DoMove(action);
+                turn++;
+            }
         }
 
+        public void DoMove(string commandstr) {
+            Console.WriteLine("neighbors:");
+            int counter = 1;
+            foreach (Node neighbor in game.player.location.neighbors) {
+                Console.WriteLine(counter + ": " + neighbor.ID);
+                counter++;
+            }
+            if (commandstr.StartsWith("M")) {
+                int dest = int.Parse(commandstr.Split(" ")[1]);
+                if (dest <= counter) {
+                    Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
+                    game.doNCTurn(game.player, move);
+
+                }
+            }
+            if (commandstr.StartsWith("A")) {
+                Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
+                game.doOneCombatRound(attack);
+            }
+            if (commandstr.StartsWith("H")) {
+                Command heal = new Command(CommandType.USE, new string[] { "potion" });
+                game.doNCTurn(game.player, heal);
+            }
+            if (commandstr.StartsWith("C")) {
+                Command boost = new Command(CommandType.USE, new string[] { "crystal" });
+                game.doNCTurn(game.player, boost);
+            }
+        }
+
+        public void Update() {
+            Console.Clear();
+            DrawDungeon(game.player.location);
+        }
+
+        public void DrawDungeon(Node node) {
+            if (game.player.location == game.dungeon.getExitnode()) {
+                Console.WriteLine("You win!");
+            } else {
+                HealingPotion hp = new HealingPotion("id", 5);
+                Crystal cr = new Crystal("id");
+                if (hp.hasHealingPotion(game.player)) {
+                    Console.WriteLine("H");
+                }
+                if (cr.hasCrystal(game.player)) {
+                    Console.WriteLine("C");
+                }
+                if (game.player.boosted) {
+                    Console.WriteLine("boosted");
+                }
+                Console.WriteLine("Kills: " + game.player.KP);
+                Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
+
+                if (node.neighbors.Count > 1) {
+                    Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+                } else { Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); }
+
+                Console.WriteLine("x                            x");
+                Console.WriteLine("x    P                       x");
+                Console.WriteLine("x                            x");
+                if (node.neighbors.Count > 2) {
+                    Console.WriteLine("                              ");
+                    Console.WriteLine("                              ");
+                } else {
+                    Console.WriteLine("                             x");
+                    Console.WriteLine("                             x");
+                }
+
+                int monsters = node.monsters.Count;
+                for (int i = 1; i <= monsters; i++) {
+                    Console.WriteLine("x                   M        x");
+                }
+                for (int i = 1; i < (node.capacity - monsters); i++) {
+                    Console.WriteLine("x                            x");
+                }
+                if (node.neighbors.Count > 3) {
+                    Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
+                } else {
+                    Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                }
+                Console.WriteLine("type A to attack");
+                Console.WriteLine("type H to use a healingpotion");
+                Console.WriteLine("type C to use a crystal");
+            }
+        }
     }
 
     /* A dummy GamePlay; for testing the specification classes */
@@ -113,18 +187,18 @@ namespace STVrogue.TestInfrastructure {
             state = new Game();
         }
 
-        public override void reset() {
-            turn = 0;
-            state.z_ = execution[turn];
-        }
+        //public override void reset() {
+        //    turn = 0;
+        //    state.z_ = execution[turn];
+        //}
 
-        public override Game getState() {
-            return state;
-        }
+        //public override Game getState() {
+        //    return state;
+        //}
 
-        public override void replayCurrentTurn() {
-            turn++;
-            state.z_ = execution[turn];
-        }
+        //public override void replayCurrentTurn() {
+        //    turn++;
+        //    state.z_ = execution[turn];
+        //}
     }
 }
