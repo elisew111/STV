@@ -8,6 +8,8 @@ namespace STVrogue.GameLogic {
         public int HP = 3;
         public Node location;
         public int attackRating = 1;
+        public static int seed = 100100;
+        public Random pseudorandom = new Random(seed);
 
         public Creature(String ID) : base(ID) { }
 
@@ -127,7 +129,7 @@ namespace STVrogue.GameLogic {
 
         public int decideAttack(Game g) {
             if (rnd == true) {
-                int roll = g.r.Next(0, 1);
+                int roll = pseudorandom.Next(0, 2);
                 return roll;
             } else {
                 return nr;

@@ -9,10 +9,12 @@ namespace STVrogue
     {
 
         static Game game;
+        static readonly int seed = 100100;
+        static Random pseudorandom = new Random(seed);
 
         static void Main(string[] args)
         {
-
+            
             game = new Game(5, 5);
             DrawDungeon(game.dungeon.getStartnode());
             GameLoop();
@@ -23,9 +25,7 @@ namespace STVrogue
         {
             while (true)
             {
-                Console.WriteLine("type A to attack");
-                Console.WriteLine("type H to use a healingpotion");
-                Console.WriteLine("type C to use a crystal");
+                
                 Console.WriteLine("neighbors:");
                 int counter = 1;
                 foreach(Node neighbor in game.player.location.neighbors)
@@ -92,6 +92,7 @@ namespace STVrogue
                 {
                     Console.WriteLine("boosted");
                 }
+                Console.WriteLine("Kill#:" + game.player.KP);
                 Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
 
                 if (node.neighbors.Count > 1)
@@ -131,6 +132,9 @@ namespace STVrogue
                 {
                     Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                 }
+                Console.WriteLine("type A to attack");
+                Console.WriteLine("type H to use a healingpotion");
+                Console.WriteLine("type C to use a crystal");
             }
 
         }
@@ -140,43 +144,23 @@ namespace STVrogue
         public static void Update()
         {
             Console.Clear();
-            foreach (Monster monster in game.player.location.monsters)
+            /*foreach (Monster monster in game.player.location.monsters)
             {
-                
-
-            }
+                int action = pseudorandom.Next(1, 3);
+                switch(action)
+                {
+                    case 1:
+                        int dest = pseudorandom.Next(0, monster.location.neighbors.Count - 1);
+                        Command move = new Command(CommandType.MOVE, new string[] { dest.ToString() });
+                        game.doNCTurn(monster, move);
+                        return;
+                    default:
+                        Command nothing = new Command(CommandType.DoNOTHING, new string[] { });
+                        return;
+                }
+            }*/
             DrawDungeon(game.player.location);
         }
 
-        /*
-        static void DrawDungeon()
-        {
-            int zonenr = 1;
-            foreach (Zone zone in game.dungeon.getZones())
-            {
-                Console.WriteLine("Zone #" + zonenr + ", " + zone.getType());
-                zonenr++;
-                FillZone(zone);
-            }
-        }
-
-        static void FillZone(Zone zone)
-        {
-            foreach (Node node in zone.getNodes())
-            {
-                Console.WriteLine("Node: " + node.ID + " " + node.getType());
-                if (game.player.location == node)
-                {
-                    Console.WriteLine("PLAYER");
-                }
-                Console.WriteLine("-- monsters: " + node.monsters.Count);
-                Console.WriteLine("-- items: " + node.items.Count);
-                Console.WriteLine("-- buren:");
-                foreach (Node buur in node.neighbors)
-                {
-                    Console.WriteLine("--- " + buur.ID);
-                }
-            }
-        } */
     }
 }
