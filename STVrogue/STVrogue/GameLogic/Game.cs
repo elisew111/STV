@@ -66,6 +66,11 @@ namespace STVrogue.GameLogic {
             return gameNodes;
         }
 
+        public List<Monster> getmonsters() 
+        {
+            return monsters;
+        }
+
         /* return all bridges in the game. */
         public List<Node> bridges() {
             List<Node> gameNodes = new List<Node>();
