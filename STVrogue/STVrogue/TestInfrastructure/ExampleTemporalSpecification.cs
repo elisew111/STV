@@ -22,7 +22,7 @@ namespace STVrogue.TestInfrastructure
         //static public TemporalSpecification RItem = new Unless (Game => Game.items.Count == X, Game => Game.items.Count == X - 1);
 
         //RDecay: when the game has no item left(lying around in nodes nor in the player’s bag), the player’s HP can only decrease.
-        //static public TemporalSpecification RDecay = new Unless(Game => Game.items.Count > 0 || Game.player.bag.Count > 0, new Unless(G => G.player.HP = X, G => G.player.HP < X));
+        //static public TemporalSpecification RDecay = new Unless(Game => Game.items.Count > 0 || Game.player.bag.Count > 0, new Unless(G => G.player.HP == X, G => G.player.HP < X));
         
         //RMonster: The HP of every monster can only decrease, and it never leaves its zone.
         //static public TemporalSpecification RMonster1 = new Always(Game => HelperPredicates.forall(Game.getmonsters(),m => new Unless(m => m.HP == X, m => m.HP < X))); 
