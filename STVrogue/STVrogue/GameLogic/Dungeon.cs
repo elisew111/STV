@@ -29,7 +29,7 @@ namespace STVrogue.GameLogic {
             // creating the start zone:
             int numOfNodesInstartZone = pseudoRandom.Next(3, 5);
             amountNodes += numOfNodesInstartZone;
-            Zone startZone = new Zone(generateID(), zoneType.STARTzone, 1, numOfNodesInstartZone);
+            Zone startZone = new Zone("Z1", zoneType.STARTzone, 1, numOfNodesInstartZone);
             zones.Add(startZone);
 
             // adding in-between zones:
@@ -37,7 +37,7 @@ namespace STVrogue.GameLogic {
             for (int z = 2; z < numberOfZones; z++) {
                 int numOfNodes = pseudoRandom.Next(4, 6);
                 amountNodes += numOfNodes;
-                Zone zone = new Zone(generateID(), zoneType.InBETWEENzone, z, numOfNodes);
+                Zone zone = new Zone("Z" + z, zoneType.InBETWEENzone, z, numOfNodes);
                 zones.Add(zone);
                 connectWithBridge(previousZone, zone);
                 previousZone = zone;
@@ -45,7 +45,7 @@ namespace STVrogue.GameLogic {
             // creating the exit zone:
             int numOfNodesInExitZone = pseudoRandom.Next(3, 5);
             amountNodes += numOfNodesInExitZone;
-            Zone exitZone = new Zone(generateID(), zoneType.EXITzone, numberOfZones, numOfNodesInExitZone);
+            Zone exitZone = new Zone("Z" + numberOfZones, zoneType.EXITzone, numberOfZones, numOfNodesInExitZone);
             zones.Add(exitZone);
             connectWithBridge(previousZone, exitZone);
             seedMonstersAndItems();
@@ -142,6 +142,7 @@ namespace STVrogue.GameLogic {
         zoneType type;
         int level;
         readonly int seed = 100100;
+        int nodeCounter = 1;
 
         public List<Node> getNodes() { return nodes; }
         public zoneType getType() { return type; }
@@ -159,30 +160,30 @@ namespace STVrogue.GameLogic {
             if (ty == zoneType.STARTzone) //eerste node van startzone is startnode
             {
                 level = 1;
-                Node startnode = new Node(NodeType.STARTnode, generateID());
+                Node startnode = new Node(NodeType.STARTnode, "Z1N1");
+                nodeCounter++;
                 startnode.capacity = 0;
                 startnode.zone = this;
                 nodes.Add(startnode);
                 Dungeon.startnode = startnode;
-
-                for (int i = 2; i < numberOfnodes; i++) {
+                for (int i = 2; i < numberOfnodes; i++)
                     addCommonNode();
-                }
+                nodeCounter = 1;
                 makeBridge();
             }
 
             if (ty == zoneType.InBETWEENzone) {
-                for (int i = 1; i < numberOfnodes; i++) {
+                for (int i = 1; i < numberOfnodes; i++)
                     addCommonNode();
-                }
+                nodeCounter = 1;
                 makeBridge();
             }
 
             if (ty == zoneType.EXITzone) {
-                for (int i = 1; i < numberOfnodes; i++) {
+                for (int i = 1; i < numberOfnodes; i++)
                     addCommonNode();
-                }
-                Node exitnode = new Node(NodeType.EXITnode, generateID());
+                Node exitnode = new Node(NodeType.EXITnode, "" + this.ID + "N" + nodeCounter);
+                nodeCounter = 1;
                 exitnode.capacity = 0;
                 exitnode.zone = this;
                 connectRandom(exitnode);
@@ -197,10 +198,6 @@ namespace STVrogue.GameLogic {
             Debug.Assert(HelperPredicates.isConnected(this));
         }
 
-        public string generateID() {
-            return Guid.NewGuid().ToString("N");
-        }
-
         //connect met een random node die al in de nodes lijst staat
         public void connectRandom(Node node) {
             Random pseudoRandom = new Random(seed);
@@ -209,7 +206,8 @@ namespace STVrogue.GameLogic {
         }
 
         public void addCommonNode() {
-            Node commonnode = new Node(NodeType.COMMONnode, generateID());
+            Node commonnode = new Node(NodeType.COMMONnode, "" + this.ID + "N" + nodeCounter);
+            nodeCounter++;
             commonnode.capacity = Dungeon.capacityMultiplier;
             commonnode.zone = this;
             if (nodes.Count > 0)
@@ -218,7 +216,8 @@ namespace STVrogue.GameLogic {
         }
 
         public void makeBridge() {
-            Node bridge = new Node(NodeType.BRIDGE, generateID());
+            int bridgeID = (int)Char.GetNumericValue(this.ID[1]);
+            Node bridge = new Node(NodeType.BRIDGE, "" + this.ID + "B" + bridgeID);
             connectRandom(bridge);
             bridge.capacity = Dungeon.capacityMultiplier * level;
             bridge.zone = this;

@@ -2,22 +2,25 @@
 using STVrogue.GameLogic;
 using STVrogue.GameControl;
 using STVrogue.TestInfrastructure;
+using System.Collections.Generic;
 
 namespace STVrogue {
     class Program {
-
         static Game game;
-        //static readonly int seed = 100100;
+        static List<string> commands = new List<string>();
 
         static void Main(string[] args) {
             Console.WriteLine("Do you want to replay a game or play a new game?");
             Console.WriteLine("Type 'replay' to replay a game or 'new' to start a new game");
             string mode = Console.ReadLine();
             if (mode == "new") {
-                game = new Game(5, 5);
+                Console.Clear();
+                game = new Game(3, 1);
+                commands.Add("3, 1");
                 DrawDungeon(game.dungeon.getStartnode());
                 GameLoop();
-            } else if (mode == "replay") { 
+            } else if (mode == "replay") {
+                Console.Clear();
                 GamePlay gameplay = new GamePlay("test.txt");
                 gameplay.DrawDungeon(gameplay.game.dungeon.getStartnode());
                 while (true) {
@@ -36,7 +39,7 @@ namespace STVrogue {
 
         public static void GameLoop() {
             while (true) {
-                Console.WriteLine("neighbors:");
+                Console.WriteLine("Neighbors:");
                 int counter = 1;
                 foreach (Node neighbor in game.player.location.neighbors) {
                     Console.WriteLine(counter + ": " + neighbor.ID);
@@ -45,6 +48,7 @@ namespace STVrogue {
                 Console.WriteLine("Type M + the corresponding number to move");
 
                 string commandstr = Console.ReadLine();
+                commands.Add(commandstr);
                 if (commandstr.StartsWith("M")) {
                     int dest = int.Parse(commandstr.Split(" ")[1]);
                     if (dest <= counter) {
@@ -73,25 +77,28 @@ namespace STVrogue {
         public static void DrawDungeon(Node node) {
             if (game.player.location == game.dungeon.getExitnode()) {
                 Console.WriteLine("You win!");
+                Console.ReadLine();
+                GamePlay.save(commands);
+                Environment.Exit(0);
             } else {
-                Console.WriteLine(node.zone.ID);
-                HealingPotion hp = new HealingPotion("id", 5);
-                Crystal cr = new Crystal("id");
-                if (hp.hasHealingPotion(game.player)) {
-                    Console.WriteLine("H");
+                Console.WriteLine("Current location: " + node.ID);
+                Console.Write("Players bag content: ");
+                foreach (Item i in game.player.bag) {
+                    if (i is Crystal)
+                        Console.Write("C ");
+                    if (i is HealingPotion)
+                        Console.Write("HP ");
                 }
-                if (cr.hasCrystal(game.player)) {
-                    Console.WriteLine("C");
-                }
-                if (game.player.boosted) {
-                    Console.WriteLine("boosted");
-                }
+                Console.WriteLine();
+                if (game.player.boosted)
+                    Console.WriteLine("Player is boosted!");
                 Console.WriteLine("Kills: " + game.player.KP);
                 Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
 
-                if (node.neighbors.Count > 1) {
+                if (node.neighbors.Count > 1)
                     Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-                } else { Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); }
+                else
+                    Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
                 Console.WriteLine("x                            x");
                 Console.WriteLine("x    P                       x");
@@ -105,17 +112,14 @@ namespace STVrogue {
                 }
 
                 int monsters = node.monsters.Count;
-                for (int i = 1; i <= monsters; i++) {
+                for (int i = 1; i <= monsters; i++)
                     Console.WriteLine("x                   M        x");
-                }
-                for (int i = 1; i < (node.capacity - monsters); i++) {
+                for (int i = 1; i < (node.capacity - monsters); i++)
                     Console.WriteLine("x                            x");
-                }
-                if (node.neighbors.Count > 3) {
+                if (node.neighbors.Count > 3)
                     Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-                } else {
+                else
                     Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                }
                 Console.WriteLine("type A to attack");
                 Console.WriteLine("type H to use a healingpotion");
                 Console.WriteLine("type C to use a crystal");

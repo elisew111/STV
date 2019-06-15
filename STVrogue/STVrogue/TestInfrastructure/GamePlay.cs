@@ -39,8 +39,15 @@ namespace STVrogue.TestInfrastructure {
             length = commands.Count;
         }
 
+        public static void save(List<string> commands) {
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string currentTime = DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss");
+            string writeLocation = currentDirectory  + @"\" + currentTime + "gameplay.txt";
+            File.WriteAllLines(writeLocation, commands);
+        }
+
         /* reset the gameplay to turn 0 */
-        public void reset() {
+        public virtual void reset() {
             /*
              * Bij het maken van een GamePlay object wordt de initiële GameState aangemaakt en daar moet een
              * kopie van worden gemaakt. Deze functie aanroepen zal dan dit kopie van de initïele GameState
@@ -52,7 +59,7 @@ namespace STVrogue.TestInfrastructure {
         }
 
         /* return the current game state */
-        public Game getState() {
+        public virtual Game getState() {
             /*
              * Deze functie moet een Game-object returnen, maar wat dit precies inhoudt weet ik ook niet echt.
              * Game heeft een aantal class variables, namelijk Player player, List<Monster> monsters, 
@@ -77,7 +84,7 @@ namespace STVrogue.TestInfrastructure {
          * Replay the current turn, thus updating the game state.
          * This also increases the turn nr, thus shifting the current turn to the next one. 
          */
-        public void replayCurrentTurn() {
+        public virtual void replayCurrentTurn() {
             if (turn == commands.Count) {
                 Console.WriteLine("Game finished");
                 Console.ReadLine();
@@ -90,7 +97,7 @@ namespace STVrogue.TestInfrastructure {
         }
 
         public void DoMove(string commandstr) {
-            Console.WriteLine("neighbors:");
+            Console.WriteLine("Neighbors:");
             int counter = 1;
             foreach (Node neighbor in game.player.location.neighbors) {
                 Console.WriteLine(counter + ": " + neighbor.ID);
@@ -126,24 +133,27 @@ namespace STVrogue.TestInfrastructure {
         public void DrawDungeon(Node node) {
             if (game.player.location == game.dungeon.getExitnode()) {
                 Console.WriteLine("You win!");
+                Console.ReadLine();
+                Environment.Exit(0);
             } else {
-                HealingPotion hp = new HealingPotion("id", 5);
-                Crystal cr = new Crystal("id");
-                if (hp.hasHealingPotion(game.player)) {
-                    Console.WriteLine("H");
+                Console.WriteLine("Current location: " + node.ID);
+                Console.Write("Players bag content: ");
+                foreach (Item i in game.player.bag) {
+                    if (i is Crystal)
+                        Console.Write("C ");
+                    if (i is HealingPotion)
+                        Console.Write("HP ");
                 }
-                if (cr.hasCrystal(game.player)) {
-                    Console.WriteLine("C");
-                }
-                if (game.player.boosted) {
-                    Console.WriteLine("boosted");
-                }
+                Console.WriteLine();
+                if (game.player.boosted)
+                    Console.WriteLine("Player is boosted!");
                 Console.WriteLine("Kills: " + game.player.KP);
                 Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
 
-                if (node.neighbors.Count > 1) {
+                if (node.neighbors.Count > 1)
                     Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-                } else { Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"); }
+                else
+                    Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
                 Console.WriteLine("x                            x");
                 Console.WriteLine("x    P                       x");
@@ -157,17 +167,14 @@ namespace STVrogue.TestInfrastructure {
                 }
 
                 int monsters = node.monsters.Count;
-                for (int i = 1; i <= monsters; i++) {
+                for (int i = 1; i <= monsters; i++)
                     Console.WriteLine("x                   M        x");
-                }
-                for (int i = 1; i < (node.capacity - monsters); i++) {
+                for (int i = 1; i < (node.capacity - monsters); i++)
                     Console.WriteLine("x                            x");
-                }
-                if (node.neighbors.Count > 3) {
+                if (node.neighbors.Count > 3)
                     Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-                } else {
+                else
                     Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                }
                 Console.WriteLine("type A to attack");
                 Console.WriteLine("type H to use a healingpotion");
                 Console.WriteLine("type C to use a crystal");
@@ -187,18 +194,18 @@ namespace STVrogue.TestInfrastructure {
             state = new Game();
         }
 
-        //public override void reset() {
-        //    turn = 0;
-        //    state.z_ = execution[turn];
-        //}
+        public override void reset() {
+            turn = 0;
+            state.z_ = execution[turn];
+        }
 
-        //public override Game getState() {
-        //    return state;
-        //}
+        public override Game getState() {
+            return state;
+        }
 
-        //public override void replayCurrentTurn() {
-        //    turn++;
-        //    state.z_ = execution[turn];
-        //}
+        public override void replayCurrentTurn() {
+            turn++;
+            state.z_ = execution[turn];
+        }
     }
 }
