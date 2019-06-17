@@ -42,31 +42,34 @@ namespace MSUnitTests
             int[] NrOfItems = { 2, 4, 8, 16 };
             foreach (int X in NrOfItems)
             {
-                TemporalSpecification RItem = new Unless(Game => Game.items.Count == X, Game => Game.items.Count == X - 1);
+                TemporalSpecification RItem = new Unless(Game => Game.items.Count == X, Game => Game.items.Count <= X);
                 Assert.IsTrue(RItem.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
             }
         }
-        /*[TestMethod]
+        [TestMethod]
         public void Decay()
         {
-            int[] HPValues = { 2, 4, 8, 16 };
-            if (Game.items.Count > 0 || Game.player.bag.Count > 0)
+            //RDecay: when the game has no item left(lying around in nodes nor in the player’s bag), the player’s HP can only decrease.
+
+            int[] HPvalues = { 2, 4, 8, 16 };
+            foreach (int X in HPvalues)
             {
-                { Assert.IsTrue(true)}
+                TemporalSpecification RDecay = new Unless(Game => Game.player.HP == X && (Game.items.Count <= 0 && Game.player.bag.Count <= 0), Game => Game.player.HP <= X);
+                Assert.IsTrue(RDecay.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+
             }
-            else
-            {
-                foreach (int X in HPValues)
-                {
-                    TemporalSpecification RDecay = new Unless(G => G.player.HP == X, G => G.player.HP < X);
-                    Assert.IsTrue(RDecay.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
-                }
-            }
+            
         }
         [TestMethod]
         public void monster()
         {
-            TemporalSpecification RMonster1 = new Unless(G => HelperPredicates.forall(G.getmonsters(), m => m.HP == X), G=> HelperPredicates.for)
-        }*/
+            //RMonster: The HP of every monster can only decrease, and it never leaves its zone.
+
+
+
+            //TemporalSpecification RMonster1 = new Unless(G => HelperPredicates.imp(G.getMonster(mid) != null,  G.getMonster(mid).HP == X)), G => G.getMonsters(mid).HP < X);
+               
+            //TemporalSpecification RMonster2 = new Always(
+        }
     }
 }
