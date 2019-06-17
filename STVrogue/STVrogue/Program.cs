@@ -20,8 +20,10 @@ namespace STVrogue {
                 DrawDungeon(game.dungeon.getStartnode());
                 GameLoop();
             } else if (mode == "replay") {
+                Console.WriteLine("what file would you like to replay? (copy paste)");
+                string file = Console.ReadLine();
                 Console.Clear();
-                GamePlay gameplay = new GamePlay("test.txt");
+                GamePlay gameplay = new GamePlay(file);
                 gameplay.DrawDungeon(gameplay.game.dungeon.getStartnode());
                 while (true) {
                     gameplay.replayCurrentTurn();

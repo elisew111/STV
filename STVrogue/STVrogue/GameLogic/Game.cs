@@ -15,6 +15,8 @@ namespace STVrogue.GameLogic {
     /* This class represents the whole game state of STV-Rogue */
     public class Game {
         public Random r = new Random();
+        public static int seed = 100100;
+        public Random pseudorandom = new Random(seed);
         public Player player;
         /* all monsters currently live in the game. */
         public static List<Monster> monsters = new List<Monster>();
@@ -289,7 +291,7 @@ namespace STVrogue.GameLogic {
                     if (m.decideAttack(this) == 1) {
                         m.Attack(this, player);
                     } else if (m.decideAttack(this) == 0) {
-                        int fleeloc = r.Next(0, player.location.neighbors.Count - 1);
+                        int fleeloc = pseudorandom.Next(0, player.location.neighbors.Count - 1);
                         m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
                     }
                 } else//Dit stuk wel
@@ -297,7 +299,7 @@ namespace STVrogue.GameLogic {
                     if (m.decideAttack(this) == 1) {
                         m.Attack(this, player);
                     } else if (m.decideAttack(this) == 0) {
-                        int fleeloc = r.Next(0, player.location.neighbors.Count - 1);
+                        int fleeloc = pseudorandom.Next(0, player.location.neighbors.Count - 1);
                         m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
                     }
                 }
