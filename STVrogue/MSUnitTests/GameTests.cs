@@ -28,16 +28,6 @@ namespace MSUnitTests {
         }
 
         [TestMethod]
-        public void TestDoNCInvalidCreatureMove() {
-            Creature creature = new Creature("someid");
-            CommandType name = CommandType.MOVE;
-            Game game = new Game(5, 1);
-            string[] args = { "0" };
-            Command cmd = new Command(name, args);
-            Assert.IsFalse(game.doNCTurn(creature, cmd));
-        }
-
-        [TestMethod]
         public void TestDoNCMoveNoArgs() {
             CommandType name = CommandType.MOVE;
             Game game = new Game(5, 1);
@@ -47,10 +37,9 @@ namespace MSUnitTests {
             try {
                 game.doNCTurn(player, cmd);
             } catch (Exception e) {
-                StringAssert.Contains(e.Message, "incorrect move args");
+                StringAssert.Contains(e.Message, "Incorrect movement argument");
                 return;
             }
-
             Assert.Fail("Expected exception wasn't thrown");
         }
 
@@ -72,28 +61,6 @@ namespace MSUnitTests {
             string[] args = { };
             Command cmd = new Command(name, args);
             Assert.IsTrue(game.doNCTurn(monster, cmd));
-        }
-
-        [TestMethod]
-        public void TestDoNCDoNothingInvalidCreature() {
-            CommandType name = CommandType.DoNOTHING;
-            Game game = new Game(5, 1);
-            Creature creature = new Creature("somecreature");
-            string[] args = { };
-            Command cmd = new Command(name, args);
-            Assert.IsFalse(game.doNCTurn(creature, cmd));
-        }
-
-        [TestMethod]
-        public void TestDoNCUseNotPlayer() {
-            HealingPotion healingPotion = new HealingPotion("pot", 5);
-            CommandType name = CommandType.USE;
-            Game game = new Game(5, 1);
-            Creature creature = new Creature("somecreature");
-            Monster monster = new Monster("somemonster");
-            string[] args = { "potion" };
-            Command cmd = new Command(name, args);
-            Assert.IsFalse(game.doNCTurn(creature, cmd) && game.doNCTurn(monster, cmd));
         }
 
         [TestMethod]
@@ -129,10 +96,9 @@ namespace MSUnitTests {
             try {
                 game.doNCTurn(player, cmd);
             } catch (Exception e) {
-                StringAssert.Contains(e.Message, "incorrect item args");
+                StringAssert.Contains(e.Message, "Incorrect item argument");
                 return;
             }
-
             Assert.Fail("Expected exception wasn't thrown");
         }
 
@@ -146,10 +112,9 @@ namespace MSUnitTests {
             try {
                 game.doNCTurn(player, cmd);
             } catch (Exception e) {
-                StringAssert.Contains(e.Message, "Ongeldig command");
+                StringAssert.Contains(e.Message, "Incorrect argument");
                 return;
             }
-
             Assert.Fail("Expected exception wasn't thrown");
         }
 
@@ -166,7 +131,7 @@ namespace MSUnitTests {
         public void TestDoOneCombatRoundMonsterKill() {
             Game game = new Game(5, 1);
             Player player = game.player;
-            Monster monster = new Monster("somemonster", 1);
+            Monster monster = new Monster("somemonster");
             monster.HP = 1;
             player.location.monsters.Add(monster);
             player.inCombat = true;
@@ -179,7 +144,7 @@ namespace MSUnitTests {
         public void TestDoOneCombatRoundMonsterSurvive() {
             Game game = new Game(5, 1);
             Player player = game.player;
-            Monster monster = new Monster("somemonster", 1);
+            Monster monster = new Monster("somemonster");
             monster.HP = monster.HPmax;
             player.location.monsters.Add(monster);
             player.inCombat = true;
@@ -192,7 +157,7 @@ namespace MSUnitTests {
         public void TestDoOneCombatRoundUseCrsytalMonsterSurvive() {
             Game game = new Game(5, 1);
             Player player = game.player;
-            Monster monster = new Monster("somemonster", 1);
+            Monster monster = new Monster("somemonster");
             monster.HP = monster.HPmax;
             player.location.monsters.Add(monster);
             player.inCombat = true;
@@ -205,7 +170,7 @@ namespace MSUnitTests {
         public void TestDoOneCombatRoundUsePotionMonsterSurvive() {
             Game game = new Game(5, 1);
             Player player = game.player;
-            Monster monster = new Monster("somemonster", 1);
+            Monster monster = new Monster("somemonster");
             monster.HP = monster.HPmax;
             player.location.monsters.Add(monster);
             player.inCombat = true;
@@ -220,8 +185,8 @@ namespace MSUnitTests {
             Node randomnode = new Node(NodeType.COMMONnode, "somenode");
             Node randomnode2 = new Node(NodeType.COMMONnode, "somenode2");
             Player player = game.player;
-            Monster monster = new Monster("somemonster", 1);
-            Monster monster2 = new Monster("othermonster", 1);
+            Monster monster = new Monster("somemonster");
+            Monster monster2 = new Monster("othermonster");
             player.location.monsters.Add(monster);
             player.location.neighbors[0] = randomnode;
             try { player.location.neighbors[1] = randomnode2; } catch {
@@ -242,8 +207,8 @@ namespace MSUnitTests {
             Node randomnode2 = new Node(NodeType.COMMONnode, "somenode2");
             Player player = game.player;
             player.boosted = true;
-            Monster monster = new Monster("somemonster", 1);
-            Monster monster2 = new Monster("othermonster", 1);
+            Monster monster = new Monster("somemonster");
+            Monster monster2 = new Monster("othermonster");
             player.location.monsters.Add(monster);
             player.location.neighbors[0] = randomnode;
             try { player.location.neighbors[1] = randomnode2; } catch {
@@ -264,8 +229,8 @@ namespace MSUnitTests {
             Node randomnode2 = new Node(NodeType.COMMONnode, "somenode2");
             Player player = game.player;
             player.boosted = false;
-            Monster monster = new Monster("somemonster", 1);
-            Monster monster2 = new Monster("othermonster", 1);
+            Monster monster = new Monster("somemonster");
+            Monster monster2 = new Monster("othermonster");
             player.location.monsters.Add(monster);
             player.location.neighbors[0] = randomnode;
             try { player.location.neighbors[1] = randomnode2; } catch {
@@ -289,10 +254,9 @@ namespace MSUnitTests {
             try {
                 game.doAction(cmd);
             } catch (Exception e) {
-                StringAssert.Contains(e.Message, "incorrect item args");
+                StringAssert.Contains(e.Message, "Incorrect item argument");
                 return;
             }
-
             Assert.Fail("Expected exception wasn't thrown");
         }
 
@@ -300,7 +264,7 @@ namespace MSUnitTests {
         public void TestDoOneCombatRoundMonsterFlee() {
             Game game = new Game(5, 1);
             Player player = game.player;
-            Monster monster = new Monster("somemonster", 0);
+            Monster monster = new Monster("somemonster");
             monster.HP = monster.HPmax;
             player.location.monsters.Add(monster);
             player.inCombat = true;
@@ -319,10 +283,9 @@ namespace MSUnitTests {
             try {
                 game.doAction(cmd);
             } catch (Exception e) {
-                StringAssert.Contains(e.Message, "incorrect command");
+                StringAssert.Contains(e.Message, "Incorrect argument");
                 return;
             }
-
             Assert.Fail("Expected exception wasn't thrown");
         }
     }

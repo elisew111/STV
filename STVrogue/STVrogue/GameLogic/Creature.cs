@@ -4,12 +4,10 @@ using System.Collections.Generic;
 namespace STVrogue.GameLogic {
     public class Creature : GameEntity {
 
-        public String name = "goblin";
-        public int HP = 3;
+        public String name;
+        public int HP;
         public Node location;
-        public int attackRating = 1;
-        public static int seed = 100100;
-        public Random pseudorandom = new Random(seed);
+        public int attackRating;
 
         public Creature(String ID) : base(ID) { }
 
@@ -47,19 +45,10 @@ namespace STVrogue.GameLogic {
         // Monster has a maximum of 5 HP
         public int HPmax = 5;
 
-        public bool rnd;
-        public int nr;
         public Monster(String ID) : base(ID) {
             HP = HPmax;
             name = "orc";
-            rnd = true;
-        }
-
-        public Monster(String ID, int nr) : base(ID) {
-            this.nr = nr;
-            HP = HPmax;
-            name = "orc";
-            rnd = false;
+            attackRating = 2;
         }
 
         /*
@@ -125,15 +114,6 @@ namespace STVrogue.GameLogic {
             this.location = n;
             this.location.monsters.Add(this);
             return true;
-        }
-
-        public int decideAttack(Game g) {
-            if (rnd == true) {
-                int roll = pseudorandom.Next(0, 2);
-                return roll;
-            } else {
-                return nr;
-            }
         }
     }
 

@@ -32,7 +32,7 @@ namespace STVrogue.GameLogic {
         /* The creature that currently has the turn. */
         public Creature whoHasTheTurn;
 
-
+        public List<Monster> getMonsters() { return monsters; }
 
         public PlayerState playerstate;
 
@@ -46,11 +46,7 @@ namespace STVrogue.GameLogic {
          */
         public Game(int level, int capacityMultiplier) {
             dungeon = new Dungeon(level, capacityMultiplier);
-            player = new Player(generateID());
-        }
-
-        public string generateID() {
-            return Guid.NewGuid().ToString("N");
+            player = new Player("player");
         }
 
         /* return all nodes in the game. */
@@ -66,11 +62,6 @@ namespace STVrogue.GameLogic {
                 }
             }
             return gameNodes;
-        }
-
-        public List<Monster> getmonsters() 
-        {
-            return monsters;
         }
 
         /* return all bridges in the game. */
@@ -165,33 +156,35 @@ namespace STVrogue.GameLogic {
          * false.
          */
         public Boolean doNCTurn(Creature C, Command cmd) {
+            foreach (Monster monster in monsters) {
+                int roll = pseudorandom.Next(0, 2);
+                // 50% chance to move to a neighbouring node and 50% chance to do nothing.
+                if (roll == 1) {
+                    int targetNode = pseudorandom.Next(0, monster.location.neighbors.Count - 1);
+                    monster.Move(this, monster.location.neighbors[targetNode]);
+                }
+            }
             String s = cmd.returnArgs();
             switch (cmd.name) {
                 case CommandType.MOVE:
-                    if (C is Player || C is Monster) {
-                        if (s != "none") {
-                            int move = Int32.Parse(s);
-                            return C.Move(this, player.location.neighbors[move]); //The player 'knows' the list of nodes 
-                        } else
-                            throw new Exception("incorrect move args");
-                    } else return false;
+                    if (s != "none") {
+                        int move = Int32.Parse(s);
+                        return C.Move(this, C.location.neighbors[move]);
+                    } else
+                        throw new Exception("Incorrect movement argument");
                 case CommandType.DoNOTHING:
-                    if (C is Player || C is Monster)
-                        return true;
-                    else return false;
+                    return true;
                 case CommandType.USE:
-                    if (C is Player) {
-                        if (s == "potion") {
-                            healingPotion.Use(this, player);
-                            return true;
-                        } else if (s == "crystal") {
-                            crystal.Use(this, player);
-                            return true;
-                        } else
-                            throw new Exception("incorrect item args");
-                    } else return false;
+                    if (s == "potion") {
+                        healingPotion.Use(this, player);
+                        return true;
+                    } else if (s == "crystal") {
+                        crystal.Use(this, player);
+                        return true;
+                    } else
+                        throw new Exception("Incorrect item argument");
                 default:
-                    throw new Exception("Ongeldig command");
+                    throw new Exception("Incorrect argument");
             }
         }
 
@@ -223,15 +216,18 @@ namespace STVrogue.GameLogic {
         public Boolean doAction(Command cmd) {
             String s = cmd.returnArgs();
             switch (cmd.name) {
-                case CommandType.ATTACK: //Attack will specify which monster in the list to attack for now
+                case CommandType.ATTACK: 
                     int attack = Int32.Parse(s);
+                    // Attack will specify which monster in the list to attack for now.
                     player.Attack(this, player.location.monsters[attack]);
                     return routineAfterAttack();
                 case CommandType.FLEE:
                     int flee = Int32.Parse(s);
-                    if (player.Flee(this, player.location.neighbors[flee]) == true)//Flee will specify which node in the neighbouring nodes
-                    {
-                        playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
+                    // Flee will specify which node in the neighbouring nodes.
+                    if (player.Flee(this, player.location.neighbors[flee]) == true) {
+                        playerstate = PlayerState.CombatEnd;
+                        player.boosted = false;
+                        player.inCombat = false;
                         return true;
                     } else {
                         //What to do if a flee is unsuccesful? for now just attacking like after using an item will do?
@@ -259,21 +255,19 @@ namespace STVrogue.GameLogic {
                         player.Attack(this, player.location.monsters[0]);
                         return routineAfterAttack();
                     } else
-                        throw new Exception("incorrect item args");
+                        throw new Exception("Incorrect item argument");
                 default:
-                    throw new Exception("incorrect command");
+                    throw new Exception("Incorrect argument");
             }
         }
 
         public Boolean routineAfterAttack() {
-            if (player.location.monsters.Count <= 0) {
-                playerstate = PlayerState.CombatEnd; player.boosted = false; player.inCombat = false;
+            if (player.location.monsters.Count == 0) {
+                playerstate = PlayerState.CombatEnd;
+                player.boosted = false;
+                player.inCombat = false;
                 return true;
-            }
-
-            //player dead??? nothing specifies what happens if the player is dead.
-
-            else if (player.boosted == true) {
+            } else if (player.boosted == true) {
                 monsterTurns();
                 playerstate = PlayerState.CombatStartAndBoosted;
                 return false;
@@ -286,23 +280,23 @@ namespace STVrogue.GameLogic {
 
         public void monsterTurns() {
             foreach (Monster m in player.location.monsters.ToArray()) {
-                if (m.rnd == true)//Dit eerste stuk hoeft niet gecovered, is random
-                {
-                    if (m.decideAttack(this) == 1) {
-                        m.Attack(this, player);
-                    } else if (m.decideAttack(this) == 0) {
-                        int fleeloc = pseudorandom.Next(0, player.location.neighbors.Count - 1);
-                        m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
-                    }
-                } else//Dit stuk wel
-                  {
-                    if (m.decideAttack(this) == 1) {
-                        m.Attack(this, player);
-                    } else if (m.decideAttack(this) == 0) {
-                        int fleeloc = pseudorandom.Next(0, player.location.neighbors.Count - 1);
-                        m.Flee(this, player.location.neighbors[fleeloc]);//if flee fails monster will do nothing for now
-                    }
+                int roll = pseudorandom.Next(0, 2);
+                if (roll == 1) {
+                    m.Attack(this, player);
+                } else if (roll == 0) {
+                    int fleeloc = pseudorandom.Next(0, player.location.neighbors.Count - 1);
+                    m.Flee(this, player.location.neighbors[fleeloc]);
                 }
+            }
+            if (player.location.monsters.Count == 0) {
+                playerstate = PlayerState.CombatEnd;
+                player.boosted = false;
+                player.inCombat = false;
+            }
+            if (playerstate == PlayerState.Dead) {
+                Console.WriteLine("You died :(");
+                Console.ReadLine();
+                Environment.Exit(0);
             }
         }
     }

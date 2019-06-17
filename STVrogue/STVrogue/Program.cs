@@ -9,14 +9,17 @@ namespace STVrogue {
         static Game game;
         static List<string> commands = new List<string>();
 
-        static void Main(string[] args) {
+        static void Main() {
             Console.WriteLine("Do you want to replay a game or play a new game?");
             Console.WriteLine("Type 'replay' to replay a game or 'new' to start a new game");
             string mode = Console.ReadLine();
             if (mode == "new") {
                 Console.Clear();
                 game = new Game(3, 1);
-                commands.Add("3, 1");
+                int level = game.dungeon.getZones().Count;
+                int capacityMultiplier = game.dungeon.getCapacityMultiplier();
+                string gameParams = level + ", " + capacityMultiplier;
+                commands.Add(gameParams);
                 DrawDungeon(game.dungeon.getStartnode());
                 GameLoop();
             } else if (mode == "replay") {
@@ -41,25 +44,36 @@ namespace STVrogue {
 
         public static void GameLoop() {
             while (true) {
+                if (!game.player.inCombat) {
+                    Console.WriteLine("Type M + the corresponding number to move to specified node");
+                    Console.WriteLine("Type N to do nothing");
+                }
+                else
+                    Console.WriteLine("Type F + the corresponding number to flee to specified node");
                 Console.WriteLine("Neighbors:");
                 int counter = 1;
                 foreach (Node neighbor in game.player.location.neighbors) {
                     Console.WriteLine(counter + ": " + neighbor.ID);
                     counter++;
                 }
-                Console.WriteLine("Type M + the corresponding number to move");
 
                 string commandstr = Console.ReadLine();
                 commands.Add(commandstr);
-                if (commandstr.StartsWith("M")) {
+                if (commandstr.StartsWith("M") && !game.player.inCombat) {
                     int dest = int.Parse(commandstr.Split(" ")[1]);
                     if (dest <= counter) {
                         Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
                         game.doNCTurn(game.player, move);
-
                     }
                 }
-                if (commandstr.StartsWith("A")) {
+                if (commandstr.StartsWith("F") && game.player.inCombat) {
+                    int dest = int.Parse(commandstr.Split(" ")[1]);
+                    if (dest <= counter) {
+                        Command flee = new Command(CommandType.FLEE, new string[] { (dest - 1).ToString() });
+                        game.doOneCombatRound(flee);
+                    }
+                }
+                if (commandstr.StartsWith("A") && game.player.inCombat) {
                     Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
                     game.doOneCombatRound(attack);
                     //game.player.Attack(game, game.player.location.monsters[0]);
@@ -71,6 +85,10 @@ namespace STVrogue {
                 if (commandstr.StartsWith("C")) {
                     Command boost = new Command(CommandType.USE, new string[] { "crystal" });
                     game.doNCTurn(game.player, boost);
+                }
+                if (commandstr.StartsWith("N")) {
+                    Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
+                    game.doNCTurn(game.player, doNothing);
                 }
                 Update();
             }
@@ -122,30 +140,19 @@ namespace STVrogue {
                     Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
                 else
                     Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                Console.WriteLine("type A to attack");
-                Console.WriteLine("type H to use a healingpotion");
-                Console.WriteLine("type C to use a crystal");
+                if (game.player.inCombat)
+                    Console.WriteLine("Type A to attack");
+                foreach (Item i in game.player.bag) {
+                    if (i is Crystal)
+                        Console.WriteLine("Type C to use a crystal");
+                    if (i is HealingPotion)
+                        Console.WriteLine("Type H to use a healingpotion");
+                }  
             }
         }
 
         public static void Update() {
             Console.Clear();
-            /* Random pseudorandom = new Random(seed);
-            foreach (Monster monster in game.player.location.monsters)
-            {
-                int action = pseudorandom.Next(1, 3);
-                switch(action)
-                {
-                    case 1:
-                        int dest = pseudorandom.Next(0, monster.location.neighbors.Count - 1);
-                        Command move = new Command(CommandType.MOVE, new string[] { dest.ToString() });
-                        game.doNCTurn(monster, move);
-                        return;
-                    default:
-                        Command nothing = new Command(CommandType.DoNOTHING, new string[] { });
-                        return;
-                }
-            }*/
             DrawDungeon(game.player.location);
         }
     }

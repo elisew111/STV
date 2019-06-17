@@ -15,6 +15,7 @@ namespace STVrogue.GameLogic {
         public List<Zone> getZones() { return zones; }
         public Node getStartnode() { return startnode; }
         public Node getExitnode() { return exitnode; }
+        public int getCapacityMultiplier() {  return capacityMultiplier; }
 
         public const string NotEnoughZones = "numberOfZones should be 3 or more";
 
@@ -51,10 +52,6 @@ namespace STVrogue.GameLogic {
             seedMonstersAndItems();
         }
 
-        public string generateID() {
-            return Guid.NewGuid().ToString("N");
-        }
-
         /* return all nodes in the dungeon. */
         public List<Node> nodes() {
             List<Node> dungeonNodes = new List<Node>();
@@ -82,7 +79,7 @@ namespace STVrogue.GameLogic {
             dungeonNodes.Remove(exitNode);
             amountNodes--;
             for (int i = 0; i < amountMonsters; i++) {
-                Monster monster = new Monster(generateID());
+                Monster monster = new Monster("M" + (i + 1));
                 int monsterLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[monsterLocation];
                 monster.location = selectedNode;
@@ -94,14 +91,14 @@ namespace STVrogue.GameLogic {
                 }
             }
             for (int i = 0; i < amountHealingPotions; i++) {
-                HealingPotion healingPotion = new HealingPotion(generateID(), HealingPotion.HPvalue);
+                HealingPotion healingPotion = new HealingPotion("HP" + (i + 1), HealingPotion.HPvalue);
                 int healingPotionLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[healingPotionLocation];
                 selectedNode.items.Add(healingPotion);
                 Game.items.Add(healingPotion);
             }
             for (int i = 0; i < amountCrystals; i++) {
-                Crystal crystal = new Crystal(generateID());
+                Crystal crystal = new Crystal("C" + (i + 1));
                 int crystalLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[crystalLocation];
                 selectedNode.items.Add(crystal);
