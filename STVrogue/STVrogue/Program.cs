@@ -15,7 +15,7 @@ namespace STVrogue {
             string mode = Console.ReadLine();
             if (mode == "new") {
                 Console.Clear();
-                game = new Game(3, 1);
+                game = new Game(5, 5);
                 int level = game.dungeon.getZones().Count;
                 int capacityMultiplier = game.dungeon.getCapacityMultiplier();
                 string gameParams = level + ", " + capacityMultiplier;

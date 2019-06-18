@@ -44,6 +44,7 @@ namespace STVrogue.GameLogic {
 
         // Monster has a maximum of 5 HP
         public int HPmax = 5;
+        public Zone prevZone;
 
         public Monster(String ID) : base(ID) {
             HP = HPmax;
@@ -66,6 +67,7 @@ namespace STVrogue.GameLogic {
          */
         public override Boolean Move(Game G, Node n) {
             // Get location of concerning Monster.
+            prevZone = this.location.zone;
             Node currentLocation = this.location;
             // Node monster wants to move to is not a neighbouring node.
             List<Node> possibleMoves = n.neighbors;

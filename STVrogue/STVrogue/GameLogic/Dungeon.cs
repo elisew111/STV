@@ -83,6 +83,7 @@ namespace STVrogue.GameLogic {
                 int monsterLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[monsterLocation];
                 monster.location = selectedNode;
+                monster.prevZone = selectedNode.zone;
                 selectedNode.monsters.Add(monster);
                 Game.monsters.Add(monster);
                 if (selectedNode.capacity == selectedNode.monsters.Count) {

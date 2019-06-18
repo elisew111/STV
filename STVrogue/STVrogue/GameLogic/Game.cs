@@ -79,6 +79,16 @@ namespace STVrogue.GameLogic {
             return gameNodes;
         }
 
+        public Monster getMonster(string id)
+        {
+            Monster monster = null;
+            foreach(Monster m in Game.monsters)
+            {
+                if (m.ID == id) { monster = m; }
+            }
+            return monster;
+        }
+
         /* return all zones in the game. */
         public List<Zone> zones() {
             return dungeon.getZones();

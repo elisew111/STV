@@ -7,9 +7,14 @@ using STVrogue;
 namespace MSUnitTests
 {
     [TestClass]
-    class Iteration2Tests
+    public class Iteration2Tests
     {
-        public List<GamePlay> testsuites;
+        public List<GamePlay> testsuites = new List<GamePlay>
+        { new GamePlay("17-06-2019_02-13-40gameplay.txt"),
+        new GamePlay("18-06-2019_12-24-00gameplay.txt"),
+        new GamePlay("18-06-2019_12-28-04gameplay.txt")};
+
+
         public int threshold = 3;
 
         [TestMethod]
@@ -61,15 +66,33 @@ namespace MSUnitTests
             
         }
         [TestMethod]
-        public void monster()
+        public void monsterHP()
         {
             //RMonster: The HP of every monster can only decrease, and it never leaves its zone.
 
+            for(int i = 0; i < 20; i++)
+            {
+                string mid = "M" + i + 1;
+                for(int X = 1; X<10;X++)
+                {
+                    TemporalSpecification RMonster1 = new Unless(G => HelperPredicates.imp(G.getMonster(mid) == null, G.getMonster(mid).HP == X), G => G.getMonster(mid).HP < X);
+                    Assert.IsTrue(RMonster1.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+                }
+                
+            }
 
+            
+        }
 
-            //TemporalSpecification RMonster1 = new Unless(G => HelperPredicates.imp(G.getMonster(mid) != null,  G.getMonster(mid).HP == X)), G => G.getMonsters(mid).HP < X);
-               
-            //TemporalSpecification RMonster2 = new Always(
+        [TestMethod]
+        public void monsterZone()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                string mid = "M" + i + 1;
+                TemporalSpecification RMonster2 = new Always(G => HelperPredicates.imp(G.getMonster(mid) != null, G.getMonster(mid).location.zone == G.getMonster(mid).prevZone));
+                Assert.IsTrue(RMonster2.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            }
         }
     }
 }
