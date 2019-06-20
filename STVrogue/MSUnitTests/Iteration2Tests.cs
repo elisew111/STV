@@ -10,9 +10,10 @@ namespace MSUnitTests
     public class Iteration2Tests
     {
         public List<GamePlay> testsuites = new List<GamePlay>
-        { new GamePlay("17-06-2019_02-13-40gameplay.txt"),
-        new GamePlay("18-06-2019_12-24-00gameplay.txt"),
-        new GamePlay("18-06-2019_12-28-04gameplay.txt")};
+        { 
+        new GamePlay("20-06-2019_11-01-18gameplay.txt"),
+        new GamePlay("20-06-2019_11-01-18gameplay.txt"),
+        new GamePlay("20-06-2019_11-01-18gameplay.txt")};
 
 
         public int threshold = 3;
@@ -48,6 +49,7 @@ namespace MSUnitTests
             foreach (int X in NrOfItems)
             {
                 TemporalSpecification RItem = new Unless(Game => Game.items.Count == X, Game => Game.items.Count <= X);
+                //Assert.IsTrue(true);
                 Assert.IsTrue(RItem.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
             }
         }
@@ -75,7 +77,7 @@ namespace MSUnitTests
                 string mid = "M" + i + 1;
                 for(int X = 1; X<10;X++)
                 {
-                    TemporalSpecification RMonster1 = new Unless(G => HelperPredicates.imp(G.getMonster(mid) == null, G.getMonster(mid).HP == X), G => G.getMonster(mid).HP < X);
+                    TemporalSpecification RMonster1 = new Unless(G => G.getMonster(mid) != null && G.getMonster(mid).HP == X, G => G.getMonster(mid).HP < X);
                     Assert.IsTrue(RMonster1.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
                 }
                 

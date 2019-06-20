@@ -229,7 +229,10 @@ namespace STVrogue.GameLogic {
                 case CommandType.ATTACK: 
                     int attack = Int32.Parse(s);
                     // Attack will specify which monster in the list to attack for now.
-                    player.Attack(this, player.location.monsters[attack]);
+                    if (player.location.monsters.Count > 0)
+                    {
+                        player.Attack(this, player.location.monsters[0]);
+                    }
                     return routineAfterAttack();
                 case CommandType.FLEE:
                     int flee = Int32.Parse(s);
