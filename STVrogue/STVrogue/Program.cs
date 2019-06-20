@@ -15,7 +15,7 @@ namespace STVrogue {
             string mode = Console.ReadLine();
             if (mode == "new") {
                 Console.Clear();
-                game = new Game(5, 5);
+                game = new Game(3, 1);
                 int level = game.dungeon.getZones().Count;
                 int capacityMultiplier = game.dungeon.getCapacityMultiplier();
                 string gameParams = level + ", " + capacityMultiplier;
@@ -23,19 +23,21 @@ namespace STVrogue {
                 DrawDungeon(game.dungeon.getStartnode());
                 GameLoop();
             } else if (mode == "replay") {
-                Console.WriteLine("what file would you like to replay? (copy paste)");
+                Console.WriteLine("Type the name of the file containing the game you want to replay");
                 string file = Console.ReadLine();
                 Console.Clear();
                 GamePlay gameplay = new GamePlay(file);
                 gameplay.DrawDungeon(gameplay.game.dungeon.getStartnode());
+                Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn]);
+                Console.ReadLine();
                 while (true) {
                     gameplay.replayCurrentTurn();
-                    if (gameplay.turn == gameplay.commands.Count) {
+                    if (gameplay.turn == gameplay.commands.Count - 1) {
                         Console.WriteLine("Next turn is final turn");
-                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn - 1]);
+                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn]);
                     }
                     else
-                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn - 1]);
+                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn]);
                     Console.ReadLine();
                     gameplay.Update();
                 }

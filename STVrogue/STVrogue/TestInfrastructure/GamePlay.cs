@@ -103,17 +103,24 @@ namespace STVrogue.TestInfrastructure {
                 Console.WriteLine(counter + ": " + neighbor.ID);
                 counter++;
             }
-            if (commandstr.StartsWith("M")) {
+            if (commandstr.StartsWith("M") && !game.player.inCombat) {
                 int dest = int.Parse(commandstr.Split(" ")[1]);
                 if (dest <= counter) {
                     Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
                     game.doNCTurn(game.player, move);
-
                 }
             }
-            if (commandstr.StartsWith("A")) {
+            if (commandstr.StartsWith("F") && game.player.inCombat) {
+                int dest = int.Parse(commandstr.Split(" ")[1]);
+                if (dest <= counter) {
+                    Command flee = new Command(CommandType.FLEE, new string[] { (dest - 1).ToString() });
+                    game.doOneCombatRound(flee);
+                }
+            }
+            if (commandstr.StartsWith("A") && game.player.inCombat) {
                 Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
                 game.doOneCombatRound(attack);
+                //game.player.Attack(game, game.player.location.monsters[0]);
             }
             if (commandstr.StartsWith("H")) {
                 Command heal = new Command(CommandType.USE, new string[] { "potion" });
@@ -123,6 +130,11 @@ namespace STVrogue.TestInfrastructure {
                 Command boost = new Command(CommandType.USE, new string[] { "crystal" });
                 game.doNCTurn(game.player, boost);
             }
+            if (commandstr.StartsWith("N")) {
+                Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
+                game.doNCTurn(game.player, doNothing);
+            }
+            Update();
         }
 
         public void Update() {
@@ -175,9 +187,6 @@ namespace STVrogue.TestInfrastructure {
                     Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
                 else
                     Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                Console.WriteLine("type A to attack");
-                Console.WriteLine("type H to use a healingpotion");
-                Console.WriteLine("type C to use a crystal");
             }
         }
     }
