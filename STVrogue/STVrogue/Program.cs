@@ -89,8 +89,15 @@ namespace STVrogue {
                     game.doNCTurn(game.player, boost);
                 }
                 if (commandstr.StartsWith("N")) {
-                    Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
-                    game.doNCTurn(game.player, doNothing);
+                    if (game.player.location.monsters.Count == 0)
+                    {
+                        Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
+                        game.doNCTurn(game.player, doNothing);
+                    }
+                    else
+                    {
+                        game.monsterTurns();
+                    }
                 }
                 Update();
             }

@@ -97,10 +97,10 @@ namespace STVrogue.TestInfrastructure {
         }
 
         public void DoMove(string commandstr) {
-            Console.WriteLine("Neighbors:");
+            //Console.WriteLine("Neighbors:");
             int counter = 1;
             foreach (Node neighbor in game.player.location.neighbors) {
-                Console.WriteLine(counter + ": " + neighbor.ID);
+                //Console.WriteLine(counter + ": " + neighbor.ID);
                 counter++;
             }
             if (commandstr.StartsWith("M") && !game.player.inCombat) {
@@ -134,7 +134,7 @@ namespace STVrogue.TestInfrastructure {
                 Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
                 game.doNCTurn(game.player, doNothing);
             }
-            Update();
+            //Update();
         }
 
         public void Update() {
