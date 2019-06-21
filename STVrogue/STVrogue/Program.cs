@@ -96,7 +96,8 @@ namespace STVrogue {
                     }
                     else
                     {
-                        game.monsterTurns();
+                        
+                        game.routineAfterAttack();
                     }
                 }
                 Update();
