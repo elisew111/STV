@@ -85,10 +85,7 @@ namespace STVrogue.GameLogic {
             this.location.monsters.Remove(this);
             this.location = n;
             this.location.monsters.Add(this);
-            if(this.location == G.player.location)
-            {
-                G.player.inCombat = true;
-            }
+            
             return true;
         }
 

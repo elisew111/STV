@@ -46,6 +46,10 @@ namespace STVrogue {
 
         public static void GameLoop() {
             while (true) {
+
+                if(game.player.location.monsters.Count == 0) { game.player.inCombat = false; }
+                else { game.player.inCombat = true; }
+
                 if (!game.player.inCombat) {
                     Console.WriteLine("Type M + the corresponding number to move to specified node");
                     Console.WriteLine("Type N to do nothing");
