@@ -180,6 +180,7 @@ namespace STVrogue.GameLogic {
                 case CommandType.MOVE:
                     if (s != "none") {
                         int move = Int32.Parse(s);
+                        
                         return C.Move(this, C.location.neighbors[move]);
                     } else
                         throw new Exception("Incorrect movement argument");

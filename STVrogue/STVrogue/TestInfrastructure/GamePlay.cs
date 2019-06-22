@@ -91,16 +91,18 @@ namespace STVrogue.TestInfrastructure {
                 Environment.Exit(0);
             } else {
                 string action = commands[turn];
-                doMove(action);
+                DoMove(action);
                 turn++;
             }
         }
 
-        public void doMove(string commandstr) {
-            if (game.player.location.monsters.Count == 0) { game.player.inCombat = false; } else { game.player.inCombat = true; }
+        public void DoMove(string commandstr) {
+            Console.WriteLine("Neighbors:");
             int counter = 1;
-            foreach (Node neighbor in game.player.location.neighbors)
+            foreach (Node neighbor in game.player.location.neighbors) {
+                Console.WriteLine(counter + ": " + neighbor.ID);
                 counter++;
+            }
             if (commandstr.StartsWith("M") && !game.player.inCombat) {
                 int dest = int.Parse(commandstr.Split(" ")[1]);
                 if (dest <= counter) {
@@ -118,6 +120,7 @@ namespace STVrogue.TestInfrastructure {
             if (commandstr.StartsWith("A") && game.player.inCombat) {
                 Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
                 game.doOneCombatRound(attack);
+                //game.player.Attack(game, game.player.location.monsters[0]);
             }
             if (commandstr.StartsWith("H")) {
                 Command heal = new Command(CommandType.USE, new string[] { "potion" });
@@ -127,13 +130,11 @@ namespace STVrogue.TestInfrastructure {
                 Command boost = new Command(CommandType.USE, new string[] { "crystal" });
                 game.doNCTurn(game.player, boost);
             }
-            if (commandstr.StartsWith("N") && !game.player.inCombat) {
-                if (game.player.location.monsters.Count == 0) {
-                    Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
-                    game.doNCTurn(game.player, doNothing);
-                } else
-                    game.routineAfterAttack();
+            if (commandstr.StartsWith("N")) {
+                Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
+                game.doNCTurn(game.player, doNothing);
             }
+            Update();
         }
 
         public void Update() {
