@@ -28,17 +28,17 @@ namespace STVrogue.TestInfrastructure {
             for (int i = 1; i < lines.Length; i++)
                 commands.Add(lines[i]);
             length = commands.Count;
-            drawDungeon(game.dungeon.getStartnode());
-            while (true) {
-                replayCurrentTurn();
-                if (turn == commands.Count) {
-                    Console.WriteLine("Next turn is final turn");
-                    Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
-                } else
-                    Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
-                Console.ReadLine();
-                Update();
-            }
+            //drawDungeon(game.dungeon.getStartnode());
+            //while (true) {
+            //    replayCurrentTurn();
+            //    if (turn == commands.Count) {
+            //        Console.WriteLine("Next turn is final turn");
+            //        Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
+            //    } else
+            //        Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
+            //    //Console.ReadLine();
+            //    //Update();
+            //}
         }
 
         public static void save(List<string> commands) {
@@ -74,49 +74,49 @@ namespace STVrogue.TestInfrastructure {
          * This also increases the turn nr, thus shifting the current turn to the next one. 
          */
         public virtual void replayCurrentTurn() {
-            if (turn == commands.Count) {
-                Console.WriteLine("Game finished");
-                Console.ReadLine();
-                Environment.Exit(0);
-            } else {
+            //if (turn == commands.Count) {
+            //    Console.WriteLine("Game finished");
+            //    //Console.ReadLine();
+            //    Environment.Exit(0);
+            //} else {
                 string action = commands[turn];
                 doMove(action);
                 turn++;
-            }
+            //}
         }
 
-        public void doMove(string commandstr) {
+        public void doMove(string action) {
             if (game.player.location.monsters.Count == 0) { game.player.inCombat = false; } else { game.player.inCombat = true; }
             int counter = 1;
             foreach (Node neighbor in game.player.location.neighbors)
                 counter++;
-            if (commandstr.StartsWith("M") && !game.player.inCombat) {
-                int dest = int.Parse(commandstr.Split(" ")[1]);
+            if (action.StartsWith("M") && !game.player.inCombat) {
+                int dest = int.Parse(action.Split(" ")[1]);
                 if (dest <= counter) {
                     Command move = new Command(CommandType.MOVE, new string[] { (dest - 1).ToString() });
                     game.doNCTurn(game.player, move);
                 }
             }
-            if (commandstr.StartsWith("F") && game.player.inCombat) {
-                int dest = int.Parse(commandstr.Split(" ")[1]);
+            if (action.StartsWith("F") && game.player.inCombat) {
+                int dest = int.Parse(action.Split(" ")[1]);
                 if (dest <= counter) {
                     Command flee = new Command(CommandType.FLEE, new string[] { (dest - 1).ToString() });
                     game.doOneCombatRound(flee);
                 }
             }
-            if (commandstr.StartsWith("A") && game.player.inCombat) {
+            if (action.StartsWith("A") && game.player.inCombat) {
                 Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
                 game.doOneCombatRound(attack);
             }
-            if (commandstr.StartsWith("H")) {
+            if (action.StartsWith("H")) {
                 Command heal = new Command(CommandType.USE, new string[] { "potion" });
                 game.doNCTurn(game.player, heal);
             }
-            if (commandstr.StartsWith("C")) {
+            if (action.StartsWith("C")) {
                 Command boost = new Command(CommandType.USE, new string[] { "crystal" });
                 game.doNCTurn(game.player, boost);
             }
-            if (commandstr.StartsWith("N") && !game.player.inCombat) {
+            if (action.StartsWith("N") && !game.player.inCombat) {
                 if (game.player.location.monsters.Count == 0) {
                     Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
                     game.doNCTurn(game.player, doNothing);
