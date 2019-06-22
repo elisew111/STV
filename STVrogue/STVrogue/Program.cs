@@ -27,18 +27,6 @@ namespace STVrogue {
                 string file = Console.ReadLine();
                 Console.Clear();
                 GamePlay gameplay = new GamePlay(file);
-                gameplay.DrawDungeon(gameplay.game.dungeon.getStartnode());
-                while (true) {
-                    gameplay.replayCurrentTurn();
-                    if (gameplay.turn == gameplay.commands.Count) {
-                        Console.WriteLine("Next turn is final turn");
-                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn - 1]);
-                    }
-                    else
-                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn - 1]);
-                    Console.ReadLine();
-                    gameplay.Update();
-                }
             }
         }
 

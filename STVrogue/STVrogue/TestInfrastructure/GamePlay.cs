@@ -19,24 +19,26 @@ namespace STVrogue.TestInfrastructure {
         public GamePlay() { }
 
         public GamePlay(String savefile) {
-            /*
-             * Waar ik aan zat te denken (maar dat is niet echt te implementeren als we nog geen werkend spel
-             * hebben) is dat je tijdens het spelen van een spel al je commands en de seed+parameters van een 
-             * bepaalde Game naar een file schrijft (daar is denk ik de gameplay.save(file) functie die ze zeggen
-             * dat je moet maken, maar nergens te bekennen is, ook voor bedoeld). Het enige wat je in deze
-             * functie dan hoeft te doen is de initiële GameState afhankelijk van de gebruikte seed en
-             * parameters bepalen en de commands in een array op te slaan en je kan aan de slag.
-             */
             string[] lines = File.ReadAllLines(savefile, Encoding.UTF8);
             string createGameParameters = lines[0];
             int level = (int)Char.GetNumericValue(createGameParameters[0]);
             int capacityMultiplier = (int)Char.GetNumericValue(createGameParameters[3]);
             game = new Game(level, capacityMultiplier);
             copyGame = game;
-            for (int i = 1; i < lines.Length; i++) {
+            for (int i = 1; i < lines.Length; i++)
                 commands.Add(lines[i]);
-            }
             length = commands.Count;
+            drawDungeon(game.dungeon.getStartnode());
+            while (true) {
+                replayCurrentTurn();
+                if (turn == commands.Count) {
+                    Console.WriteLine("Next turn is final turn");
+                    Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
+                } else
+                    Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
+                Console.ReadLine();
+                Update();
+            }
         }
 
         public static void save(List<string> commands) {
@@ -48,25 +50,12 @@ namespace STVrogue.TestInfrastructure {
 
         /* reset the gameplay to turn 0 */
         public virtual void reset() {
-            /*
-             * Bij het maken van een GamePlay object wordt de initiële GameState aangemaakt en daar moet een
-             * kopie van worden gemaakt. Deze functie aanroepen zal dan dit kopie van de initïele GameState
-             * kopiëren naar de huidige GameState en de turn weer op 0 zetten (wat pretty much betekent dat
-             * de selector van de array van commands weer 0 wordt).
-             */
             turn = 0;
             game = copyGame;
         }
 
         /* return the current game state */
         public virtual Game getState() {
-            /*
-             * Deze functie moet een Game-object returnen, maar wat dit precies inhoudt weet ik ook niet echt.
-             * Game heeft een aantal class variables, namelijk Player player, List<Monster> monsters, 
-             * List<Item> items, Dungeon dungeon, int turnNumber en Creature whoHasTheTurn. De meeste dingen
-             * zullen redelijk voorzich spreken, maar dingen zoals Dungeon hebben zelf ook weer heel veel
-             * class variables, dus of je die ook moet returnen en in welke capaciteit is mij een raadsel.
-             */
             return game;
         }
 
@@ -138,10 +127,10 @@ namespace STVrogue.TestInfrastructure {
 
         public void Update() {
             Console.Clear();
-            DrawDungeon(game.player.location);
+            drawDungeon(game.player.location);
         }
 
-        public void DrawDungeon(Node node) {
+        public void drawDungeon(Node node) {
             if (game.player.location == game.dungeon.getExitnode()) {
                 Console.WriteLine("You win!");
                 Console.ReadLine();
