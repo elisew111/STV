@@ -11,7 +11,7 @@ namespace MSUnitTests
     {
         public List<GamePlay> testsuites = new List<GamePlay>
         { 
-        new GamePlay("20-06-2019_11-01-18gameplay.txt")};
+        new GamePlay("0-of-2-kills_no_items.txt")};
 
 
         public int threshold = 1;
