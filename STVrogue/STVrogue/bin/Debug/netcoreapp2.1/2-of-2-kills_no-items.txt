@@ -1,0 +1,28 @@
+3, 1
+M 1
+A
+N
+N
+N
+A
+A
+M 3
+M 2
+N
+A
+M 1
+N
+N
+N
+N
+N
+A
+M 2
+M 1
+N
+N
+A
+M 3
+M 2
+M 1
+M 2

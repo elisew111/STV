@@ -33,7 +33,7 @@ namespace MSUnitTests
         new GamePlay("4-of-4-kills_use-2-of-2-C-in-and-out-combat-both-before-killing-final-monster.txt")
         };
 
-        public int threshold = 3;
+        public int threshold = 1;
 
         [TestMethod]
         public void HPTest()
@@ -109,7 +109,8 @@ namespace MSUnitTests
             for (int i = 0; i < 20; i++)
             {
                 string mid = "M" + i + 1;
-                TemporalSpecification RMonster2 = new Always(G => HelperPredicates.imp(G.getMonster(mid) != null, G.getMonster(mid).location.zone == G.getMonster(mid).prevZone));
+                TemporalSpecification RMonster2 = new Always(G => G.getMonster(mid) != null && G.getMonster(mid).location.zone == G.getMonster(mid).prevZone);
+            //new Always(G => HelperPredicates.imp(G.getMonster(mid) != null, G.getMonster(mid).location.zone == G.getMonster(mid).prevZone));
                 Assert.IsTrue(RMonster2.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
             }
         }

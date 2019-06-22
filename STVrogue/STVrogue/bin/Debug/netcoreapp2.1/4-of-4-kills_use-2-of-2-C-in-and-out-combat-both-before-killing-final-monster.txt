@@ -1,0 +1,38 @@
+5, 2
+M 1
+C
+A
+M 2
+A
+M 1
+M 3
+M 2
+M 1
+A
+M 2
+M 1
+M 1
+M 1
+A
+A
+M 3
+C
+M 2
+M 1
+A
+A
+M 1
+A
+M 1
+A
+A
+M 1
+A
+M 1
+M 3
+M 2
+M 1
+M 3
+M 2
+M 1
+M 3
