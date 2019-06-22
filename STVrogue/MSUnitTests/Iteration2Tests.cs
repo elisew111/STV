@@ -9,9 +9,29 @@ namespace MSUnitTests
     [TestClass]
     public class Iteration2Tests
     {
-        public List<GamePlay> testsuites = new List<GamePlay>
-        { 
-        new GamePlay("20-06-2019_11-01-18gameplay.txt")};
+        public GamePlay[] testsuites = new GamePlay[]
+         {
+        new GamePlay("0-of-2-kills_all-items-out-combat-HP-at-10-of-10-HP.txt"),
+        new GamePlay("0-of-2-kills_no_items.txt"),
+        new GamePlay("0-of-2-kills_use-1-of-1-C-out-combat.txt"),
+        new GamePlay("0-of-2-kills_use-1-of-1-HP-at-10-of-10-HP-out-combat.txt"),
+        new GamePlay("1-of-2-kills_all-items-out-combat-HP-at-10-of-10-HP.txt"),
+        new GamePlay("1-of-2-kills_no-items.txt"),
+        new GamePlay("1-of-2-kills_use-1-of-1-C-in-combat.txt"),
+        new GamePlay("1-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat.txt"),
+        new GamePlay("1-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat-and-1-of-1-C-in-combat.txt"),
+        new GamePlay("1-of-3-kills_use-1-of-2-HP-at-6-of-10-HP-out-combat.txt"),
+        new GamePlay("1-of-4-kills_no-items_player-dies.txt"),
+        new GamePlay("2-of-2-kills_no-items.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-C-in-combat-before-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat-and-1-of-1-C-in-combat-both-before-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat-before-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-out-combat-and-1-of-1-C-out-combat-both-after-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-10-of-10-HP-out-combat-and-1-of-1-C-in-combat-both-before-killing-final-monster.txt"),
+        new GamePlay("2-of-5-kills_no-items_player-dies.txt"),
+        new GamePlay("3-of-3-kills_use-2-of-2-HP-at-2-and-7-HP-out-combat-both-after-killing-final-monster.txt"),
+        new GamePlay("4-of-4-kills_use-2-of-2-C-in-and-out-combat-both-before-killing-final-monster.txt")
+        };
 
 
         public int threshold = 1;
@@ -44,12 +64,14 @@ namespace MSUnitTests
         public void Item()
         {
             int[] NrOfItems = { 2, 4, 8, 16 };
-            foreach (int X in NrOfItems)
+            SpecificationFamily family = new SpecificationFamily();
+            foreach (int x in NrOfItems)
             {
+                int X = x;
                 TemporalSpecification RItem = new Unless(Game => Game.items.Count == X, Game => Game.items.Count <= X);
-                //Assert.IsTrue(true);
-                Assert.IsTrue(RItem.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+                family.add(RItem);
             }
+            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
         }
         [TestMethod]
         public void Decay()
@@ -57,12 +79,14 @@ namespace MSUnitTests
             //RDecay: when the game has no item left(lying around in nodes nor in the player’s bag), the player’s HP can only decrease.
 
             int[] HPvalues = { 2, 4, 8, 16 };
-            foreach (int X in HPvalues)
+            SpecificationFamily family = new SpecificationFamily();
+            foreach (int x in HPvalues)
             {
+                int X = x;
                 TemporalSpecification RDecay = new Unless(Game => Game.player.HP == X && (Game.items.Count <= 0 && Game.player.bag.Count <= 0), Game => Game.player.HP <= X);
-                Assert.IsTrue(RDecay.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
-
+                family.add(RDecay);
             }
+            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
             
         }
         [TestMethod]
@@ -70,30 +94,33 @@ namespace MSUnitTests
         {
             //RMonster: The HP of every monster can only decrease, and it never leaves its zone.
 
+            SpecificationFamily family = new SpecificationFamily();
             for(int i = 0; i < 20; i++)
             {
                 string mid = "M" + i + 1;
-                for(int X = 1; X<10;X++)
+                for(int x = 1; x<10;x++)
                 {
+                    int X = x;
                     TemporalSpecification RMonster1 = new Unless(G => G.getMonster(mid) != null && G.getMonster(mid).HP == X, G => G.getMonster(mid).HP < X);
-                    Assert.IsTrue(RMonster1.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+                    family.add(RMonster1);
                 }
-                
             }
-
-            
+            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
         }
 
         [TestMethod]
         public void monsterZone()
         {
-            for (int i = 0; i < 20; i++)
+            SpecificationFamily family = new SpecificationFamily();
+            for (int I = 0; I < 20; I++)
             {
+                int i = I;
                 string mid = "M" + i + 1;
                 TemporalSpecification RMonster2 = new Always(G => G.getMonster(mid) != null && G.getMonster(mid).location.zone == G.getMonster(mid).prevZone);
             //new Always(G => HelperPredicates.imp(G.getMonster(mid) != null, G.getMonster(mid).location.zone == G.getMonster(mid).prevZone));
-                Assert.IsTrue(RMonster2.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+               
             }
+            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
         }
     }
 }
