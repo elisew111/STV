@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using STVrogue.GameControl;
+using STVrogue.TestInfrastructure;
 
 namespace STVrogue.GameLogic {
 
@@ -309,6 +310,7 @@ namespace STVrogue.GameLogic {
             if (playerstate == PlayerState.Dead) {
                 Console.WriteLine("You died :(");
                 Console.ReadLine();
+                GamePlay.save(Program.commands);
                 Environment.Exit(0);
             }
         }

@@ -1,23 +1,30 @@
-5, 5
+3, 1
+M 1
+F 3
+M 2
+A
+M 1
+F 1
+N
+N
+N
 M 1
 A
+N
+N
+M 1
+M 2
+M 1
+M 2
+M 1
+A
+H
 A
 A
 M 3
 M 2
-A
-A
-M 1
-A
-M 3
-M 2
-A
-M 1
-A
-M 3
-M 2
 M 1
 M 3
 M 2
 M 1
-M 3
+M 2

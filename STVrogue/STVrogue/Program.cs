@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace STVrogue {
     class Program {
         static Game game;
-        static List<string> commands = new List<string>();
+        public static List<string> commands = new List<string>();
 
         static void Main() {
             Console.WriteLine("Do you want to replay a game or play a new game?");
@@ -28,16 +28,14 @@ namespace STVrogue {
                 Console.Clear();
                 GamePlay gameplay = new GamePlay(file);
                 gameplay.DrawDungeon(gameplay.game.dungeon.getStartnode());
-                Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn]);
-                Console.ReadLine();
                 while (true) {
                     gameplay.replayCurrentTurn();
-                    if (gameplay.turn == gameplay.commands.Count - 1) {
+                    if (gameplay.turn == gameplay.commands.Count) {
                         Console.WriteLine("Next turn is final turn");
-                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn]);
+                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn - 1]);
                     }
                     else
-                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn]);
+                        Console.WriteLine("Press enter to execute next move: " + gameplay.commands[gameplay.turn - 1]);
                     Console.ReadLine();
                     gameplay.Update();
                 }
@@ -46,9 +44,11 @@ namespace STVrogue {
 
         public static void GameLoop() {
             while (true) {
-
-                if(game.player.location.monsters.Count == 0) { game.player.inCombat = false; }
-                else { game.player.inCombat = true; }
+                if (game.player.location.monsters.Count == 0) {
+                    game.player.inCombat = false;
+                } else {
+                    game.player.inCombat = true;
+                }
 
                 if (!game.player.inCombat) {
                     Console.WriteLine("Type M + the corresponding number to move to specified node");
@@ -82,7 +82,6 @@ namespace STVrogue {
                 if (commandstr.StartsWith("A") && game.player.inCombat) {
                     Command attack = new Command(CommandType.ATTACK, new string[] { "0" });
                     game.doOneCombatRound(attack);
-                    //game.player.Attack(game, game.player.location.monsters[0]);
                 }
                 if (commandstr.StartsWith("H")) {
                     Command heal = new Command(CommandType.USE, new string[] { "potion" });
@@ -92,23 +91,21 @@ namespace STVrogue {
                     Command boost = new Command(CommandType.USE, new string[] { "crystal" });
                     game.doNCTurn(game.player, boost);
                 }
-                if (commandstr.StartsWith("N")) {
-                    if (game.player.location.monsters.Count == 0)
-                    {
+                if (commandstr.StartsWith("N") && !game.player.inCombat) {
+                    if (game.player.location.monsters.Count == 0) {
                         Command doNothing = new Command(CommandType.DoNOTHING, new string[] { "do nothing" });
                         game.doNCTurn(game.player, doNothing);
                     }
-                    else
-                    {
-                        
+                    else                    
                         game.routineAfterAttack();
-                    }
                 }
                 Update();
             }
         }
 
         public static void DrawDungeon(Node node) {
+            bool hasCrystal = false;
+            bool hasHealingPotion = false;
             if (game.player.location == game.dungeon.getExitnode()) {
                 Console.WriteLine("You win!");
                 Console.ReadLine();
@@ -158,10 +155,14 @@ namespace STVrogue {
                     Console.WriteLine("Type A to attack");
                 foreach (Item i in game.player.bag) {
                     if (i is Crystal)
-                        Console.WriteLine("Type C to use a crystal");
+                        hasCrystal = true;                      
                     if (i is HealingPotion)
-                        Console.WriteLine("Type H to use a healingpotion");
-                }  
+                        hasHealingPotion = true;                       
+                }
+                if (hasCrystal)
+                    Console.WriteLine("Type C to use a crystal");
+                if (hasHealingPotion)
+                    Console.WriteLine("Type H to use a healingpotion");
             }
         }
 

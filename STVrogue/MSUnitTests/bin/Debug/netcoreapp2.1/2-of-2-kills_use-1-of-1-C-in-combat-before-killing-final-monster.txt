@@ -1,28 +1,26 @@
 3, 1
 M 1
-N
-F 3
+A
+M 2
+A
 M 1
+A
+M 3
+M 2
 M 1
+M 2
 M 1
-N
 N
 N
 N
 C
 A
-A
-M 3
-M 2
-M 2
-M 2
 M 1
 A
+M 2
+M 2
+M 1
 M 3
 M 2
-M 2
-M 2
-M 1
-M 1
 M 1
 M 2
