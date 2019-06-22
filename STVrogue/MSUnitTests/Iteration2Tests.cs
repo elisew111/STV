@@ -10,11 +10,28 @@ namespace MSUnitTests
     public class Iteration2Tests
     {
         public List<GamePlay> testsuites = new List<GamePlay>
-        { 
-        new GamePlay("20-06-2019_11-01-18gameplay.txt"),
-        new GamePlay("20-06-2019_11-01-18gameplay.txt"),
-        new GamePlay("20-06-2019_11-01-18gameplay.txt")};
-
+        {
+        new GamePlay("0-of-2-kills_all-items-out-combat-HP-at-10-of-10-HP.txt"),
+        new GamePlay("0-of-2-kills_no_items.txt"),
+        new GamePlay("0-of-2-kills_use-1-of-1-C-out-combat.txt"),
+        new GamePlay("0-of-2-kills_use-1-of-1-HP-at-10-of-10-HP-out-combat.txt"),
+        new GamePlay("1-of-2-kills_all-items-out-combat-HP-at-10-of-10-HP.txt"),
+        new GamePlay("1-of-2-kills_no-items.txt"),
+        new GamePlay("1-of-2-kills_use-1-of-1-C-in-combat.txt"),
+        new GamePlay("1-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat.txt"),
+        new GamePlay("1-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat-and-1-of-1-C-in-combat.txt"),
+        new GamePlay("1-of-3-kills_use-1-of-2-HP-at-6-of-10-HP-out-combat.txt"),
+        new GamePlay("1-of-4-kills_no-items_player-dies.txt"),
+        new GamePlay("2-of-2-kills_no-items.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-C-in-combat-before-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat-and-1-of-1-C-in-combat-both-before-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-in-combat-before-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-8-of-10-HP-out-combat-and-1-of-1-C-out-combat-both-after-killing-final-monster.txt"),
+        new GamePlay("2-of-2-kills_use-1-of-1-HP-at-10-of-10-HP-out-combat-and-1-of-1-C-in-combat-both-before-killing-final-monster.txt"),
+        new GamePlay("2-of-5-kills_no-items_player-dies.txt"),
+        new GamePlay("3-of-3-kills_use-2-of-2-HP-at-2-and-7-HP-out-combat-both-after-killing-final-monster.txt"),
+        new GamePlay("4-of-4-kills_use-2-of-2-C-in-and-out-combat-both-before-killing-final-monster.txt")
+        };
 
         public int threshold = 3;
 

@@ -138,6 +138,33 @@ namespace STVrogue.TestInfrastructure
             return judgement(ok, relevant);
         }
     }
+    /*
+     * Representing a family of temporal specifications as explained in the Document of Iteration-2.   
+     */
+    public class SpecificationFamily
+    {
+
+        List<TemporalSpecification> specs = new List<TemporalSpecification>();
+
+        public SpecificationFamily() { }
+        public SpecificationFamily add(TemporalSpecification phi) { specs.Add(phi); return this; }
+
+        public Judgement evaluate(GamePlay[] gameplays, int threshold)
+        {
+            int countRelevantlyValid = 0;
+            foreach (TemporalSpecification phi in specs)
+            {
+                for (int k = 0; k < gameplays.Length; k++)
+                {
+                    Judgement verdict = phi.evaluate(gameplays[k]);
+                    if (verdict == Judgement.Invalid) return Judgement.Invalid;
+                    if (verdict == Judgement.RelevantlyValid) countRelevantlyValid++;
+                }
+            }
+            if (countRelevantlyValid >= threshold) return Judgement.RelevantlyValid;
+            return Judgement.TriviallyValid;
+        }
+    }
 
 
 }
