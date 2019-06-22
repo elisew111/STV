@@ -87,7 +87,7 @@ namespace MSUnitTests
                 family.add(RDecay);
             }
             Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
-            
+
         }
         [TestMethod]
         public void monsterHP()
@@ -118,7 +118,7 @@ namespace MSUnitTests
                 string mid = "M" + i + 1;
                 TemporalSpecification RMonster2 = new Always(G => G.getMonster(mid) != null && G.getMonster(mid).location.zone == G.getMonster(mid).prevZone);
             //new Always(G => HelperPredicates.imp(G.getMonster(mid) != null, G.getMonster(mid).location.zone == G.getMonster(mid).prevZone));
-               
+
             }
             Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
         }
