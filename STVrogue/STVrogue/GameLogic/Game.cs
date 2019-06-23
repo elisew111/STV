@@ -79,6 +79,10 @@ namespace STVrogue.GameLogic {
             }
             return gameNodes;
         }
+        public List<Item> getItems()
+        {
+            return items;
+        }
 
         public Monster getMonster(string id)
         {
@@ -236,8 +240,9 @@ namespace STVrogue.GameLogic {
                     }
                     return routineAfterAttack();
                 case CommandType.FLEE:
-                    int flee = Int32.Parse(s);
+                    int flee = Int32.Parse(s); 
                     // Flee will specify which node in the neighbouring nodes.
+                    
                     if (player.Flee(this, player.location.neighbors[flee]) == true) {
                         playerstate = PlayerState.CombatEnd;
                         player.boosted = false;

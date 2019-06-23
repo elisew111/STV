@@ -27,6 +27,25 @@ namespace STVrogue {
                 string file = Console.ReadLine();
                 Console.Clear();
                 GamePlay gameplay = new GamePlay(file);
+                ReplayLoop(gameplay);
+            }
+        }
+
+        public static void ReplayLoop(GamePlay g)
+        {
+            g.drawDungeon(g.game.dungeon.getStartnode());
+            while (!g.atTheEnd())
+            {
+                g.replayCurrentTurn();
+                if (g.turn == g.commands.Count)
+                {
+                    Console.WriteLine("Next turn is final turn");
+                    Console.WriteLine("Press enter to execute next move: " + g.commands[g.turn - 1]);
+                }
+                else
+                    Console.WriteLine("Press enter to execute next move: " + g.commands[g.turn - 1]);
+                Console.ReadLine();
+                g.Update();
             }
         }
 
@@ -45,10 +64,11 @@ namespace STVrogue {
                 else
                     Console.WriteLine("Type F + the corresponding number to flee to specified node");
                 Console.WriteLine("Neighbors:");
-                int counter = 1;
+                int counter = 0;
                 foreach (Node neighbor in game.player.location.neighbors) {
-                    Console.WriteLine(counter + ": " + neighbor.ID);
                     counter++;
+                    Console.WriteLine(counter + ": " + neighbor.ID);
+                    
                 }
 
                 string commandstr = Console.ReadLine();

@@ -15,30 +15,23 @@ namespace STVrogue.TestInfrastructure {
         public List<string> commands = new List<string>();
         public Game game;
         public Game copyGame;
+        int level;
+        int capacityMultiplier;
 
         public GamePlay() { }
 
         public GamePlay(String savefile) {
             string[] lines = File.ReadAllLines(savefile, Encoding.UTF8);
             string createGameParameters = lines[0];
-            int level = (int)Char.GetNumericValue(createGameParameters[0]);
-            int capacityMultiplier = (int)Char.GetNumericValue(createGameParameters[3]);
+            level = (int)Char.GetNumericValue(createGameParameters[0]);
+            capacityMultiplier = (int)Char.GetNumericValue(createGameParameters[3]);
             game = new Game(level, capacityMultiplier);
             copyGame = game;
             for (int i = 1; i < lines.Length; i++)
                 commands.Add(lines[i]);
             length = commands.Count;
-            //drawDungeon(game.dungeon.getStartnode());
-            //while (true) {
-            //    replayCurrentTurn();
-            //    if (turn == commands.Count) {
-            //        Console.WriteLine("Next turn is final turn");
-            //        Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
-            //    } else
-            //        Console.WriteLine("Press enter to execute next move: " + commands[turn - 1]);
-            //    //Console.ReadLine();
-            //    //Update();
-            //}
+
+            
         }
 
         public static void save(List<string> commands) {
@@ -51,7 +44,7 @@ namespace STVrogue.TestInfrastructure {
         /* reset the gameplay to turn 0 */
         public virtual void reset() {
             turn = 0;
-            game = copyGame;
+            game = new Game(level, capacityMultiplier);
         }
 
         /* return the current game state */
@@ -87,7 +80,7 @@ namespace STVrogue.TestInfrastructure {
 
         public void doMove(string action) {
             if (game.player.location.monsters.Count == 0) { game.player.inCombat = false; } else { game.player.inCombat = true; }
-            int counter = 1;
+            int counter = 0;
             foreach (Node neighbor in game.player.location.neighbors)
                 counter++;
             if (action.StartsWith("M") && !game.player.inCombat) {

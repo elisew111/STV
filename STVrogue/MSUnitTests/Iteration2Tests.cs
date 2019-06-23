@@ -40,38 +40,38 @@ namespace MSUnitTests
         public void HPTest()
         {
             TemporalSpecification RHP = new Always(G => G.player.HP <= G.player.HPmax);
-            Assert.IsTrue(RHP.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, RHP.evaluate(testsuites, threshold));
         }
         [TestMethod]
         public void Exit()
         {
             TemporalSpecification RExit = new Always(G => G.player.location.isReachable(G.dungeon.getExitnode()));
-            Assert.IsTrue(RExit.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, RExit.evaluate(testsuites, threshold));
         }
         [TestMethod]
         public void NodeCap()
         {
             TemporalSpecification RNodeCap = new Always(G => HelperPredicates.forall(G.dungeon.nodes(), n => n.monsters.Count <= n.capacity));
-            Assert.IsTrue(RNodeCap.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, RNodeCap.evaluate(testsuites, threshold));
         }
         [TestMethod]
         public void Alive()
         {
             TemporalSpecification RAlive = new Unless(G => G.player.inCombat, G => G.player.HP > 0);
-            Assert.IsTrue(RAlive.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, RAlive.evaluate(testsuites, threshold));
         }
         [TestMethod]
         public void Item()
         {
-            int[] NrOfItems = { 2, 4, 8, 16 };
+            int[] NrOfItems = { 2, 4, 8, 16 }; //bedenk logischere dingen
             SpecificationFamily family = new SpecificationFamily();
             foreach (int x in NrOfItems)
             {
                 int X = x;
-                TemporalSpecification RItem = new Unless(Game => Game.items.Count == X, Game => Game.items.Count <= X);
+                TemporalSpecification RItem = new Unless(G => G.getItems().Count == X, G => G.getItems().Count < X);
                 family.add(RItem);
             }
-            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, family.evaluate(testsuites, threshold));
         }
         [TestMethod]
         public void Decay()
@@ -86,7 +86,7 @@ namespace MSUnitTests
                 TemporalSpecification RDecay = new Unless(Game => Game.player.HP == X && (Game.items.Count <= 0 && Game.player.bag.Count <= 0), Game => Game.player.HP <= X);
                 family.add(RDecay);
             }
-            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, family.evaluate(testsuites, threshold));
 
         }
         [TestMethod]
@@ -95,32 +95,30 @@ namespace MSUnitTests
             //RMonster: The HP of every monster can only decrease, and it never leaves its zone.
 
             SpecificationFamily family = new SpecificationFamily();
-            for(int i = 0; i < 20; i++)
+
+            
+            for(int I = 0; I < 10; I++)
             {
-                string mid = "M" + i + 1;
-                for(int x = 1; x<10;x++)
+                int i = I + 1;
+                string mid = "M" + i;
+                int[] HPValues = new int[] { 2, 4, 6, 8 };
+                foreach(int x in HPValues)
                 {
                     int X = x;
                     TemporalSpecification RMonster1 = new Unless(G => G.getMonster(mid) != null && G.getMonster(mid).HP == X, G => G.getMonster(mid).HP < X);
                     family.add(RMonster1);
                 }
             }
-            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            Assert.AreEqual(Judgement.RelevantlyValid, family.evaluate(testsuites, threshold));
         }
 
         [TestMethod]
         public void monsterZone()
         {
             SpecificationFamily family = new SpecificationFamily();
-            for (int I = 0; I < 20; I++)
-            {
-                int i = I;
-                string mid = "M" + i + 1;
-                TemporalSpecification RMonster2 = new Always(G => G.getMonster(mid) != null && G.getMonster(mid).location.zone == G.getMonster(mid).prevZone);
-            //new Always(G => HelperPredicates.imp(G.getMonster(mid) != null, G.getMonster(mid).location.zone == G.getMonster(mid).prevZone));
-
-            }
-            Assert.IsTrue(family.evaluate(testsuites, threshold) == Judgement.RelevantlyValid);
+            TemporalSpecification RMonster2 = new Always( G => { bool result = true; for (int i = 0; i < 20; i++) { result = result && (G.getMonster("M" + i) == null || G.getMonster("M" + i).location.zone == G.getMonster("M" + i).prevZone); } return result; });
+            
+            Assert.AreEqual(Judgement.RelevantlyValid, RMonster2.evaluate(testsuites, threshold));
         }
     }
 }
