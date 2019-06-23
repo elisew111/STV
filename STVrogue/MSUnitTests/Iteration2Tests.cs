@@ -30,7 +30,8 @@ namespace MSUnitTests
         new GamePlay("2-of-2-kills_use-1-of-1-HP-at-10-of-10-HP-out-combat-and-1-of-1-C-in-combat-both-before-killing-final-monster.txt"),
         new GamePlay("2-of-5-kills_no-items_player-dies.txt"),
         new GamePlay("3-of-3-kills_use-2-of-2-HP-at-2-and-7-HP-out-combat-both-after-killing-final-monster.txt"),
-        new GamePlay("4-of-4-kills_use-2-of-2-C-in-and-out-combat-both-before-killing-final-monster.txt")
+        new GamePlay("4-of-4-kills_use-2-of-2-C-in-and-out-combat-both-before-killing-final-monster.txt"),
+        new GamePlay("23-06-2019_06-59-49gameplay.txt")
         };
 
 
@@ -57,13 +58,13 @@ namespace MSUnitTests
         [TestMethod]
         public void Alive()
         {
-            TemporalSpecification RAlive = new Unless(G => G.player.inCombat, G => G.player.HP > 0);
+            TemporalSpecification RAlive = new Unless(G => G.player.HP > 0, G => G.player.inCombat);
             Assert.AreEqual(Judgement.RelevantlyValid, RAlive.evaluate(testsuites, threshold));
         }
         [TestMethod]
         public void Item()
         {
-            int[] NrOfItems = { 2, 4, 8, 16 }; //bedenk logischere dingen
+            int[] NrOfItems = { 2,4,6,8,10 }; //bedenk logischere dingen
             SpecificationFamily family = new SpecificationFamily();
             foreach (int x in NrOfItems)
             {
@@ -78,12 +79,12 @@ namespace MSUnitTests
         {
             //RDecay: when the game has no item left(lying around in nodes nor in the player’s bag), the player’s HP can only decrease.
 
-            int[] HPvalues = { 2, 4, 8, 16 };
+            int[] HPValues = new int[] { 2, 4, 6, 8, 10 };
             SpecificationFamily family = new SpecificationFamily();
-            foreach (int x in HPvalues)
+            foreach (int x in HPValues)
             {
                 int X = x;
-                TemporalSpecification RDecay = new Unless(Game => Game.player.HP == X && (Game.items.Count <= 0 && Game.player.bag.Count <= 0), Game => Game.player.HP <= X);
+                TemporalSpecification RDecay = new Unless(G => G.player.HP == X && (G.getItems().Count <= 0 && G.player.bag.Count <= 0), G => G.player.HP < X);
                 family.add(RDecay);
             }
             Assert.AreEqual(Judgement.RelevantlyValid, family.evaluate(testsuites, threshold));
@@ -97,12 +98,11 @@ namespace MSUnitTests
             SpecificationFamily family = new SpecificationFamily();
 
             
-            for(int I = 0; I < 10; I++)
+            for(int I = 1; I < 10; I++)
             {
-                int i = I + 1;
+                int i = I;
                 string mid = "M" + i;
-                int[] HPValues = new int[] { 2, 4, 6, 8 };
-                foreach(int x in HPValues)
+                for(int x = 1; x<5; x++) //max hp = 5
                 {
                     int X = x;
                     TemporalSpecification RMonster1 = new Unless(G => G.getMonster(mid) != null && G.getMonster(mid).HP == X, G => G.getMonster(mid).HP < X);
