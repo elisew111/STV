@@ -176,7 +176,9 @@ namespace STVrogue.GameLogic {
             List<Item> nodeItems = n.items;
             if (nodeItems.Count != 0) {
                 foreach (Item item in nodeItems)
-                    player.bag.Add(item);
+                { player.bag.Add(item);
+                    G.dungeon.items.Remove(item);
+                        }
                 nodeItems.Clear();
             }
             // Set 'inCombat' to true if new node contains a monster.

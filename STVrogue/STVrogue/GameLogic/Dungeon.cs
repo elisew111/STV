@@ -18,6 +18,8 @@ namespace STVrogue.GameLogic {
         public int getCapacityMultiplier() {  return capacityMultiplier; }
 
         public const string NotEnoughZones = "numberOfZones should be 3 or more";
+        public List<Item> items = new List<Item>();
+
 
         /*
          * Create a dungeon with the indicated number of zones (should be at least 3). This creates
@@ -96,14 +98,14 @@ namespace STVrogue.GameLogic {
                 int healingPotionLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[healingPotionLocation];
                 selectedNode.items.Add(healingPotion);
-                Game.items.Add(healingPotion);
+                items.Add(healingPotion);
             }
             for (int i = 0; i < amountCrystals; i++) {
                 Crystal crystal = new Crystal("C" + (i + 1));
                 int crystalLocation = pseudoRandom.Next(0, amountNodes - 1);
                 Node selectedNode = dungeonNodes[crystalLocation];
                 selectedNode.items.Add(crystal);
-                Game.items.Add(crystal);
+                items.Add(crystal);
             }
         }
 

@@ -44,6 +44,8 @@ namespace STVrogue {
                 }
                 else
                     Console.WriteLine("Press enter to execute next move: " + g.commands[g.turn - 1]);
+                int items = g.game.dungeon.items.Count + g.game.player.bag.Count;
+                Console.WriteLine("nr of items = " + items);
                 Console.ReadLine();
                 g.Update();
             }

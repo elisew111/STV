@@ -22,7 +22,7 @@ namespace STVrogue.GameLogic {
         /* all monsters currently live in the game. */
         public static List<Monster> monsters = new List<Monster>();
         /* all items in the game */
-        public static List<Item> items = new List<Item>();
+        
         public Crystal crystal = new Crystal("testCrystal");
         HealingPotion healingPotion = new HealingPotion("heal", 5);
         /* The dungeon */
@@ -79,10 +79,7 @@ namespace STVrogue.GameLogic {
             }
             return gameNodes;
         }
-        public List<Item> getItems()
-        {
-            return items;
-        }
+        
 
         public Monster getMonster(string id)
         {
