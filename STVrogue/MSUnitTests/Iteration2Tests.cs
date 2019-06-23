@@ -33,11 +33,14 @@ namespace MSUnitTests
         new GamePlay("4-of-4-kills_use-2-of-2-C-in-and-out-combat-both-before-killing-final-monster.txt"),
         new GamePlay("23-06-2019_06-59-49gameplay.txt"),
         new GamePlay("23-06-2019_07-51-38gameplay.txt"),
-        new GamePlay("23-06-2019_07-57-22gameplay.txt")
+        new GamePlay("23-06-2019_07-57-22gameplay.txt"),
+        new GamePlay("23-06-2019_09-47-43gameplay.txt"),
+        new GamePlay("23-06-2019_09-49-15gameplay.txt"),
+        new GamePlay("23-06-2019_09-51-12gameplay.txt")
         };
 
 
-        public int threshold = 1;
+        public int threshold = 3;
 
         [TestMethod]
         public void HPTest()
@@ -66,9 +69,8 @@ namespace MSUnitTests
         [TestMethod]
         public void Item()
         {
-            int[] NrOfItems = { 1,2,3,4,5 }; //bedenk logischere dingen
             SpecificationFamily family = new SpecificationFamily();
-            foreach (int x in NrOfItems)
+            for(int x = 1;x < 6;x++)
             {
                 int X = x;
                 TemporalSpecification RItem = new Unless(G => G.dungeon.items.Count == X, G => G.dungeon.items.Count < X);
@@ -100,17 +102,17 @@ namespace MSUnitTests
             SpecificationFamily family = new SpecificationFamily();
 
             
-            //for(int I = 1; I < 5; I++)
-            //{
-                int i = 1;
+            for(int I = 1; I < 5; I++)
+            {
+                int i = I;
                 string mid = "M" + i;
-                //for(int x = 1; x<6; x+=2) //max hp = 5
-                //{
-                    int X = 5;
+                for(int x = 1; x<6; x+=2) //max hp = 5, player attack = 2 of 4
+                {
+                    int X = x;
                     TemporalSpecification RMonster1 = new Unless(G => G.getMonster(mid) != null && G.getMonster(mid).HP == X, G => G.getMonster(mid).HP < X);
                     family.add(RMonster1);
-                //}
-            //}
+                }
+            }
             Assert.AreEqual(Judgement.RelevantlyValid, family.evaluate(testsuites, threshold));
         }
 

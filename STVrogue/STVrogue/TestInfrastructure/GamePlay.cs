@@ -67,15 +67,9 @@ namespace STVrogue.TestInfrastructure {
          * This also increases the turn nr, thus shifting the current turn to the next one. 
          */
         public virtual void replayCurrentTurn() {
-            //if (turn == commands.Count) {
-            //    Console.WriteLine("Game finished");
-            //    //Console.ReadLine();
-            //    Environment.Exit(0);
-            //} else {
-                string action = commands[turn];
-                doMove(action);
-                turn++;
-            //}
+            string action = commands[turn];
+            doMove(action);
+            turn++;
         }
 
         public void doMove(string action) {
@@ -117,60 +111,6 @@ namespace STVrogue.TestInfrastructure {
                     game.routineAfterAttack();
             }
         }
-
-        public void Update() {
-            Console.Clear();
-            drawDungeon(game.player.location);
-        }
-
-        public void drawDungeon(Node node) {
-            if (game.player.location == game.dungeon.getExitnode()) {
-                Console.WriteLine("You win!");
-                Console.ReadLine();
-                Environment.Exit(0);
-            } else {
-                Console.WriteLine("Current location: " + node.ID);
-                Console.Write("Players bag content: ");
-                foreach (Item i in game.player.bag) {
-                    if (i is Crystal)
-                        Console.Write("C ");
-                    if (i is HealingPotion)
-                        Console.Write("HP ");
-                }
-                Console.WriteLine();
-                if (game.player.boosted)
-                    Console.WriteLine("Player is boosted!");
-                Console.WriteLine("Kills: " + game.player.KP);
-                Console.WriteLine("HP: " + game.player.HP + "/" + game.player.HPmax);
-
-                if (node.neighbors.Count > 1)
-                    Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-                else
-                    Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-
-                Console.WriteLine("x                            x");
-                Console.WriteLine("x    P                       x");
-                Console.WriteLine("x                            x");
-                if (node.neighbors.Count > 2) {
-                    Console.WriteLine("                              ");
-                    Console.WriteLine("                              ");
-                } else {
-                    Console.WriteLine("                             x");
-                    Console.WriteLine("                             x");
-                }
-
-                int monsters = node.monsters.Count;
-                for (int i = 1; i <= monsters; i++)
-                    Console.WriteLine("x                   M        x");
-                for (int i = 1; i < (node.capacity - monsters); i++)
-                    Console.WriteLine("x                            x");
-                if (node.neighbors.Count > 3)
-                    Console.WriteLine("xxxxxxxxxxxxxx  xxxxxxxxxxxxxx");
-                else
-                    Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-            }
-        }
-    }
 
     /* A dummy GamePlay; for testing the specification classes */
     public class DummyGamePlay : GamePlay {
